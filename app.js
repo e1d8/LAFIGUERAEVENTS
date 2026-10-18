@@ -176,8 +176,7 @@ function home(section) {
   illustration.width = 540; illustration.height = 490;
   picture.append(illustration, el('span', 'handwritten', 'amb tot l’amor mundial'));
   hero.append(copy, picture);
-  const divider = introduction.text.indexOf('Com que organitzar');
-  const opening = paragraph(introduction.text.slice(0, divider).trim(), 'home-opening');
+  const opening = paragraph(introduction.text, 'home-opening');
   const choices = el('div', 'choice-grid');
   sections.slice(1, 4).forEach((item, index) => {
     const card = el('a', `choice-card choice-${index}`);
@@ -192,9 +191,7 @@ function home(section) {
     card.append(illustration, label);
     choices.append(card);
   });
-  const note = el('div', 'home-note');
-  note.append(el('span', 'note-star', '✳'), paragraph(introduction.text.slice(divider)));
-  container.append(hero, opening, choices, note);
+  container.append(hero, opening, choices);
   return container;
 }
 
@@ -209,14 +206,15 @@ function contactContent(section) {
   ];
   links.forEach(([label, value, href, image]) => {
     const row = el('li', 'contact-row');
+    const link = el('a', 'contact-link'); link.href = href;
+    if (href.startsWith('https:')) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
     const illustration = el('img', 'contact-illustration');
     illustration.src = `./assets/${image}`;
     illustration.alt = ''; illustration.width = 100; illustration.height = 100;
     const details = el('div', 'contact-details');
-    const link = el('a', 'contact-value', value); link.href = href;
-    if (href.startsWith('https:')) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
-    details.append(el('span', 'contact-label', label), link);
-    row.append(illustration, details);
+    details.append(el('span', 'contact-label', label), el('span', 'contact-value', value));
+    link.append(illustration, details);
+    row.append(link);
     list.append(row);
   });
   container.append(list);

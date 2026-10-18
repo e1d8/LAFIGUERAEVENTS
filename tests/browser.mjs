@@ -131,7 +131,16 @@ try {
       if (route === 'contacte') {
         assert.equal(await evaluate('document.querySelectorAll("#panel-contacte .contact-row").length'), 3);
         assert.ok(await evaluate('Array.from(document.querySelectorAll(".contact-illustration")).every(img => img.complete && img.naturalWidth > 0)'));
-        assert.ok(await evaluate('Array.from(document.querySelectorAll(".contact-row")).every(row => row.querySelector("img").getBoundingClientRect().right < row.querySelector("a").getBoundingClientRect().left)'));
+        assert.ok(await evaluate(`Array.from(document.querySelectorAll('.contact-row')).every(row => {
+          const link = row.querySelector('a');
+          const image = row.querySelector('img');
+          const bounds = link.getBoundingClientRect();
+          return row.querySelectorAll('a').length === 1 && image.closest('a') === link
+            && row.querySelector('.contact-label').closest('a') === link
+            && row.querySelector('.contact-value').closest('a') === link
+            && bounds.width === row.clientWidth && bounds.height === row.clientHeight
+            && image.getBoundingClientRect().right < row.querySelector('.contact-details').getBoundingClientRect().left;
+        })`));
       }
       assert.ok(await evaluate('Array.from(document.querySelectorAll(".faq-heading")).every(heading => heading.textContent === "Preguntes freqüents")'));
       if ((width === 390 || width === 1440) && ['la-carta', 'tartes-nupcials', 'contacte'].includes(route)) {

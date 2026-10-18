@@ -10,7 +10,7 @@ export const contact = {
 
 export const introduction = {
   greeting: 'Primer que res… ENHORABONA!',
-  text: 'Ací teniu una relació de possibilitats de tortades meravelloses per tal que el vostre dia siga el més dolç possible, així com opcions de bufets de tartes per quedar-vos amb tota la vostra gent o taules dolces figtàstiques. Com que organitzar una celebració com aquesta pot resultar molt aclaparador de vegades, hem decidit ser transparents des de l’inici per tal de què tingueu una idea del que podeu fer i dels preus que barallem.',
+  text: 'Ací teniu una relació de possibilitats de tortades meravelloses per tal que el vostre dia siga el més dolç possible, així com opcions de bufets de tartes per quedar-vos amb tota la vostra gent o taules dolces figtàstiques.',
   source: ['C01', 'C02'],
 };
 
