@@ -167,14 +167,13 @@ function home(section) {
   const hero = el('div', 'home-hero');
   const copy = el('div', 'hero-copy');
   copy.append(heading(section));
-  const greeting = el('p', 'greeting');
-  greeting.append(document.createTextNode('Primer que res… '), el('span', '', 'ENHORABONA!'));
-  copy.append(greeting);
   const picture = el('div', 'hero-picture');
   const illustration = el('img');
   illustration.src = './assets/cake.svg'; illustration.alt = 'Il·lustració d’una tortada de tres pisos amb flors i fruita';
   illustration.width = 540; illustration.height = 490;
-  picture.append(illustration, el('span', 'handwritten', 'amb tot l’amor mundial'));
+  const greeting = el('span', 'handwritten');
+  greeting.append(document.createTextNode('Primer que res…'), el('br'), el('strong', '', 'ENHORABONA!'));
+  picture.append(illustration, greeting);
   hero.append(copy, picture);
   const opening = paragraph(introduction.text, 'home-opening');
   const choices = el('div', 'choice-grid');
