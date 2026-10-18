@@ -39,9 +39,23 @@ Les instruccions per editar textos, taules i il·lustracions estan en [la docume
 
 - `index.html`: entrada de la web.
 - `app.js`, `content.js` i `styles.css`: funcionament, contingut i estètica.
+- `routes.js`: correspondència entre seccions i adreces.
+- `nupcials/`, `bufet/`, `taules/` i `contacte/`: entrades HTML per obrir cada secció directament.
 - `assets/`: il·lustracions, tipografies i llicències.
 - `docs/`: instruccions, transcripció original i inventari de dades pendents.
 - `tests/`: comprovacions de contingut i navegador.
 - `.nojekyll`: publicació estàtica sense Jekyll.
 
-Les rutes dels recursos són relatives i les seccions utilitzen fragments (`#contacte`, per exemple), de manera que funcionen dins de `/LAFIGUERAEVENTS/` sense configuració de redireccions.
+## Adreces de les seccions
+
+| Secció | Adreça |
+| --- | --- |
+| Inici | `https://e1d8.github.io/LAFIGUERAEVENTS` |
+| Tartes nupcials | `https://e1d8.github.io/LAFIGUERAEVENTS/nupcials` |
+| Bufet de tortades | `https://e1d8.github.io/LAFIGUERAEVENTS/bufet` |
+| Taules dolces | `https://e1d8.github.io/LAFIGUERAEVENTS/taules` |
+| Contacte | `https://e1d8.github.io/LAFIGUERAEVENTS/contacte` |
+
+Cada ruta té un `index.html` estàtic, així que es pot obrir i recarregar en GitHub Pages sense una redirecció de pàgina 404. Totes les entrades comparteixen `app.js`, `content.js`, `routes.js`, `styles.css` i les il·lustracions.
+
+El servidor pot afegir una barra final en obrir una carpeta; l’aplicació deixa l’adreça visible sense aquesta barra. Els enllaços antics amb `#` continuen funcionant i es transformen a la ruta corresponent. La configuració de Pages continua sent **Deploy from a branch → main → /(root)**.

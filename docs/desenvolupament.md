@@ -28,7 +28,9 @@ Després afig `novaOpcio: cell('Text o preu')` a `cells` de cada fila. Les files
 
 Les preguntes estan en `sections[].questions`. Per a respostes retallades, conserva `pending: true`. Els fragments sense fila identificable estan en `tables[].fragments`, separats dels productes per evitar associacions no demostrades.
 
-Els fragments d’URL són `#la-carta`, `#tartes-nupcials`, `#bufet-de-tortades`, `#taules-dolces` i `#contacte`.
+Les adreces són l’arrel per a l’inici i `/nupcials`, `/bufet`, `/taules` i `/contacte` per a les seccions. `routes.js` defineix aquesta correspondència. Els antics enllaços amb `#` continuen funcionant i es converteixen a les adreces noves.
+
+Les carpetes `nupcials/`, `bufet/`, `taules/` i `contacte/` contenen una entrada `index.html` amb el mateix esquelet que l’entrada principal, un títol propi i `<base href="../">` per carregar els recursos compartits. Si edites l’estructura HTML de l’entrada principal, actualitza també aquestes quatre entrades. Les proves comproven que es mantinguen sincronitzades. No cal cap generador ni workflow.
 
 ## Canviar la icona de marca
 
@@ -51,6 +53,6 @@ La web està directament a l’arrel del repositori. No té cap workflow de publ
 
 Configura manualment **Settings → Pages → Source → Deploy from a branch**, amb la branca **main** i la carpeta **/(root)**. Mantín `.nojekyll` a l’arrel. Consulta [les instruccions de l’arrel](../README.md) per als detalls.
 
-Tots els recursos es carreguen amb rutes relatives. Les seccions utilitzen fragments d’URL, així que no necessiten redireccions ni configuració de servidor per funcionar dins del subdirectori del repositori.
+Tots els recursos compartits es resolen respecte de l’arrel de l’aplicació, també quan l’adreça visible no acaba en barra. Cada secció té una entrada estàtica que permet obrir-la directament i recarregar-la dins del subdirectori del repositori.
 
 Les tipografies Titan One, DM Sans i Caveat se serveixen localment. Les llicències OFL estan en `assets/`. Les il·lustracions SVG són elements decoratius originals; no representen productes ni fotografies del negoci.

@@ -5,5 +5,5 @@
 - The website lives directly at the repository root: `index.html`, `app.js`, `content.js`, `styles.css`, and `assets/`. Keep `.nojekyll` so Pages serves the static files directly.
 - This is a static HTML/CSS/JavaScript project with no package dependencies and no build step. Edit the root website files directly; do not introduce a wrapper project folder or a build-output folder.
 - From the repository root, validate with `npm run check` and `npm test`.
-- Keep resource paths relative so the website works under a GitHub project URL as well as a custom domain. Keep section navigation based on URL fragments.
+- Keep shared resource paths relative to the application root so the website works under a GitHub project URL as well as a custom domain. Section URLs use `/nupcials`, `/bufet`, `/taules` and `/contacte`, with real static directory entry pages; preserve direct loading and refresh support without a custom workflow or 404 fallback. Migrate old hash links to these paths.
 - Preserve the Valencian content and explicit pending-data markers. Follow the user's later content edits over the archived transcription.

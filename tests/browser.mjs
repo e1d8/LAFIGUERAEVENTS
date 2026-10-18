@@ -5,7 +5,10 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
 
-const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4173';
+const base = (process.env.PREVIEW_URL || 'http://127.0.0.1:4173').replace(/\/+$/, '');
+const basePath = new URL(`${base}/`).pathname;
+const slugs = { 'la-carta': '', 'tartes-nupcials': 'nupcials', 'bufet-de-tortades': 'bufet', 'taules-dolces': 'taules', contacte: 'contacte' };
+const pathFor = id => slugs[id] ? `${basePath}${slugs[id]}` : basePath.replace(/\/$/, '') || '/';
 assert.equal((await fetch(base)).status, 200, 'Start npm run dev first');
 const chromeBin = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const profile = await mkdtemp(join(tmpdir(), 'figuera-browser-'));
@@ -16,6 +19,7 @@ let nextId = 0;
 const pending = new Map();
 const browserErrors = [];
 const failedRequests = [];
+const loadedDocuments = new Set();
 
 try {
   let port;
@@ -37,6 +41,7 @@ try {
     }
     if (message.method === 'Runtime.exceptionThrown') browserErrors.push(message.params.exceptionDetails);
     if (message.method === 'Network.responseReceived' && message.params.response.status >= 400) failedRequests.push(message.params.response.url);
+    if (message.method === 'Page.lifecycleEvent' && message.params.name === 'load') loadedDocuments.add(message.params.loaderId);
   };
   const send = (method, params = {}) => new Promise((resolve, reject) => {
     const id = ++nextId;
@@ -56,16 +61,37 @@ try {
   await send('Runtime.enable');
   await send('Network.enable');
   await send('Page.enable');
+  await send('Page.setLifecycleEventsEnabled', { enabled: true });
+  const waitForDocument = async loaderId => {
+    for (let i = 0; i < 120; i++) { if (loadedDocuments.has(loaderId)) return; await sleep(50); }
+    throw new Error(`Document did not finish loading: ${loaderId}`);
+  };
+  const navigate = async url => {
+    const result = await send('Page.navigate', { url });
+    assert.ok(!result.errorText, result.errorText);
+    if (result.loaderId) await waitForDocument(result.loaderId);
+    await until('document.querySelectorAll(".panel").length === 5 && document.readyState === "complete"');
+  };
+  const reload = async () => {
+    const previous = (await send('Page.getFrameTree')).frameTree.frame.loaderId;
+    await send('Page.reload', { ignoreCache: true });
+    for (let i = 0; i < 120; i++) {
+      const loaderId = (await send('Page.getFrameTree')).frameTree.frame.loaderId;
+      if (loaderId !== previous) { await waitForDocument(loaderId); await until('document.querySelectorAll(".panel").length === 5'); return; }
+      await sleep(50);
+    }
+    throw new Error('Reload did not start a new document');
+  };
   await mkdir('artifacts', { recursive: true });
   const routes = ['la-carta', 'tartes-nupcials', 'bufet-de-tortades', 'taules-dolces', 'contacte'];
   for (const width of [320, 360, 390, 768, 1024, 1440]) {
     await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false });
-    await send('Page.navigate', { url: `${base}/` });
-    await until('document.querySelectorAll(".panel").length === 5 && document.readyState === "complete"');
+    await navigate(`${base}/`);
     await evaluate('document.fonts.ready.then(() => true)');
-    assert.equal(await evaluate('location.hash'), '#la-carta');
+    assert.equal(await evaluate('location.pathname'), pathFor('la-carta'));
+    assert.equal(await evaluate('location.hash'), '');
     assert.equal(await evaluate('document.querySelectorAll(".nav-tab").length'), 4);
-    assert.equal(await evaluate(`document.querySelectorAll('.nav-tab[href="#la-carta"], .header-contact, .tab-number, .choice-top').length`), 0);
+    assert.equal(await evaluate(`document.querySelectorAll('.nav-tab[data-section="la-carta"], .header-contact, .tab-number, .choice-top').length`), 0);
     assert.equal(await evaluate('document.querySelector(".brand").getAttribute("aria-current")'), 'page');
     assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Al final d’aquest document")'));
     assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Si teniu qualsevol dubte")'));
@@ -75,8 +101,10 @@ try {
     assert.ok(await evaluate('document.querySelector("link[rel=icon]").href.endsWith("/fig.svg")'));
     assert.ok(await evaluate('Array.from(document.querySelectorAll(".choice-illustration")).length === 3 && Array.from(document.querySelectorAll(".choice-illustration")).every(img => img.complete && img.naturalWidth > 0 && !img.src.endsWith("flower.svg"))'));
     for (const route of routes) {
-      await evaluate(`document.querySelector('${route === 'la-carta' ? '.brand' : `.nav-tab[href="#${route}"]`}').click()`);
+      await evaluate(`document.querySelector('${route === 'la-carta' ? '.brand' : `.nav-tab[data-section="${route}"]`}').click()`);
       await until(`document.querySelector('#panel-${route}').hidden === false`);
+      assert.equal(await evaluate('location.pathname'), pathFor(route));
+      assert.equal(await evaluate('location.hash'), '');
       assert.equal(await evaluate('document.querySelectorAll(".panel:not([hidden])").length'), 1);
       assert.ok(await evaluate('document.documentElement.scrollWidth <= innerWidth'), `Page overflow: ${width}/${route}`);
       assert.equal(await evaluate('scrollY'), 0, 'Changing sections returns to the top');
@@ -115,7 +143,7 @@ try {
     await evaluate('document.querySelector(".brand-logo").click()');
     await until('document.querySelector("#panel-la-carta").hidden === false');
     for (const route of routes.slice(1, 4)) {
-      await evaluate(`document.querySelector('.choice-card[href="#${route}"]').click()`);
+      await evaluate(`document.querySelector('.choice-card[data-section="${route}"]').click()`);
       await until(`document.querySelector('#panel-${route}').hidden === false`);
       await evaluate('document.querySelector(".brand-name").click()');
       await until('document.querySelector("#panel-la-carta").hidden === false');
@@ -124,18 +152,43 @@ try {
   }
   const hrefs = await evaluate('Array.from(document.querySelectorAll("#panel-contacte a")).map(a=>a.getAttribute("href"))');
   assert.deepEqual(hrefs, ['https://wa.me/34649656652', 'mailto:lafigueravlc@gmail.com', 'https://www.instagram.com/lafigueravlc/']);
-  await send('Page.navigate', { url: `${base}/#taules-dolces` });
+  for (const route of routes) {
+    const entry = `${base}/${slugs[route]}`;
+    const response = await fetch(entry);
+    assert.equal(response.status, 200, `Static page missing: ${entry}`);
+    assert.ok(response.headers.get('content-type').includes('text/html'));
+    await navigate(entry);
+    await until(`document.querySelector('#panel-${route}').hidden === false`);
+    assert.equal(await evaluate('location.pathname'), pathFor(route));
+    assert.equal(await evaluate('location.hash'), '');
+    await reload();
+    assert.equal(await evaluate('location.pathname'), pathFor(route));
+    assert.equal(await evaluate(`document.querySelector('#panel-${route}').hidden`), false);
+    if (slugs[route]) {
+      for (const ending of ['/', '/index.html']) {
+        await navigate(entry + ending);
+        assert.equal(await evaluate('location.pathname'), pathFor(route));
+        assert.equal(await evaluate(`document.querySelector('#panel-${route}').hidden`), false);
+      }
+    }
+    await navigate(`${base}/#${route}`);
+    await until(`location.pathname === ${JSON.stringify(pathFor(route))} && location.hash === ''`);
+    assert.equal(await evaluate(`document.querySelector('#panel-${route}').hidden`), false);
+  }
+  await navigate(`${base}/taules`);
   await until('document.querySelector("#panel-taules-dolces")?.hidden === false');
   assert.equal(await evaluate('document.querySelector(".nav-tab.active").dataset.section'), 'taules-dolces');
-  await evaluate(`document.querySelector('.nav-tab[href="#bufet-de-tortades"]').click()`);
+  await evaluate(`document.querySelector('.nav-tab[data-section="bufet-de-tortades"]').click()`);
   await until('document.querySelector("#panel-bufet-de-tortades").hidden === false');
   await evaluate('history.back()');
   await until('document.querySelector("#panel-taules-dolces").hidden === false');
   await evaluate('history.forward()');
   await until('document.querySelector("#panel-bufet-de-tortades").hidden === false');
-  await send('Page.navigate', { url: `${base}/#unknown` });
+  assert.equal(await evaluate('location.pathname'), pathFor('bufet-de-tortades'));
+  await navigate(`${base}/#unknown`);
   await until('document.querySelector("#panel-la-carta")?.hidden === false');
-  assert.equal(await evaluate('location.hash'), '#la-carta');
+  assert.equal(await evaluate('location.hash'), '');
+  assert.equal(await evaluate('location.pathname'), pathFor('la-carta'));
   const extended = await evaluate(`(async () => {
     const {renderTable}=await import('./app.js');
     const {tables}=await import('./content.js');
@@ -149,7 +202,7 @@ try {
   assert.ok(await evaluate('document.fonts.check("20px Titan") && document.fonts.check("20px DM Sans")'));
   assert.deepEqual(browserErrors, [], 'Browser runtime errors');
   assert.deepEqual(failedRequests, [], 'Failed assets');
-  console.log('✓ Enllaços, URL directa, arrere/avant, ruta desconeguda i columna addicional');
+  console.log('✓ Rutes sense #, càrrega directa, recàrrega, enllaços antics, arrere/avant i columna addicional');
   console.log('✓ Sense errors JavaScript ni recursos absents; captures en artifacts/');
 } finally {
   socket?.close();

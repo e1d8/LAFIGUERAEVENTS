@@ -1,4 +1,12 @@
 import { sections, tables, pickup, introduction, contact } from './content.js';
+import { sectionPath, sectionFromLocation } from './routes.js';
+
+// Anchor resources to app.js, even when the visible URL has no trailing slash.
+const appRoot = new URL('./', import.meta.url);
+const resourceBase = document.querySelector('base') || document.head.insertBefore(document.createElement('base'), document.head.firstChild);
+resourceBase.href = appRoot.href;
+const routePath = sectionId => sectionPath(sectionId, appRoot.pathname);
+document.querySelector('.brand').href = routePath('la-carta');
 
 const main = document.querySelector('#main');
 const navigation = document.querySelector('#navigation');
@@ -173,7 +181,7 @@ function home(section) {
   const choices = el('div', 'choice-grid');
   sections.slice(1, 4).forEach((item, index) => {
     const card = el('a', `choice-card choice-${index}`);
-    card.href = `#${item.id}`;
+    card.href = routePath(item.id); card.dataset.section = item.id;
     const illustration = el('img', 'choice-illustration');
     illustration.src = `./assets/${sectionImages[item.id]}`;
     illustration.alt = ''; illustration.width = 240; illustration.height = 180;
@@ -220,12 +228,12 @@ function catalogue(section) {
   container.append(sectionLead(section, 'section-intro'));
   if (section.id === 'taules-dolces') {
     const link = el('a', 'inline-section-link', 'Consultar les tartes del bufet ↗');
-    link.href = '#bufet-de-tortades';
+    link.href = routePath('bufet-de-tortades'); link.dataset.section = 'bufet-de-tortades';
     container.append(link);
   }
   section.tableIds.forEach(id => container.append(tableBlock(id)));
   container.append(questionsBlock(section));
-  const closing = el('a', 'closing-link'); closing.href = '#contacte';
+  const closing = el('a', 'closing-link'); closing.href = routePath('contacte'); closing.dataset.section = 'contacte';
   closing.append(el('span', '', 'Teniu qualsevol dubte?'), el('span', '', 'Contacteu-nos ↗'));
   container.append(closing);
   return container;
@@ -234,7 +242,7 @@ function catalogue(section) {
 sections.forEach(section => {
   if (section.kind !== 'home') {
     const link = el('a', 'nav-tab', section.label);
-    link.href = `#${section.id}`; link.dataset.section = section.id;
+    link.href = routePath(section.id); link.dataset.section = section.id;
     navigation.append(link);
   }
   const panel = el('section', 'panel'); panel.id = `panel-${section.id}`; panel.hidden = true;
@@ -244,9 +252,10 @@ sections.forEach(section => {
 
 let selected;
 function selectSection({ scroll = true } = {}) {
-  const requested = location.hash.slice(1);
+  const requested = sectionFromLocation(location, appRoot.pathname);
   const section = sections.find(item => item.id === requested) || sections[0];
-  if (!sections.some(item => item.id === requested)) history.replaceState(null, '', `#${section.id}`);
+  const canonicalURL = routePath(section.id) + location.search;
+  if (location.pathname + location.search + location.hash !== canonicalURL) history.replaceState(null, '', canonicalURL);
   document.querySelectorAll('.panel').forEach(panel => { panel.hidden = panel.id !== `panel-${section.id}`; });
   document.querySelectorAll('.site-header a[data-section]').forEach(link => {
     const active = link.dataset.section === section.id;
@@ -258,5 +267,14 @@ function selectSection({ scroll = true } = {}) {
   selected = section.id;
   if (scroll && changed) window.scrollTo({ top: 0, behavior: 'instant' });
 }
+document.addEventListener('click', event => {
+  const link = event.target.closest('a[data-section]');
+  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+  event.preventDefault();
+  const target = routePath(link.dataset.section);
+  if (location.pathname + location.search + location.hash !== target) history.pushState(null, '', target);
+  selectSection();
+});
+window.addEventListener('popstate', () => selectSection());
 window.addEventListener('hashchange', () => selectSection());
 selectSection({ scroll: false });
