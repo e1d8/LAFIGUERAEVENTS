@@ -23,6 +23,15 @@ const el = (tag, className = '', text) => {
   return node;
 };
 
+function arrowImage(direction = 'diagonal', className = '') {
+  const image = el('img', `arrow-image ${className}`.trim());
+  image.src = `./assets/arrow-${direction}.svg`;
+  image.alt = '';
+  image.setAttribute('aria-hidden', 'true');
+  image.width = 32; image.height = direction === 'horizontal' ? 20 : 32;
+  return image;
+}
+
 const emphasis = [
   '100% artesanals', 'proximitat i de temporada', 'flors i fruita fresca',
   'NO AGAFEM MÉS D’UN EVENT PER DATA', 'formatge blau', 'parmesà', 'raïm',
@@ -99,7 +108,7 @@ function tableBlock(id) {
   const block = el('section', 'table-block');
   const top = el('div', 'table-heading');
   const hint = el('span', 'scroll-hint');
-  hint.append(el('strong', '', '↔'), document.createTextNode(' per veure més columnes'));
+  hint.append(arrowImage('horizontal'), document.createTextNode(' per veure més columnes'));
   top.append(el('h2', '', data.title), hint);
   block.append(top, renderTable(data));
   if (data.fragments?.length) {
@@ -184,8 +193,7 @@ function home(section) {
     illustration.src = `./assets/${sectionImages[item.id]}`;
     illustration.alt = ''; illustration.width = 240; illustration.height = 180;
     const label = el('div', 'choice-label');
-    const arrow = el('span', 'choice-arrow', '↗');
-    arrow.setAttribute('aria-hidden', 'true');
+    const arrow = arrowImage('diagonal', 'choice-arrow');
     label.append(el('h2', '', item.label), arrow);
     card.append(illustration, label);
     choices.append(card);
@@ -224,14 +232,17 @@ function catalogue(section) {
   const container = el('div', 'catalogue-content');
   container.append(sectionLead(section, 'section-intro'));
   if (section.id === 'taules-dolces') {
-    const link = el('a', 'inline-section-link', 'Consultar les tartes del bufet ↗');
+    const link = el('a', 'inline-section-link', 'Consultar les tartes del bufet');
+    link.append(arrowImage());
     link.href = routePath('bufet-de-tortades'); link.dataset.section = 'bufet-de-tortades';
     container.append(link);
   }
   section.tableIds.forEach(id => container.append(tableBlock(id)));
   container.append(questionsBlock(section));
   const closing = el('a', 'closing-link'); closing.href = routePath('contacte'); closing.dataset.section = 'contacte';
-  closing.append(el('span', '', 'Teniu qualsevol dubte?'), el('span', '', 'Contacteu-nos ↗'));
+  const closingLabel = el('span', 'closing-label', 'Contacteu-nos');
+  closingLabel.append(arrowImage());
+  closing.append(el('span', '', 'Teniu qualsevol dubte?'), closingLabel);
   container.append(closing);
   return container;
 }

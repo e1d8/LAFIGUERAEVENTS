@@ -113,8 +113,8 @@ try {
       }
       assert.ok(await evaluate('Array.from(document.querySelectorAll(".nav-tab")).every(x => {const r=x.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth})'));
       if (route === 'tartes-nupcials') {
-        assert.equal(await evaluate('document.querySelector(".scroll-hint").textContent'), '↔ per veure més columnes');
-        assert.equal(await evaluate('document.querySelector(".scroll-hint strong").textContent'), '↔');
+        assert.equal(await evaluate('document.querySelector(".scroll-hint").textContent.trim()'), 'per veure més columnes');
+        assert.ok(await evaluate('Array.from(document.querySelectorAll(".arrow-image")).every(img => img.complete && img.naturalWidth > 0)'));
         assert.equal(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item[open]").length'), 0);
         await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item summary")[0].click()');
         await until('document.querySelectorAll("#panel-tartes-nupcials .faq-item[open]").length === 1');
