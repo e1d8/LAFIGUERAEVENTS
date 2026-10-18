@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { contact, sections, tables } from '../dist/content.js';
+import { contact, sections, tables } from '../content.js';
 
 test('Every transcribed item has a screenshot reference and valid table links', () => {
   const sourceValid = refs => assert.ok(refs?.length && refs.every(ref => /^C(0[1-9]|1[0-3])$/.test(ref)));

@@ -1,44 +1,47 @@
 # La Figuera Events
 
-Web estàtica en valencià, preparada per publicar-se amb **GitHub Pages**. La web funciona amb HTML, CSS i JavaScript, sense servidor, comptes de tercers ni passos de compilació.
+Web estàtica en valencià, amb els fitxers directament a l’arrel del repositori. Funciona amb HTML, CSS i JavaScript, sense dependències ni passos de compilació.
 
-## Primera publicació
+## Publicar manualment en GitHub Pages
 
-1. Puja el repositori complet a la branca `main`, incloent-hi la carpeta `.github` de l’arrel.
-2. En GitHub, obri **Settings → Pages → Build and deployment → Source** i selecciona **GitHub Actions**.
-3. En **Actions**, obri **Publish GitHub Pages** i executa **Run workflow** sobre `main`. Els següents canvis pujats a `main` es publicaran automàticament.
-4. Quan finalitze, obri l’enllaç de l’entorn **github-pages** que apareix en el desplegament.
+1. Puja els canvis del repositori a la branca `main`.
+2. En GitHub, obri **Settings → Pages → Build and deployment**.
+3. En **Source**, selecciona **Deploy from a branch**.
+4. En **Branch**, selecciona **main** i la carpeta **/(root)**.
+5. Prem **Save** i espera que GitHub publique la web. L’enllaç apareixerà en aquesta mateixa pantalla.
 
 Amb el nom i propietari actuals del repositori, l’adreça prevista és **https://e1d8.github.io/LAFIGUERAEVENTS/**. Aquesta URL estarà disponible després d’activar Pages i completar la primera publicació.
 
-No crees un altre workflow a partir de les plantilles: ja està inclòs en [`.github/workflows/pages.yml`](.github/workflows/pages.yml). Cal seleccionar **GitHub Actions**, perquè el directori publicable està dins del projecte i no en l’arrel del repositori.
+`index.html` és directament a l’arrel. El fitxer `.nojekyll` indica que els fitxers s’han de servir com a web estàtica. No cal crear un workflow, seleccionar GitHub Actions ni instal·lar cap generador.
 
-El workflow comprova el JavaScript i els continguts abans de publicar. En les pull requests només executa les comprovacions. No cal afegir secrets ni tokens manuals: utilitza els permisos temporals del workflow. Només es publica `la-figuera-events/dist/`; la documentació i les proves queden fora de la web.
+Una vegada configurat Pages, GitHub publicarà els canvis que puges a `main`.
 
-[Instruccions oficials per activar GitHub Actions com a origen de Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow).
+[Instruccions oficials per publicar des d’una branca](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-from-a-branch).
 
 ## Treballar en local
 
 Des de l’arrel del repositori:
 
 ```sh
-npm --prefix la-figuera-events run dev
+npm run dev
 ```
 
 Obri **http://127.0.0.1:4173**. No cal executar `npm install` perquè el projecte no té dependències.
 
 ```sh
-npm --prefix la-figuera-events run check
-npm --prefix la-figuera-events test
+npm run check
+npm test
 ```
 
-Les instruccions per editar textos, taules i il·lustracions estan en [la documentació del projecte](la-figuera-events/README.md).
+Les instruccions per editar textos, taules i il·lustracions estan en [la documentació de desenvolupament](docs/desenvolupament.md).
 
 ## Estructura
 
-- `.github/workflows/pages.yml`: comprovacions i publicació en GitHub Pages.
-- `la-figuera-events/dist/`: fitxers de la web; edita’ls directament.
-- `la-figuera-events/docs/`: transcripció original i inventari de dades pendents.
-- `la-figuera-events/tests/`: comprovacions de contingut i navegador.
+- `index.html`: entrada de la web.
+- `app.js`, `content.js` i `styles.css`: funcionament, contingut i estètica.
+- `assets/`: il·lustracions, tipografies i llicències.
+- `docs/`: instruccions, transcripció original i inventari de dades pendents.
+- `tests/`: comprovacions de contingut i navegador.
+- `.nojekyll`: publicació estàtica sense Jekyll.
 
 Les rutes dels recursos són relatives i les seccions utilitzen fragments (`#contacte`, per exemple), de manera que funcionen dins de `/LAFIGUERAEVENTS/` sense configuració de redireccions.

@@ -35,7 +35,7 @@ S’han conservat formes originals com «figtàstiques», «montar», «destint�
 - **Resposta de bufet:** final de «Monteu vosaltres la taula amb el bufet?».
 - **Fora de les captures:** es desconeix si hi ha altres productes, files o columnes. No s’han inventat placeholders per a un nombre arbitrari de productes absents. La infraestructura permet afegir-los.
 
-Els camps afectats mostren «Informació pendent» a la web. `dist/content.js` guarda l’estat i les referències per fila, fragment i pregunta; `transcripcio.md` en presenta una còpia llegible.
+Els camps afectats mostren «Informació pendent» a la web. `content.js` guarda l’estat i les referències per fila, fragment i pregunta; `transcripcio.md` en presenta una còpia llegible.
 
 ## Interfície nova
 
