@@ -1,0 +1,159 @@
+// Uses an installed Chrome, Node's native WebSocket, and the local preview server.
+import { spawn } from 'node:child_process';
+import { mkdtemp, readFile, mkdir, writeFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import assert from 'node:assert/strict';
+
+const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4173';
+assert.equal((await fetch(base)).status, 200, 'Start npm run dev first');
+const chromeBin = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const profile = await mkdtemp(join(tmpdir(), 'figuera-browser-'));
+const chrome = spawn(chromeBin, ['--headless=new', '--no-first-run', '--no-default-browser-check', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank'], { stdio: 'ignore' });
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+let socket;
+let nextId = 0;
+const pending = new Map();
+const browserErrors = [];
+const failedRequests = [];
+
+try {
+  let port;
+  for (let i = 0; i < 120; i++) {
+    try { port = (await readFile(join(profile, 'DevToolsActivePort'), 'utf8')).split('\n')[0]; break; } catch { await sleep(100); }
+  }
+  assert.ok(port, 'Chrome did not start');
+  const pages = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+  socket = new WebSocket(pages.find(page => page.type === 'page').webSocketDebuggerUrl);
+  await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
+  socket.onmessage = ({ data }) => {
+    const message = JSON.parse(data);
+    if (message.id) {
+      const handler = pending.get(message.id);
+      if (!handler) return;
+      pending.delete(message.id);
+      clearTimeout(handler.timeout);
+      if (message.error) handler.reject(new Error(JSON.stringify(message.error))); else handler.resolve(message.result);
+    }
+    if (message.method === 'Runtime.exceptionThrown') browserErrors.push(message.params.exceptionDetails);
+    if (message.method === 'Network.responseReceived' && message.params.response.status >= 400) failedRequests.push(message.params.response.url);
+  };
+  const send = (method, params = {}) => new Promise((resolve, reject) => {
+    const id = ++nextId;
+    const timeout = setTimeout(() => { pending.delete(id); reject(new Error(`Timed out: ${method}`)); }, 15000);
+    pending.set(id, { resolve, reject, timeout });
+    socket.send(JSON.stringify({ id, method, params }));
+  });
+  const evaluate = async expression => {
+    const result = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
+    if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
+    return result.result.value;
+  };
+  const until = async expression => {
+    for (let i = 0; i < 80; i++) { if (await evaluate(expression)) return; await sleep(50); }
+    throw new Error(`Condition failed: ${expression}`);
+  };
+  await send('Runtime.enable');
+  await send('Network.enable');
+  await send('Page.enable');
+  await mkdir('artifacts', { recursive: true });
+  const routes = ['la-carta', 'tartes-nupcials', 'bufet-de-tortades', 'taules-dolces', 'contacte'];
+  for (const width of [320, 360, 390, 768, 1024, 1440]) {
+    await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false });
+    await send('Page.navigate', { url: `${base}/` });
+    await until('document.querySelectorAll(".panel").length === 5 && document.readyState === "complete"');
+    await evaluate('document.fonts.ready.then(() => true)');
+    assert.equal(await evaluate('location.hash'), '#la-carta');
+    assert.equal(await evaluate('document.querySelectorAll(".nav-tab").length'), 4);
+    assert.equal(await evaluate(`document.querySelectorAll('.nav-tab[href="#la-carta"], .header-contact, .tab-number, .choice-top').length`), 0);
+    assert.equal(await evaluate('document.querySelector(".brand").getAttribute("aria-current")'), 'page');
+    assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Al final d’aquest document")'));
+    assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Si teniu qualsevol dubte")'));
+    assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Veure la carta")'));
+    assert.equal(await evaluate('document.querySelectorAll(".choice-label .choice-arrow").length'), 3);
+    assert.ok(await evaluate('Array.from(document.querySelectorAll(".choice-card")).every(card => {const title=card.querySelector("h2");const range=document.createRange();range.selectNodeContents(title);return range.getClientRects().length === 1 && card.querySelector(".choice-arrow").getBoundingClientRect().right <= card.getBoundingClientRect().right-parseFloat(getComputedStyle(card).paddingRight)+1})'));
+    assert.ok(await evaluate('document.querySelector("link[rel=icon]").href.endsWith("/fig.svg")'));
+    assert.ok(await evaluate('Array.from(document.querySelectorAll(".choice-illustration")).length === 3 && Array.from(document.querySelectorAll(".choice-illustration")).every(img => img.complete && img.naturalWidth > 0 && !img.src.endsWith("flower.svg"))'));
+    for (const route of routes) {
+      await evaluate(`document.querySelector('${route === 'la-carta' ? '.brand' : `.nav-tab[href="#${route}"]`}').click()`);
+      await until(`document.querySelector('#panel-${route}').hidden === false`);
+      assert.equal(await evaluate('document.querySelectorAll(".panel:not([hidden])").length'), 1);
+      assert.ok(await evaluate('document.documentElement.scrollWidth <= innerWidth'), `Page overflow: ${width}/${route}`);
+      assert.equal(await evaluate('scrollY'), 0, 'Changing sections returns to the top');
+      if (route !== 'la-carta') {
+        assert.ok(await evaluate(`(() => {const lead=document.querySelector('#panel-${route} .section-lead');const image=lead.querySelector('.section-illustration');const picture=image.getBoundingClientRect();const title=lead.querySelector('h1').getBoundingClientRect();return image.complete && image.naturalWidth>0 && !image.src.endsWith('flower.svg') && picture.width>=200 && (picture.left>=title.right || picture.top>=title.bottom)})()`));
+      }
+      assert.ok(await evaluate('Array.from(document.querySelectorAll(".nav-tab")).every(x => {const r=x.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth})'));
+      if (route === 'tartes-nupcials') {
+        assert.equal(await evaluate('document.querySelector(".scroll-hint").textContent'), '↔ per veure més columnes');
+        assert.equal(await evaluate('document.querySelector(".scroll-hint strong").textContent'), '↔');
+        assert.equal(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item[open]").length'), 0);
+        await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item summary")[0].click()');
+        await until('document.querySelectorAll("#panel-tartes-nupcials .faq-item[open]").length === 1');
+        await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item summary")[1].click()');
+        await sleep(100);
+        assert.equal(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item[open]").length'), 1);
+        assert.equal(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item")[0].open'), false);
+        assert.ok(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item")[1].innerText.includes("Informació pendent")'));
+        if (width === 360 || width === 390) {
+          assert.ok(await evaluate('document.querySelector("#panel-tartes-nupcials .table-scroll").scrollWidth > document.querySelector("#panel-tartes-nupcials .table-scroll").clientWidth'));
+          assert.ok(await evaluate(`(() => {const t=document.querySelector('#panel-tartes-nupcials .table-scroll');const c=t.querySelector('tbody th');const x=c.getBoundingClientRect().left;t.scrollLeft=160;return Math.abs(c.getBoundingClientRect().left-x)<2})()`));
+        }
+      }
+      if (route === 'contacte') {
+        assert.equal(await evaluate('document.querySelectorAll("#panel-contacte .contact-row").length'), 3);
+        assert.ok(await evaluate('Array.from(document.querySelectorAll(".contact-illustration")).every(img => img.complete && img.naturalWidth > 0)'));
+        assert.ok(await evaluate('Array.from(document.querySelectorAll(".contact-row")).every(row => row.querySelector("img").getBoundingClientRect().right < row.querySelector("a").getBoundingClientRect().left)'));
+      }
+      assert.ok(await evaluate('Array.from(document.querySelectorAll(".faq-heading")).every(heading => heading.textContent === "Preguntes freqüents")'));
+      if ((width === 390 || width === 1440) && ['la-carta', 'tartes-nupcials', 'contacte'].includes(route)) {
+        await evaluate('window.scrollTo(0,0)');
+        const { data } = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+        await writeFile(`artifacts/${route}-${width}.png`, Buffer.from(data, 'base64'));
+      }
+    }
+    await evaluate('document.querySelector(".brand-logo").click()');
+    await until('document.querySelector("#panel-la-carta").hidden === false');
+    for (const route of routes.slice(1, 4)) {
+      await evaluate(`document.querySelector('.choice-card[href="#${route}"]').click()`);
+      await until(`document.querySelector('#panel-${route}').hidden === false`);
+      await evaluate('document.querySelector(".brand-name").click()');
+      await until('document.querySelector("#panel-la-carta").hidden === false');
+    }
+    console.log(`✓ ${width}px: 5 seccions, sense desbordament, acordió i taules`);
+  }
+  const hrefs = await evaluate('Array.from(document.querySelectorAll("#panel-contacte a")).map(a=>a.getAttribute("href"))');
+  assert.deepEqual(hrefs, ['https://wa.me/34649656652', 'mailto:lafigueravlc@gmail.com', 'https://www.instagram.com/lafigueravlc/']);
+  await send('Page.navigate', { url: `${base}/#taules-dolces` });
+  await until('document.querySelector("#panel-taules-dolces")?.hidden === false');
+  assert.equal(await evaluate('document.querySelector(".nav-tab.active").dataset.section'), 'taules-dolces');
+  await evaluate(`document.querySelector('.nav-tab[href="#bufet-de-tortades"]').click()`);
+  await until('document.querySelector("#panel-bufet-de-tortades").hidden === false');
+  await evaluate('history.back()');
+  await until('document.querySelector("#panel-taules-dolces").hidden === false');
+  await evaluate('history.forward()');
+  await until('document.querySelector("#panel-bufet-de-tortades").hidden === false');
+  await send('Page.navigate', { url: `${base}/#unknown` });
+  await until('document.querySelector("#panel-la-carta")?.hidden === false');
+  assert.equal(await evaluate('location.hash'), '#la-carta');
+  const extended = await evaluate(`(async () => {
+    const {renderTable}=await import('./app.js');
+    const {tables}=await import('./content.js');
+    const data=structuredClone(tables.cookies);
+    data.columns.push({key:'extra',label:{text:'Nova columna',pending:false}});
+    const wrap=renderTable(data); document.querySelector('#panel-la-carta').append(wrap);
+    const result={headings:wrap.querySelectorAll('thead th').length,cells:wrap.querySelectorAll('tbody tr:first-child>*').length,pending:wrap.querySelector('tbody tr>*:last-child').textContent};
+    wrap.remove();return result;
+  })()`);
+  assert.deepEqual(extended, { headings: 4, cells: 4, pending: 'Informació pendent' });
+  assert.ok(await evaluate('document.fonts.check("20px Titan") && document.fonts.check("20px DM Sans")'));
+  assert.deepEqual(browserErrors, [], 'Browser runtime errors');
+  assert.deepEqual(failedRequests, [], 'Failed assets');
+  console.log('✓ Enllaços, URL directa, arrere/avant, ruta desconeguda i columna addicional');
+  console.log('✓ Sense errors JavaScript ni recursos absents; captures en artifacts/');
+} finally {
+  socket?.close();
+  chrome.kill('SIGTERM');
+  await sleep(700);
+  await rm(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+}
