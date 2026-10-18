@@ -62,7 +62,7 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 .scroll-hint{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);white-space:nowrap}
 .scroll-hint .arrow-image{width:24px;height:16px}
 .table-scroll{width:100%;max-width:100%;overflow:auto;border:1px solid var(--line);border-radius:5px;overscroll-behavior-x:contain;background:var(--white);scrollbar-width:thin;scrollbar-color:#a6ae98 #e9ebdf}
-table{border-collapse:separate;border-spacing:0;width:100%;min-width:calc(var(--column-count) * 225px);font-size:15px;line-height:1.75;text-align:left;table-layout:fixed}
+table{--table-column-width:225px;border-collapse:separate;border-spacing:0;width:100%;min-width:calc((var(--column-count) - .2) * var(--table-column-width));font-size:15px;line-height:1.75;text-align:left;table-layout:fixed}
 caption{text-align:left}
 th,td{padding:23px 25px;vertical-align:top;border-right:1px solid var(--line);border-bottom:1px solid var(--line);white-space:pre-line;overflow-wrap:anywhere}
 tr>*:last-child{border-right:0}
@@ -172,7 +172,7 @@ td .amount{font-size:21px;font-weight:650;letter-spacing:-.5px}
   .table-heading{flex-wrap:wrap;gap:7px;margin-bottom:13px}
   .table-heading h2{font-size:24px;letter-spacing:-.6px}
   .scroll-hint{font-size:10px;width:100%}
-  table{min-width:calc(var(--column-count) * 190px);font-size:14px}
+  table{--table-column-width:190px;font-size:14px}
   th,td{padding:17px 18px}
   thead th{font-size:12px}
   tbody th{font-size:15px}

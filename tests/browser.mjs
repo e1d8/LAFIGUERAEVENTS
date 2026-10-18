@@ -112,8 +112,16 @@ try {
         assert.ok(await evaluate(`(() => {const lead=document.querySelector('#panel-${route} .section-lead');const image=lead.querySelector('.section-illustration');const picture=image.getBoundingClientRect();const title=lead.querySelector('h1').getBoundingClientRect();return image.complete && image.naturalWidth>0 && !image.src.endsWith('flower.svg') && picture.width>=200 && (picture.left>=title.right || picture.top>=title.bottom)})()`));
       }
       assert.ok(await evaluate('Array.from(document.querySelectorAll(".nav-tab")).every(x => {const r=x.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth})'));
+      await until(`Array.from(document.querySelectorAll('.panel:not([hidden]) .table-block')).every(block => {
+        const scroll = block.querySelector('.table-scroll');
+        return block.querySelector('.scroll-hint').hidden === (scroll.scrollWidth <= scroll.clientWidth + 1);
+      })`);
+      assert.ok(await evaluate(`Array.from(document.querySelectorAll('.panel:not([hidden]) table')).every(table => {
+        const cells = table.querySelectorAll('thead th');
+        return cells[0].getBoundingClientRect().width < cells[1].getBoundingClientRect().width;
+      })`));
       if (route === 'tartes-nupcials') {
-        assert.equal(await evaluate('document.querySelector(".scroll-hint").textContent.trim()'), 'per veure més columnes');
+        assert.equal(await evaluate('document.querySelector(".scroll-hint").textContent.trim()'), 'per a vore més columnes');
         assert.ok(await evaluate('Array.from(document.querySelectorAll(".arrow-image")).every(img => img.complete && img.naturalWidth > 0)'));
         assert.equal(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item[open]").length'), 0);
         await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item summary")[0].click()');
@@ -159,6 +167,12 @@ try {
     }
     console.log(`✓ ${width}px: 5 seccions, sense desbordament, acordió i taules`);
   }
+  await evaluate(`document.querySelector('.nav-tab[data-section="tartes-nupcials"]').click()`);
+  for (const width of [768, 930, 768, 1440]) {
+    await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false });
+    await until(`document.querySelector('#panel-tartes-nupcials .scroll-hint').hidden === ${width >= 930}`);
+  }
+  console.log('✓ Avís de columnes segons el desbordament real, també en redimensionar sense recarregar');
   const hrefs = await evaluate('Array.from(document.querySelectorAll("#panel-contacte a")).map(a=>a.getAttribute("href"))');
   assert.deepEqual(hrefs, ['https://wa.me/34649656652', 'mailto:lafigueravlc@gmail.com', 'https://www.instagram.com/lafigueravlc/']);
   for (const route of routes) {

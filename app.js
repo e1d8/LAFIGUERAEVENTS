@@ -76,6 +76,13 @@ export function renderTable(data) {
   table.style.setProperty('--column-count', data.columns.length);
   const caption = el('caption', 'visually-hidden', data.title);
   table.append(caption);
+  const columns = el('colgroup');
+  data.columns.forEach((column, index) => {
+    const col = el('col');
+    if (index === 0) col.style.width = `${80 / (data.columns.length - 0.2)}%`;
+    columns.append(col);
+  });
+  table.append(columns);
   const head = el('thead');
   const headings = el('tr');
   data.columns.forEach(column => {
@@ -108,9 +115,16 @@ function tableBlock(id) {
   const block = el('section', 'table-block');
   const top = el('div', 'table-heading');
   const hint = el('span', 'scroll-hint');
-  hint.append(arrowImage('horizontal'), document.createTextNode(' per veure més columnes'));
+  hint.hidden = true;
+  hint.append(arrowImage('horizontal'), document.createTextNode(' per a vore més columnes'));
   top.append(el('h2', '', data.title), hint);
-  block.append(top, renderTable(data));
+  const scroll = renderTable(data);
+  block.append(top, scroll);
+  const resizeObserver = new ResizeObserver(() => {
+    hint.hidden = scroll.scrollWidth <= scroll.clientWidth + 1;
+  });
+  resizeObserver.observe(scroll);
+  resizeObserver.observe(scroll.querySelector('table'));
   if (data.fragments?.length) {
     const fragments = el('details', 'source-fragments');
     fragments.append(el('summary', '', 'Fragments de taula pendents d’ubicar'));
