@@ -106,22 +106,63 @@ try {
       assert.equal(await evaluate('location.pathname'), pathFor(route));
       assert.equal(await evaluate('location.hash'), '');
       assert.equal(await evaluate('document.querySelectorAll(".panel:not([hidden])").length'), 1);
+      assert.equal(await evaluate('document.querySelectorAll(".panel details[open]").length'), 0, 'Changing section collapses FAQ');
       assert.ok(await evaluate('document.documentElement.scrollWidth <= innerWidth'), `Page overflow: ${width}/${route}`);
       assert.equal(await evaluate('scrollY'), 0, 'Changing sections returns to the top');
       if (route !== 'la-carta') {
         assert.ok(await evaluate(`(() => {const lead=document.querySelector('#panel-${route} .section-lead');const image=lead.querySelector('.section-illustration');const picture=image.getBoundingClientRect();const title=lead.querySelector('h1').getBoundingClientRect();return image.complete && image.naturalWidth>0 && !image.src.endsWith('flower.svg') && picture.width>=200 && (picture.left>=title.right || picture.top>=title.bottom)})()`));
       }
       assert.ok(await evaluate('Array.from(document.querySelectorAll(".nav-tab")).every(x => {const r=x.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth})'));
-      await until(`Array.from(document.querySelectorAll('.panel:not([hidden]) .table-block')).every(block => {
-        const scroll = block.querySelector('.table-scroll');
-        return block.querySelector('.scroll-hint').hidden === (scroll.scrollWidth <= scroll.clientWidth + 1);
-      })`);
-      assert.ok(await evaluate(`Array.from(document.querySelectorAll('.panel:not([hidden]) table')).every(table => {
-        const cells = table.querySelectorAll('thead th');
-        return cells[0].getBoundingClientRect().width < cells[1].getBoundingClientRect().width;
-      })`));
+      assert.equal(await evaluate('document.querySelectorAll("table, .table-scroll, .scroll-hint").length'), 0);
+      if (['tartes-nupcials', 'bufet-de-tortades', 'taules-dolces'].includes(route)) {
+        const panel = `#panel-${route}`;
+        assert.equal(await evaluate(`document.querySelectorAll('${panel} details.product-item, ${panel} .product-summary, ${panel} .product-toggle').length`), 0);
+        assert.ok(await evaluate(`(async () => {
+          const {tables, sections, pickup} = await import('./content.js');
+          const section = sections.find(section => section.id === '${route}');
+          return section.tableIds.every(id => {
+            const data = tables[id];
+            const block = document.querySelector('${panel} [data-catalogue-id="' + id + '"]');
+            if (block.querySelector('.catalogue-heading').textContent !== data.title
+              || block.querySelector('.pickup-note').textContent !== pickup) return false;
+            if (data.fragments?.some(fragment => !block.querySelector('.source-fragments').textContent.includes(fragment.text)
+              || !block.querySelector('.source-fragments').textContent.includes(fragment.note))) return false;
+            return data.rows.every(row => {
+              const item = block.querySelector('[data-row-id="' + row.id + '"]');
+              if (!item.checkVisibility() || !item.querySelector('.product-details').checkVisibility()) return false;
+              if (row.note && item.querySelector('.product-note')?.textContent !== row.note) return false;
+              if (!data.columns.some(column => column.role === 'name')
+                && item.querySelector('.product-name').textContent !== data.title) return false;
+              return data.columns.every(column => {
+                const field = item.querySelector('[data-column-key="' + column.key + '"]');
+                const value = row.cells[column.key];
+                const label = column.role === 'name' ? item.querySelector('.visually-hidden') : field;
+                return field.textContent.includes(value.text)
+                  && (column.role === 'detail' || label.textContent.includes(column.label.text))
+                  && (!value.pending || field.textContent.includes('Informació pendent'))
+                  && (column.role === 'detail' || !column.label.pending || field.querySelector('.product-option-label .pending-badge'))
+                  && field.checkVisibility();
+              });
+            });
+          });
+        })()`), `Content or visibility mismatch: ${width}/${route}`);
+        assert.ok(await evaluate(`Array.from(document.querySelectorAll('${panel} .product-item')).every(item => {
+          const name = item.querySelector('.product-name').getBoundingClientRect();
+          const description = item.querySelector('.product-details').getBoundingClientRect();
+          const options = item.querySelector('.product-options').getBoundingClientRect();
+          return item.scrollWidth <= item.clientWidth + 1
+            && description.top >= name.bottom && options.top >= description.bottom
+            && getComputedStyle(item).backgroundColor === 'rgb(253, 253, 247)';
+        })`));
+        assert.ok(await evaluate('document.documentElement.scrollWidth <= innerWidth'));
+        if (width === 390 || width === 1440) {
+          await evaluate(`document.querySelector('${panel} .catalogue-block').scrollIntoView({block:'start'})`);
+          const { data } = await send('Page.captureScreenshot', { format: 'png' });
+          await writeFile(`artifacts/${route}-catalogue-${width}.png`, Buffer.from(data, 'base64'));
+        }
+        await evaluate('window.scrollTo(0,0)');
+      }
       if (route === 'tartes-nupcials') {
-        assert.equal(await evaluate('document.querySelector(".scroll-hint").textContent.trim()'), 'per a vore més columnes');
         assert.ok(await evaluate('Array.from(document.querySelectorAll(".arrow-image")).every(img => img.complete && img.naturalWidth > 0)'));
         assert.equal(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item[open]").length'), 0);
         await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item summary")[0].click()');
@@ -131,10 +172,6 @@ try {
         assert.equal(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item[open]").length'), 1);
         assert.equal(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item")[0].open'), false);
         assert.ok(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item")[1].innerText.includes("Informació pendent")'));
-        if (width === 360 || width === 390) {
-          assert.ok(await evaluate('document.querySelector("#panel-tartes-nupcials .table-scroll").scrollWidth > document.querySelector("#panel-tartes-nupcials .table-scroll").clientWidth'));
-          assert.ok(await evaluate(`(() => {const t=document.querySelector('#panel-tartes-nupcials .table-scroll');const c=t.querySelector('tbody th');const x=c.getBoundingClientRect().left;t.scrollLeft=160;return Math.abs(c.getBoundingClientRect().left-x)<2})()`));
-        }
       }
       if (route === 'contacte') {
         assert.equal(await evaluate('document.querySelectorAll("#panel-contacte .contact-row").length'), 3);
@@ -156,6 +193,12 @@ try {
         const { data } = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
         await writeFile(`artifacts/${route}-${width}.png`, Buffer.from(data, 'base64'));
       }
+      if (['tartes-nupcials', 'bufet-de-tortades', 'taules-dolces'].includes(route)) {
+        await evaluate(`document.querySelector('#panel-${route} .faq-item summary').click()`);
+        await until(`document.querySelectorAll('#panel-${route} details[open]').length === 1`);
+        await evaluate(`document.querySelector('.nav-tab[data-section="${route}"]').click()`);
+        assert.equal(await evaluate(`document.querySelectorAll('#panel-${route} details[open]').length`), 1, 'Selecting the current section keeps its FAQ open');
+      }
     }
     await evaluate('document.querySelector(".brand-logo").click()');
     await until('document.querySelector("#panel-la-carta").hidden === false');
@@ -165,14 +208,14 @@ try {
       await evaluate('document.querySelector(".brand-name").click()');
       await until('document.querySelector("#panel-la-carta").hidden === false');
     }
-    console.log(`✓ ${width}px: 5 seccions, sense desbordament, acordió i taules`);
+    console.log(`✓ ${width}px: fitxes blanques amb nom, descripció i preus visibles, sense desbordament`);
   }
   await evaluate(`document.querySelector('.nav-tab[data-section="tartes-nupcials"]').click()`);
   for (const width of [768, 930, 768, 1440]) {
     await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false });
-    await until(`document.querySelector('#panel-tartes-nupcials .scroll-hint').hidden === ${width >= 930}`);
+    assert.ok(await evaluate('document.documentElement.scrollWidth <= innerWidth'));
   }
-  console.log('✓ Avís de columnes segons el desbordament real, també en redimensionar sense recarregar');
+  console.log('✓ Catàleg adaptable també en redimensionar sense recarregar');
   const hrefs = await evaluate('Array.from(document.querySelectorAll("#panel-contacte a")).map(a=>a.getAttribute("href"))');
   assert.deepEqual(hrefs, ['https://wa.me/34649656652', 'mailto:lafigueravlc@gmail.com', 'https://www.instagram.com/lafigueravlc/']);
   for (const route of routes) {
@@ -201,27 +244,42 @@ try {
   await navigate(`${base}/taules`);
   await until('document.querySelector("#panel-taules-dolces")?.hidden === false');
   assert.equal(await evaluate('document.querySelector(".nav-tab.active").dataset.section'), 'taules-dolces');
+  await evaluate('document.querySelector("#panel-taules-dolces .faq-item summary").click()');
+  await until('document.querySelectorAll(".panel details[open]").length === 1');
   await evaluate(`document.querySelector('.nav-tab[data-section="bufet-de-tortades"]').click()`);
   await until('document.querySelector("#panel-bufet-de-tortades").hidden === false');
+  assert.equal(await evaluate('document.querySelectorAll(".panel details[open]").length'), 0);
+  await evaluate('document.querySelector("#panel-bufet-de-tortades .faq-item summary").click()');
+  await until('document.querySelectorAll(".panel details[open]").length === 1');
   await evaluate('history.back()');
   await until('document.querySelector("#panel-taules-dolces").hidden === false');
+  assert.equal(await evaluate('document.querySelectorAll(".panel details[open]").length'), 0);
+  await evaluate('document.querySelector("#panel-taules-dolces .faq-item summary").click()');
+  await until('document.querySelectorAll(".panel details[open]").length === 1');
   await evaluate('history.forward()');
   await until('document.querySelector("#panel-bufet-de-tortades").hidden === false');
+  assert.equal(await evaluate('document.querySelectorAll(".panel details[open]").length'), 0);
   assert.equal(await evaluate('location.pathname'), pathFor('bufet-de-tortades'));
   await navigate(`${base}/#unknown`);
   await until('document.querySelector("#panel-la-carta")?.hidden === false');
   assert.equal(await evaluate('location.hash'), '');
   assert.equal(await evaluate('location.pathname'), pathFor('la-carta'));
-  const extended = await evaluate(`(async () => {
-    const {renderTable}=await import('./app.js');
+  for (const width of [320, 768, 1440]) {
+    await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false });
+    const extended = await evaluate(`(async () => {
+    const {renderCatalogue}=await import('./app.js');
     const {tables}=await import('./content.js');
     const data=structuredClone(tables.cookies);
     data.columns.push({key:'extra',label:{text:'Nova columna',pending:false}});
-    const wrap=renderTable(data); document.querySelector('#panel-la-carta').append(wrap);
-    const result={headings:wrap.querySelectorAll('thead th').length,cells:wrap.querySelectorAll('tbody tr:first-child>*').length,pending:wrap.querySelector('tbody tr>*:last-child').textContent};
+    data.columns.push({key:'known',label:{text:'Altra opció',pending:false}});
+    data.rows[0].cells.known={text:'99€ (sense IVA)',pending:false};
+    const wrap=renderCatalogue(data); document.querySelector('#panel-la-carta').append(wrap);
+    const extra=wrap.querySelector('[data-column-key="extra"]');
+    const result={options:wrap.querySelectorAll('.product-option').length,pending:extra.querySelector('.product-option-value').textContent,label:extra.querySelector('.product-option-label').textContent,visible:extra.checkVisibility(),known:wrap.querySelector('[data-column-key="known"] .product-option-value').textContent,overflow:document.documentElement.scrollWidth>innerWidth};
     wrap.remove();return result;
   })()`);
-  assert.deepEqual(extended, { headings: 4, cells: 4, pending: 'Informació pendent' });
+    assert.deepEqual(extended, { options: 4, pending: 'Informació pendent', label: 'Nova columna', visible: true, known: '99€ (sense IVA)', overflow: false });
+  }
   assert.ok(await evaluate('document.fonts.check("20px Titan") && document.fonts.check("20px DM Sans")'));
   assert.deepEqual(browserErrors, [], 'Browser runtime errors');
   assert.deepEqual(failedRequests, [], 'Failed assets');

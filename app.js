@@ -67,64 +67,55 @@ function renderCell(parent, value) {
   if (!value || value.pending) parent.append(pendingBadge());
 }
 
-// Adding a key to columns is sufficient: missing cells receive an explicit pending badge.
-export function renderTable(data) {
-  const wrap = el('div', 'table-scroll');
-  wrap.tabIndex = 0;
-  wrap.setAttribute('aria-label', `${data.title}. Taula amb desplaçament horitzontal`);
-  const table = el('table');
-  table.style.setProperty('--column-count', data.columns.length);
-  const caption = el('caption', 'visually-hidden', data.title);
-  table.append(caption);
-  const columns = el('colgroup');
-  data.columns.forEach((column, index) => {
-    const col = el('col');
-    if (index === 0) col.style.width = `${80 / (data.columns.length - 0.2)}%`;
-    columns.append(col);
-  });
-  table.append(columns);
-  const head = el('thead');
-  const headings = el('tr');
-  data.columns.forEach(column => {
-    const th = el('th');
-    th.scope = 'col';
-    renderCell(th, column.label);
-    headings.append(th);
-  });
-  head.append(headings);
-  table.append(head);
-  const body = el('tbody');
+// New columns default to visible options; missing values remain explicitly pending.
+export function renderCatalogue(data) {
+  const list = el('div', 'product-list');
+  const nameColumns = data.columns.filter(column => column.role === 'name');
+  const detailColumns = data.columns.filter(column => column.role === 'detail');
+  const optionColumns = data.columns.filter(column => !['name', 'detail'].includes(column.role));
   data.rows.forEach(row => {
-    const tr = el('tr');
-    tr.dataset.rowId = row.id;
-    data.columns.forEach((column, index) => {
-      const td = el(index === 0 ? 'th' : 'td');
-      if (index === 0) td.scope = 'row';
-      renderCell(td, row.cells[column.key]);
-      tr.append(td);
+    const item = el('article', 'product-item');
+    item.dataset.rowId = row.id;
+    const name = el('h3', 'product-name');
+    nameColumns.forEach(column => {
+      const label = el('span', 'visually-hidden');
+      renderCell(label, column.label);
+      const value = el('span', 'product-name-value');
+      value.dataset.columnKey = column.key;
+      renderCell(value, row.cells[column.key]);
+      name.append(label, value);
     });
-    body.append(tr);
+    if (!nameColumns.length) name.textContent = data.title;
+    const options = el('div', 'product-options');
+    optionColumns.forEach(column => {
+      const option = el('span', 'product-option');
+      option.dataset.columnKey = column.key;
+      const label = el('span', 'product-option-label');
+      const value = el('span', 'product-option-value');
+      renderCell(label, column.label);
+      renderCell(value, row.cells[column.key]);
+      option.append(label, value);
+      options.append(option);
+    });
+    const description = el('div', 'product-details');
+    detailColumns.forEach(column => {
+      const field = el('div', 'product-detail');
+      field.dataset.columnKey = column.key;
+      renderCell(field, row.cells[column.key]);
+      description.append(field);
+    });
+    if (row.note) description.append(el('small', 'product-note', row.note));
+    item.append(name, description, options);
+    list.append(item);
   });
-  table.append(body);
-  wrap.append(table);
-  return wrap;
+  return list;
 }
 
-function tableBlock(id) {
+function catalogueBlock(id) {
   const data = tables[id];
-  const block = el('section', 'table-block');
-  const top = el('div', 'table-heading');
-  const hint = el('span', 'scroll-hint');
-  hint.hidden = true;
-  hint.append(arrowImage('horizontal'), document.createTextNode(' per a vore més columnes'));
-  top.append(el('h2', '', data.title), hint);
-  const scroll = renderTable(data);
-  block.append(top, scroll);
-  const resizeObserver = new ResizeObserver(() => {
-    hint.hidden = scroll.scrollWidth <= scroll.clientWidth + 1;
-  });
-  resizeObserver.observe(scroll);
-  resizeObserver.observe(scroll.querySelector('table'));
+  const block = el('section', 'catalogue-block');
+  block.dataset.catalogueId = id;
+  block.append(el('h2', 'catalogue-heading', data.title), renderCatalogue(data));
   if (data.fragments?.length) {
     const fragments = el('details', 'source-fragments');
     fragments.append(el('summary', '', 'Fragments de taula pendents d’ubicar'));
@@ -251,7 +242,7 @@ function catalogue(section) {
     link.href = routePath('bufet-de-tortades'); link.dataset.section = 'bufet-de-tortades';
     container.append(link);
   }
-  section.tableIds.forEach(id => container.append(tableBlock(id)));
+  section.tableIds.forEach(id => container.append(catalogueBlock(id)));
   container.append(questionsBlock(section));
   const closing = el('a', 'closing-link'); closing.href = routePath('contacte'); closing.dataset.section = 'contacte';
   const closingLabel = el('span', 'closing-label', 'Contacteu-nos');
@@ -276,6 +267,8 @@ let selected;
 function selectSection({ scroll = true } = {}) {
   const requested = sectionFromLocation(location, appRoot.pathname);
   const section = sections.find(item => item.id === requested) || sections[0];
+  const changed = selected !== section.id;
+  if (changed) main.querySelectorAll('details[open]').forEach(details => { details.open = false; });
   const canonicalURL = routePath(section.id) + location.search;
   if (location.pathname + location.search + location.hash !== canonicalURL) history.replaceState(null, '', canonicalURL);
   document.querySelectorAll('.panel').forEach(panel => { panel.hidden = panel.id !== `panel-${section.id}`; });
@@ -285,7 +278,6 @@ function selectSection({ scroll = true } = {}) {
     if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
   });
   document.title = `${section.label} · La Figuera Events`;
-  const changed = selected !== section.id;
   selected = section.id;
   if (scroll && changed) window.scrollTo({ top: 0, behavior: 'instant' });
 }

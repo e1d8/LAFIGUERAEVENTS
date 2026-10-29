@@ -18,13 +18,17 @@ El contingut està en `content.js`; `app.js` el presenta i `styles.css` en defin
 
 Cada cel·la és `cell('Text literal', false)`. Si falta tot el contingut, utilitza `cell('', true)`; si només es conserva un fragment, `cell('fragment visible', true)`. Quan completes una dada confirmada, elimina el seu indicador de pendent. No tractes el fragment com una descripció completa.
 
-Per afegir una columna, afig un objecte a `columns`:
+El catàleg conserva l’estructura de `tables`, amb `columns` i `rows`, però es presenta com a fitxes blanques sense desplegables. Cada fitxa mostra primer el nom, davall la descripció completa i al final les opcions amb els preus. Les notes de producte, com «⚠️ SAP A FORMATGE», apareixen en xicotet al final de la descripció. Les preguntes freqüents continuen sent desplegables i es tanquen en canviar de secció.
+
+Cada columna pot indicar `role: 'name'` (nom), `role: 'detail'` (descripció) o `role: 'option'` (opció amb el seu preu). Tot el contingut és visible. Si no té `role`, es mostra com a opció. Quan el grup no té columna de nom, com en Micotetes, s’utilitza el títol del grup; els noms de producte pendents es mantenen com a pendents.
+
+Per afegir una opció, afig un objecte a `columns`:
 
 ```js
 { key: 'novaOpcio', label: cell('Text de la capçalera') }
 ```
 
-Després afig `novaOpcio: cell('Text o preu')` a `cells` de cada fila. Les files que encara no tinguen la nova cel·la mostraran «Informació pendent». Es poden afegir tantes columnes com calga; el component i el desplaçament s’adapten automàticament. Per ampliar totes les taules nupcials, modifica `weddingColumns`; per a una sola taula, modifica les seues `columns`.
+Després afig `novaOpcio: cell('Text o preu')` a `cells` de cada fila. Les files que encara no tinguen la nova cel·la mostraran «Informació pendent». Es poden afegir tantes opcions com calga: es distribueixen en noves línies sense desplaçament horitzontal ni canvis en el component `renderCatalogue`. Per ampliar tots els grups nupcials, modifica `weddingColumns`; per a un sol grup, modifica les seues `columns`. Les etiquetes incompletes conserven també el seu indicador de pendent.
 
 Les preguntes estan en `sections[].questions`. Per a respostes retallades, conserva `pending: true`. Els fragments sense fila identificable estan en `tables[].fragments`, separats dels productes per evitar associacions no demostrades.
 
@@ -45,7 +49,7 @@ npm test
 npm run test:browser
 ```
 
-Les proves del navegador utilitzen Chrome local i Node, sense instal·lar paquets. `CHROME_BIN` permet especificar un altre executable i `PREVIEW_URL` un altre servidor. Comproven les cinc seccions a 320, 360, 390, 768, 1024 i 1440 px, acordions, absència de desbordament, columna fixa, contacte, navegació del navegador, recursos i ampliació de columnes. Les captures es guarden en `artifacts/`, exclòs de Git.
+Les proves del navegador utilitzen Chrome local i Node, sense instal·lar paquets. `CHROME_BIN` permet especificar un altre executable i `PREVIEW_URL` un altre servidor. Comproven les cinc seccions a 320, 360, 390, 768, 1024 i 1440 px, la conservació del contingut, l’ordre nom/descripció/preus sempre visibles, el fons blanc, les FAQ i el seu tancament en canviar de secció, absència de desbordament, contacte, navegació del navegador, recursos i ampliació d’opcions. Les captures es guarden en `artifacts/`, exclòs de Git.
 
 ## Publicació en GitHub Pages
 

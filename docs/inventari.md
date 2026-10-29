@@ -8,6 +8,8 @@ S’han conservat formes originals com «figtàstiques», «montar», «destint�
 
 ## Correspondència de captures
 
+Aquest apartat descriu les captures originals. Les correccions aportades després per l’usuari prevalen en la web; la transcripció original es conserva com a arxiu.
+
 | Captura | Informació recuperada | Limitacions |
 | --- | --- | --- |
 | C01 | LA FIGUERA EVENTS, LA CARTA, felicitació i presentació | El final de contacte continua en C02. El logotip original no s’ha recuperat; la marca utilitza una figa oberta en SVG per indicació de l’usuari. |
@@ -26,9 +28,8 @@ S’han conservat formes originals com «figtàstiques», «montar», «destint�
 
 ## Dades que falten
 
-- **Clàssiques:** preu de tres pisos de Carrot cake; nom/descripció complets de «Pastís de», continuació de la seua cel·la de 165€ i preu de tres pisos; nom complet de «e lotus» i continuació de la cel·la de 390€. La capçalera de tres pisos es veu en la taula nupcial de C03; les cel·les de cada producte es mantenen pendents quan no es veuen.
-- **Fragment de coulis:** s’ha conservat a banda amb la seua referència C03. No es pressuposa que complete «Pastís de».
-- **Premium:** noms de les dues tartes; final de la primera descripció. «crunch avellana.» queda separat, sense assegurar que complete aquella fila.
+- **Clàssiques:** sense dades pendents en la llista corregida per l’usuari: Carrot cake i Pastís de lotus, cadascuna amb preus de 165€/390€. La fila parcial «Pastís de» i el fragment de coulis queden només en l’arxiu original, fora del catàleg vigent.
+- **Premium:** noms de les dues tartes. L’usuari ha confirmat les descripcions completes i els preus de 185€/435€; el crunch d’avellana forma part de la primera descripció.
 - **Marquesa:** preu de tres pisos de Carabassa i pistatxo.
 - **Bufet:** final de «Tamany (12/» i títol de la quarta columna; preus de la columna dreta de LA FAVORITA i PARMIGIANA; noms de les dues files de C09; fragments inicials de la descripció i de l’opció de decoració del café. «Amb flors de la boda» només es dona per confirmat en la cel·la on es llig.
 - **Respostes nupcials:** final de «Com es decoren?» i de «Els 3 pisos de la tortada han de ser iguals?».
@@ -38,6 +39,8 @@ S’han conservat formes originals com «figtàstiques», «montar», «destint�
 Els camps afectats mostren «Informació pendent» a la web. `content.js` guarda l’estat i les referències per fila, fragment i pregunta; `transcripcio.md` en presenta una còpia llegible.
 
 ## Interfície nova
+
+Les tartes nupcials utilitzen la llista corregida per l’usuari, amb les descripcions literals aportades. Les opcions s’etiqueten «2 pisos (35/37 porcions)» i «3 pisos (85/87 porcions)». Els preus nupcials coneguts porten un asterisc i l’avís compartit és «Preu sense IVA. No incloem transport. Els productes s’han d’arreplegar a l’obrador.».
 
 «Preguntes freqüents», les indicacions de desplaçament, els títols de contacte i els avisos de dades pendents són etiquetes de la nova interfície. No són informació comercial recuperada. Les condicions no s’han resumit ni substituït per aquestes etiquetes.
 

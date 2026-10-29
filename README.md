@@ -33,7 +33,7 @@ npm run check
 npm test
 ```
 
-Les instruccions per editar textos, taules i il·lustracions estan en [la documentació de desenvolupament](docs/desenvolupament.md).
+El catàleg mostra fitxes blanques amb el nom, la descripció i els preus sempre visibles, sense desplaçament horitzontal. Les instruccions per editar textos, opcions i il·lustracions estan en [la documentació de desenvolupament](docs/desenvolupament.md).
 
 ## Estructura
 

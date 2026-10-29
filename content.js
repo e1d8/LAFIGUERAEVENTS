@@ -1,7 +1,7 @@
 // Transcripció de les captures aportades. C01–C13 exclouen la imatge d'estil.
 // Un camp `pending` indica text absent, retallat o una associació no confirmada.
 export const cell = (text = '', pending = false) => ({ text, pending });
-export const pickup = '*No incloem transport. Els productes s’han d’arreplegar a l’obrador.';
+export const pickup = '*Preu sense IVA. No incloem transport. Els productes s’han d’arreplegar a l’obrador.';
 
 export const contact = {
   phone: '649656652', email: 'lafigueravlc@gmail.com', handle: '@lafigueravlc',
@@ -15,10 +15,10 @@ export const introduction = {
 };
 
 const weddingColumns = [
-  { key: 'name', label: cell('Tarta:') },
-  { key: 'description', label: cell('Què du?') },
-  { key: 'two', label: cell('Tarta nupcial 2 pisos (35/37 porcions)') },
-  { key: 'three', label: cell('Tarta nupcial 3 pisos (85/87 porcions)') },
+  { key: 'name', role: 'name', label: cell('Tarta:') },
+  { key: 'description', role: 'detail', label: cell('Què du?') },
+  { key: 'two', role: 'option', label: cell('2 pisos (35/37 porcions)') },
+  { key: 'three', role: 'option', label: cell('3 pisos (85/87 porcions)') },
 ];
 
 export const tables = {
@@ -26,64 +26,55 @@ export const tables = {
     title: 'Les clàssiques:', source: ['C02', 'C03'], columns: weddingColumns.map(c => ({ ...c })),
     rows: [
       { id: 'carrot', source: ['C02'], cells: {
-        name: cell('Carrot cake'), description: cell('Biscuit de carlota i espècies amb crema de formatge i fruits secs.'),
-        two: cell('165€ (sense IVA)'), three: cell('', true),
+        name: cell('Carrot cake'), description: cell('Biscuit de carlota espècies amb crema de tormatge fruits secs.'),
+        two: cell('165€*'), three: cell('390€*'),
       } },
-      { id: 'pastis-fragment', source: ['C02'], cells: {
-        name: cell('Pastís de', true), description: cell('biscuit de', true),
-        two: cell('165€', true), three: cell('', true),
-      } },
-      { id: 'lotus-fragment', source: ['C03'], cells: {
-        name: cell('e lotus', true), description: cell('biscuit de xocolata banyat amb café i buttercream de la famosa galeta lotus.'),
-        two: cell('165€ (sense IVA)'), three: cell('390€', true),
+      { id: 'lotus', source: ['C03'], cells: {
+        name: cell('Pastís de lotus'), description: cell('Biscuit de xocolata banyat amb café buttercream de la famosa galeta lotus.'),
+        two: cell('165€*'), three: cell('390€*'),
       } },
     ],
-    fragments: [{
-      text: 'amb crema de formatge i xoco blanc i coulis de fruita (trieu la vostra preferida!)',
-      source: ['C03'], note: 'L’inici de la fila i el nom de la tarta no es veuen. No es pot confirmar a quina fila correspon.',
-    }],
   },
   premium: {
     title: 'Les premium:', source: ['C03', 'C04'], columns: weddingColumns.map(c => ({ ...c })),
     rows: [
       { id: 'premium-1', source: ['C03'], cells: {
         name: cell('', true),
-        description: cell('Tarta de biscuit de xoco banyat amb café, buttercream de dulce de leche, fruits secs', true),
-        two: cell('185€ (sense IVA)'), three: cell('435€ (sense IVA)'),
+        description: cell("Tarta de biscuit de xoco banyat amb café, buttercream de dulce de leche, fruits secs i crunch d'avellana."),
+        two: cell('185€*'), three: cell('435€*'),
       } },
       { id: 'premium-2', source: ['C04'], cells: {
         name: cell('', true),
         description: cell('Biscuit llima humit, crema de formatge i xoco blanc, anous de macadàmia caramelitzades.'),
-        two: cell('185€ (sense IVA)'), three: cell('435€ (sense IVA)'),
+        two: cell('185€*'), three: cell('435€*'),
       } },
     ],
-    fragments: [{ text: 'crunch avellana.', source: ['C04'], note: 'Fragment al final d’una fila anterior. L’enllaç amb la descripció de C03 queda pendent de confirmar.' }],
   },
   marquesa: {
     title: 'Tartes marquesa:', source: ['C04'], columns: weddingColumns.map(c => ({ ...c })),
     rows: [{ id: 'carabassa', source: ['C04'], cells: {
       name: cell('Carabassa i pistatxo'),
-      description: cell('biscuit de carabassa, buttercream de pistatxo, crunch de pistatxo caramelitzat.'),
-      two: cell('200€ (sense IVA)'), three: cell('', true),
+      description: cell('Biscuit de carabassa, buttercream de pistatxo, crunch de pistatxo caramelitzat.'),
+      two: cell('200€*'), three: cell('', true),
     } }],
   },
   buffet: {
     title: 'Bufet de tortades', source: ['C08', 'C09'],
     columns: [
-      { key: 'name', label: cell('Tarta:') },
-      { key: 'description', label: cell('Què du?') },
-      { key: 'normal', label: cell('Tamany (12/', true) },
-      { key: 'flowers', label: cell('', true) },
+      { key: 'name', role: 'name', label: cell('Tarta:') },
+      { key: 'description', role: 'detail', label: cell('Què du?') },
+      { key: 'normal', role: 'option', label: cell('Tamany (12/', true) },
+      { key: 'flowers', role: 'option', label: cell('', true) },
     ],
     rows: [
-      { id: 'favorita', source: ['C08'], cells: {
+      { id: 'favorita', source: ['C08'], note: '⚠️ SAP A FORMATGE', cells: {
         name: cell('LA FAVORITA'),
-        description: cell('SAP A FORMATGE:\n\nAmb un toc de formatge blau d’Auvergne DOP, base de galeta lotus, figues i mel, pistatxos (adaptable a la fruita de temporada).'),
+        description: cell('Amb un toc de formatge blau d’Auvergne DOP, base de galeta lotus, figues i mel, pistatxos (adaptable a la fruita de temporada).'),
         normal: cell('Amb decoració normal:\n\n45€'), flowers: cell('', true),
       } },
-      { id: 'parmigiana', source: ['C08'], cells: {
+      { id: 'parmigiana', source: ['C08'], note: '⚠️ SAP A FORMATGE', cells: {
         name: cell('PARMIGIANA'),
-        description: cell('SAP A FORMATGE:\n\nDe parmesà, base de galeta maria i fruits secs caramelitzats, raïm fresc (adaptable a la fruita de temporada).'),
+        description: cell('De parmesà, base de galeta maria i fruits secs caramelitzats, raïm fresc (adaptable a la fruita de temporada).'),
         normal: cell('Amb decoració normal:\n\n45€'), flowers: cell('', true),
       } },
       { id: 'cafe-fragment', source: ['C09'], cells: {
@@ -101,9 +92,9 @@ export const tables = {
   cookies: {
     title: 'Micotetes', source: ['C11'],
     columns: [
-      { key: 'description', label: cell('De què son?') },
-      { key: 'twentyfive', label: cell('25 micotetes (1,8€ ud)') },
-      { key: 'fifty', label: cell('50 micotetes (1,6€ ud)') },
+      { key: 'description', role: 'detail', label: cell('De què son?') },
+      { key: 'twentyfive', role: 'option', label: cell('25 micotetes (1,8€ ud)') },
+      { key: 'fifty', role: 'option', label: cell('50 micotetes (1,6€ ud)') },
     ],
     rows: [{ id: 'micotetes', source: ['C11'], cells: {
       description: cell('Sabors variats (xoco negre i sal, cacahuet fregit amb mel, 3 xocolates…)'),
