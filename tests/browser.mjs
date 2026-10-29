@@ -192,6 +192,12 @@ try {
         await evaluate('window.scrollTo(0,0)');
         const { data } = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
         await writeFile(`artifacts/${route}-${width}.png`, Buffer.from(data, 'base64'));
+        if (route === 'la-carta') {
+          await evaluate('document.querySelector(".choice-grid").scrollIntoView({block:"start"})');
+          const choices = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+          await writeFile(`artifacts/home-choices-${width}.png`, Buffer.from(choices.data, 'base64'));
+          await evaluate('window.scrollTo(0,0)');
+        }
       }
       if (['tartes-nupcials', 'bufet-de-tortades', 'taules-dolces'].includes(route)) {
         await evaluate(`document.querySelector('#panel-${route} .faq-item summary').click()`);

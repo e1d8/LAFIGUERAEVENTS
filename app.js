@@ -194,13 +194,15 @@ function home(section) {
   sections.slice(1, 4).forEach((item, index) => {
     const card = el('a', `choice-card choice-${index}`);
     card.href = routePath(item.id); card.dataset.section = item.id;
+    const picture = el('div', 'choice-picture');
     const illustration = el('img', 'choice-illustration');
     illustration.src = `./assets/${sectionImages[item.id]}`;
     illustration.alt = ''; illustration.width = 240; illustration.height = 180;
     const label = el('div', 'choice-label');
     const arrow = arrowImage('diagonal', 'choice-arrow');
     label.append(el('h2', '', item.label), arrow);
-    card.append(illustration, label);
+    picture.append(illustration);
+    card.append(picture, label);
     choices.append(card);
   });
   container.append(hero, opening, choices);

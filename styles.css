@@ -40,16 +40,21 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 .hero-picture img{width:100%}
 .handwritten{display:block;width:max-content;margin:12px 28px 0 auto;font-family:Caveat,cursive;font-size:29px;line-height:1.1;text-align:center;transform:rotate(-6deg);white-space:nowrap}
 .home-opening{max-width:960px;font-size:23px;line-height:1.65;margin-top:13px;letter-spacing:-.4px}
-.choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:39px}
-.choice-card{display:flex;flex-direction:column;align-items:flex-start;min-height:264px;padding:24px;border:1px solid var(--line);border-radius:4px;text-decoration:none;background:var(--lime);transition:transform .15s}
-.choice-1{background:var(--purple-light)}
-.choice-2{background:#eeeadb}
-.choice-card:hover{transform:translateY(-4px)}
-.choice-illustration{width:100%;height:150px;object-fit:contain}
-.choice-label{display:flex;align-items:center;gap:12px;margin-top:20px;max-width:100%;min-width:0}
-.choice-card h2{font-size:clamp(20px,1.85vw,26px);line-height:1.2;letter-spacing:-.7px;font-weight:700;white-space:nowrap}
+.choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:40px}
+.choice-card{--choice-color:var(--lime);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;min-width:0;min-height:280px;padding:28px 24px;border:1px solid var(--line);border-radius:20px;text-decoration:none;background:var(--white);transition:transform .18s,border-color .18s,box-shadow .18s}
+.choice-1{--choice-color:var(--purple-light)}
+.choice-2{--choice-color:#eeeadb}
+.choice-card:hover{transform:translateY(-3px);border-color:#a9b19d;box-shadow:0 8px 20px #45513f0d}
+.choice-card:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.choice-picture{position:relative;isolation:isolate;display:grid;place-items:center;width:200px;max-width:100%;height:155px;flex-shrink:0}
+.choice-picture:before{content:'';position:absolute;z-index:-1;inset:8px 10px;background:var(--choice-color);border-radius:47% 53% 59% 41% / 55% 40% 60% 45%;transform:rotate(-7deg)}
+.choice-1 .choice-picture:before{border-radius:57% 43% 44% 56% / 44% 54% 46% 56%;transform:rotate(8deg)}
+.choice-2 .choice-picture:before{border-radius:43% 57% 55% 45% / 56% 43% 57% 44%;transform:rotate(-4deg)}
+.choice-illustration{position:relative;width:180px;max-width:100%;height:140px;object-fit:contain}
+.choice-label{display:flex;align-items:center;justify-content:center;gap:10px;max-width:100%;min-width:0}
+.choice-card h2{font-size:clamp(20px,1.65vw,24px);line-height:1.25;letter-spacing:-.6px;font-weight:700;white-space:nowrap}
 .arrow-image{display:inline-block;width:28px;height:28px;object-fit:contain;flex-shrink:0;vertical-align:middle}
-.choice-arrow{width:32px;height:32px}
+.choice-arrow{width:30px;height:30px}
 .home-note{display:grid;grid-template-columns:50px 1fr;gap:30px;border-top:1px solid var(--line);padding-top:37px;margin-top:58px}
 .note-star{font-size:42px;line-height:1.1;color:#9c81b8}
 .home-note p{font-size:16px;line-height:1.85;max-width:900px}
@@ -119,15 +124,16 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
   .home-hero{gap:20px}
   .home-hero h1{font-size:clamp(43px,6vw,66px)}
   .section-lead{grid-template-columns:minmax(0,1.4fr) minmax(240px,1fr);gap:32px}
-  .choice-card{padding:22px;min-height:260px}
-  .choice-illustration{height:130px}
+  .choice-card{padding:24px 20px;min-height:260px}
   .faq-block{gap:35px}
 }
 @media(max-width:1000px){
   .choice-grid{grid-template-columns:1fr;gap:14px}
-  .choice-card{display:grid;grid-template-columns:110px minmax(0,1fr);align-items:center;gap:28px;min-height:152px;padding:22px 28px}
-  .choice-illustration{width:110px;height:105px}
-  .choice-label{margin-top:0}
+  .choice-card{display:grid;grid-template-columns:120px minmax(0,1fr);gap:28px;min-height:158px;padding:20px 28px}
+  .choice-picture{width:120px;height:112px}
+  .choice-picture:before{inset:6px 2px}
+  .choice-illustration{width:116px;height:100px}
+  .choice-label{justify-content:flex-start}
   .choice-card h2{font-size:24px}
 }
 @media(max-width:900px){
@@ -159,12 +165,14 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
   .hero-picture{grid-column:1/-1;margin-top:21px;width:100%;max-width:205px;justify-self:center}
   .handwritten{font-size:17px;margin-right:1px}
   .home-opening{font-size:18px;line-height:1.75;letter-spacing:-.3px;margin-top:0}
-  .choice-grid{grid-template-columns:1fr;gap:10px;margin-top:28px}
-  .choice-card{min-height:120px;padding:18px;grid-template-columns:68px minmax(0,1fr);gap:14px}
-  .choice-illustration{width:68px;height:82px}
-  .choice-label{margin-top:0;gap:8px}
-  .choice-card h2{font-size:clamp(18px,5vw,21px);letter-spacing:-.5px}
-  .choice-arrow{width:28px;height:28px}
+  .choice-grid{gap:12px;margin-top:30px}
+  .choice-card{min-height:124px;padding:16px;grid-template-columns:80px minmax(0,1fr);gap:16px;border-radius:16px}
+  .choice-picture{width:80px;height:88px}
+  .choice-picture:before{inset:7px 0}
+  .choice-illustration{width:80px;height:78px}
+  .choice-label{gap:8px}
+  .choice-card h2{font-size:clamp(16px,4.6vw,20px);letter-spacing:-.4px}
+  .choice-arrow{width:24px;height:24px}
   .home-note{grid-template-columns:23px 1fr;gap:16px;margin-top:34px;padding-top:27px}
   .note-star{font-size:27px}
   .home-note p{font-size:14px;line-height:1.9}
@@ -200,10 +208,11 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 @media(max-width:375px){
   .page-width{width:calc(100% - 32px)}
   .nav-tab{padding-inline:6px}
-  .choice-card{grid-template-columns:56px minmax(0,1fr);padding:16px 14px;gap:10px;min-height:112px}
-  .choice-illustration{width:56px;height:72px}
-  .choice-card h2{font-size:18px}
-  .choice-arrow{width:24px;height:24px}
+  .choice-card{grid-template-columns:64px minmax(0,1fr);padding:14px;gap:12px;min-height:110px}
+  .choice-picture{width:64px;height:80px}
+  .choice-illustration{width:64px;height:68px}
+  .choice-card h2{font-size:16px}
+  .choice-arrow{width:22px;height:22px}
   .home-hero h1{font-size:38px}
   .hero-picture{margin-top:21px}
   .handwritten{font-size:15px}
