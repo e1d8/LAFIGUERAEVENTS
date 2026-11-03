@@ -1,12 +1,9 @@
-@font-face{font-family:Titan;src:url('./assets/titan-one.woff2') format('woff2');font-display:swap}
-@font-face{font-family:DM Sans;src:url('./assets/dm-sans.woff2') format('woff2');font-style:normal;font-weight:100 1000;font-display:swap}
-@font-face{font-family:Caveat;src:url('./assets/caveat.woff2') format('woff2');font-style:normal;font-weight:400 700;font-display:swap}
 @font-face{font-family:'EB Garamond';src:url('./assets/eb-garamond-medium.woff2') format('woff2');font-style:normal;font-weight:500;font-display:swap}
 @font-face{font-family:Futura;src:url('./assets/futura-bold.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
 @font-face{font-family:'Futura Text';src:url('./assets/futura-book.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:'Futura Text';src:url('./assets/futura-nd-demibold.woff2') format('woff2');font-style:normal;font-weight:600;font-display:swap}
 
-:root{--paper:#e4e6fb;--ink:#57575a;--heading:#676767;--muted:#615f6a;--line:#b5b7d4;--purple:#cca8c5;--closing-background:#f5f5eb;--mustard:#ddc17c;--white:#f9f9f3;--badge-background:#e5cee4;--badge-border:#cca8c5;--badge-ink:#694768;--note-ink:#705a32;--body:'Futura Text',Arial,sans-serif;--display:Titan,'Arial Black',Impact,sans-serif}
+:root{--paper:#e4e6fb;--ink:#57575a;--heading:#676767;--muted:#615f6a;--line:#b5b7d4;--purple:#cca8c5;--closing-background:#f5f5eb;--mustard:#ddc17c;--white:#f9f9f3;--badge-background:#e5cee4;--badge-border:#cca8c5;--badge-ink:#694768;--note-ink:#705a32;--body:'Futura Text',Arial,sans-serif}
 *{box-sizing:border-box}
 html{scroll-padding-top:165px}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;font-weight:400;font-synthesis:none;-webkit-font-smoothing:antialiased}
@@ -21,7 +18,7 @@ img{display:block;max-width:100%;height:auto}
 .brand{display:inline-flex;gap:15px;align-items:center;text-decoration:none;flex-shrink:0}
 .brand-logo{width:45px;height:45px;flex-shrink:0;object-fit:contain}
 .brand-name{font-family:'EB Garamond',Georgia,serif;font-weight:500;font-size:26px;letter-spacing:1.1px;line-height:1.05;font-synthesis:none}
-.brand-name>span{display:block;font-family:Futura,'DM Sans',sans-serif;font-size:10px;letter-spacing:5px;margin-top:5px;font-weight:700}
+.brand-name>span{display:block;font-family:Futura,Arial,sans-serif;font-size:10px;letter-spacing:5px;margin-top:5px;font-weight:700}
 .section-nav{display:flex;gap:8px;flex:1;max-width:800px}
 .nav-tab{--name-highlight:var(--purple);flex:1;display:flex;align-items:center;justify-content:center;padding:12px 16px;border:1px solid transparent;text-decoration:none;font-size:14px;font-weight:600;line-height:1.4;white-space:nowrap}
 .nav-tab.active{--name-highlight:var(--mustard);color:var(--ink)}
@@ -31,7 +28,7 @@ img{display:block;max-width:100%;height:auto}
 .panel-heading{display:block}
 h1,h2,p{margin:0}
 h1,h2,h3{color:var(--heading)}
-h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;font-weight:400;letter-spacing:-2px;text-wrap:balance;overflow-wrap:break-word}
+h1{font-family:'EB Garamond',Georgia,serif;font-size:clamp(50px,6.5vw,87px);line-height:1.06;font-weight:500;letter-spacing:-2px;text-wrap:balance;overflow-wrap:break-word}
 .section-lead{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,1fr);align-items:start;gap:18px 48px}
 .section-lead-copy{display:contents}
 .section-lead .panel-heading{grid-column:1/-1}

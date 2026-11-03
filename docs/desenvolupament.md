@@ -40,9 +40,9 @@ Les carpetes `nupcials/`, `bufet/`, `taules/` i `contacte/` contenen una entrada
 
 ## Canviar la icona de marca
 
-La tipografia de la marca en la capçalera és EB Garamond Medium (pes 500) per a «La figuera» i Futura Bold (pes 700) per a «EVENTS». Les fonts se serveixen localment en WOFF2: `assets/eb-garamond-medium.woff2` i `assets/futura-bold.woff2`. S’han convertit a partir dels arxius aportats per l’usuari; el TTC conté Futura Bold, no Futura ND Bold. La portada mostra només la felicitació manuscrita «Primer que res… ENHORABONA!» i la descripció, sense el títol gran ni la imatge de la tortada.
+La tipografia de la marca en la capçalera és EB Garamond Medium (pes 500) per a «La figuera» i Futura Bold (pes 700) per a «EVENTS». Les fonts se serveixen localment en WOFF2: `assets/eb-garamond-medium.woff2` i `assets/futura-bold.woff2`. S’han convertit a partir dels arxius aportats per l’usuari; el TTC conté Futura Bold, no Futura ND Bold. La portada mostra la marca, la felicitació «Primer que res… ENHORABONA!», la descripció i els quatre accessos il·lustrats.
 
-El text normal utilitza Futura Book (pes CSS 400) i els destacats Futura ND DemiBold (pes CSS 600), agrupades en la família CSS «Futura Text». Els fitxers `assets/futura-book.woff2` i `assets/futura-nd-demibold.woff2` s’han convertit a partir de l’OTF i el TTF facilitats per l’usuari. La font Book aportada és Futura Book, no Futura ND Book. Les negretes utilitzen la variant real, sense engreixat artificial; el text manuscrit manté Caveat.
+El text normal utilitza Futura Book (pes CSS 400) i els destacats Futura ND DemiBold (pes CSS 600), agrupades en la família CSS «Futura Text». Els fitxers `assets/futura-book.woff2` i `assets/futura-nd-demibold.woff2` s’han convertit a partir de l’OTF i el TTF facilitats per l’usuari. La font Book aportada és Futura Book, no Futura ND Book. Les negretes utilitzen la variant real, sense engreixat artificial.
 
 Els títols principals de Nupcials, Bufet, Taules i Contacte utilitzen EB Garamond Medium (pes 500), amb mides adaptades a PC i mòbil.
 
@@ -79,6 +79,6 @@ Configura manualment **Settings → Pages → Source → Deploy from a branch**,
 
 Tots els recursos compartits es resolen respecte de l’arrel de l’aplicació, també quan l’adreça visible no acaba en barra. Cada secció té una entrada estàtica que permet obrir-la directament i recarregar-la dins del subdirectori del repositori.
 
-Les tipografies actives Caveat, EB Garamond i les variants Futura se serveixen localment. Titan One es conserva com a recurs anterior. Les llicències OFL de Titan One, Caveat i EB Garamond estan en `assets/`, juntament amb l’anterior font DM Sans i la seua llicència. Les variants Futura provenen dels arxius TTC, OTF i TTF aportats per l’usuari. Les il·lustracions SVG són elements decoratius originals; no representen productes ni fotografies del negoci.
+Les tipografies actives EB Garamond i les variants Futura se serveixen localment. La llicència OFL d’EB Garamond es conserva en `assets/ebgaramond-OFL.txt`. Les variants Futura provenen dels arxius TTC, OTF i TTF aportats per l’usuari. Els únics SVG actius són les fletxes `arrow-diagonal.svg` i `arrow-turn.svg`; la resta d’imatges són PNG. S’han retirat les antigues il·lustracions i les fonts Titan One, DM Sans i Caveat, amb les llicències corresponents, perquè ja no s’utilitzen.
 
 Les previsualitzacions dels enllaços utilitzen `assets/share-banner.png`, el bàner de 1200 × 630 px aportat per l’usuari. Twitter Cards utilitza el format `summary_large_image`. Les cinc entrades HTML inclouen la imatge, les dimensions i el text alternatiu en Open Graph i Twitter Cards. La URL de la imatge en estes metadades és absoluta (`https://e1d8.github.io/LAFIGUERAEVENTS/assets/share-banner.png`) perquè les aplicacions que generen previsualitzacions puguen descarregar-la. Si canvia el domini públic, actualitza esta URL en les cinc entrades.

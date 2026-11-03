@@ -23,12 +23,12 @@ const el = (tag, className = '', text) => {
   return node;
 };
 
-function arrowImage(direction = 'diagonal', className = '') {
-  const image = el('img', `arrow-image ${className}`.trim());
-  image.src = `./assets/arrow-${direction}.svg`;
+function arrowImage() {
+  const image = el('img', 'arrow-image');
+  image.src = './assets/arrow-diagonal.svg';
   image.alt = '';
   image.setAttribute('aria-hidden', 'true');
-  image.width = 32; image.height = direction === 'horizontal' ? 20 : 32;
+  image.width = 32; image.height = 32;
   return image;
 }
 
