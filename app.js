@@ -182,12 +182,12 @@ function heading(section) {
   return header;
 }
 
-function sectionLead(section) {
-  const lead = el('div', 'section-lead');
+function sectionLead(section, { illustrated = true } = {}) {
+  const lead = el('div', `section-lead${illustrated ? '' : ' section-lead-text'}`);
   const copy = el('div', 'section-lead-copy');
   copy.append(heading(section), paragraph(section.intro, 'section-intro'));
   lead.append(copy);
-  if (sectionImages[section.id]) {
+  if (illustrated && sectionImages[section.id]) {
     const illustration = el('img', 'section-illustration');
     illustration.src = `./assets/${sectionImages[section.id]}`;
     illustration.alt = ''; illustration.width = 240; illustration.height = 180;
@@ -221,12 +221,12 @@ function home() {
 
 function contactContent(section) {
   const container = el('div', 'contact-content');
-  container.append(sectionLead(section));
+  container.append(sectionLead(section, { illustrated: false }));
   const list = el('ul', 'contact-list');
   const links = [
-    ['WhatsApp', contact.phone, `https://wa.me/34${contact.phone}`, 'contact-whatsapp.svg'],
-    ['Correu', contact.email, `mailto:${contact.email}`, 'contact-email.svg'],
-    ['Instagram', contact.handle, 'https://www.instagram.com/lafigueravlc/', 'contact-instagram.svg'],
+    ['WhatsApp', contact.phone, `https://wa.me/34${contact.phone}`, 'contact-whatsapp-painted.png'],
+    ['Correu', contact.email, `mailto:${contact.email}`, 'contacte-painted.png'],
+    ['Instagram', contact.handle, 'https://www.instagram.com/lafigueravlc/', 'contact-instagram-painted.png'],
   ];
   links.forEach(([label, value, href, image]) => {
     const row = el('li', 'contact-row');

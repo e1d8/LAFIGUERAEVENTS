@@ -36,6 +36,8 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 .section-lead-copy{display:contents}
 .section-lead .panel-heading{grid-column:1/-1}
 .section-lead h1{font-family:'EB Garamond',Georgia,serif;font-weight:500;font-size:clamp(46px,5.2vw,75px);line-height:1.1}
+.contact-content .section-lead-text{grid-template-columns:minmax(0,1fr);max-width:800px}
+.section-lead-text h1{min-height:0}
 .section-illustration{width:100%;max-width:380px;aspect-ratio:4/3;height:auto;object-fit:contain;justify-self:center;align-self:start}
 .home-opening{max-width:800px;font-size:20px;line-height:1.65;margin:0 auto;letter-spacing:-.4px}
 .is-home .site-header{position:static;border-bottom:0}
@@ -153,6 +155,7 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
   .section-lead{display:flex;flex-direction:column;align-items:stretch;gap:16px}
   .section-lead .panel-heading{order:0}
   .section-lead h1{font-size:clamp(36px,8.5vw,62px);min-height:2.2em}
+  .section-lead-text h1{min-height:0}
   .section-illustration{order:1;width:min(270px,80%);align-self:center}
   .section-lead .section-intro{order:2}
   h1{font-size:clamp(32px,8.5vw,62px);line-height:1.12;letter-spacing:-1px}

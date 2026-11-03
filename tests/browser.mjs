@@ -162,7 +162,7 @@ try {
     const underlineVariants = await evaluate('Array.from(document.querySelectorAll(".product-name-text")).map(name => name.dataset.underline)');
     assert.equal(new Set(underlineVariants.slice(0, 4)).size, 4, 'Use all four fixed strokes before reshuffling');
     assert.ok(underlineVariants.every((variant, index) => /^[0-3]$/.test(variant) && (!index || variant !== underlineVariants[index - 1])));
-    assert.ok(await evaluate('document.querySelector("link[rel=icon]").href.endsWith("/figa-256.png")'));
+    assert.ok(await evaluate('document.querySelector("link[rel=icon]").href.endsWith("/favicon.png")'));
     assert.ok(await evaluate('document.querySelector(".brand-logo").src.endsWith("/figa-256.png") && document.querySelector(".brand-logo").complete && document.querySelector(".brand-logo").naturalWidth === 256'));
     for (const route of routes) {
       await evaluate(`document.querySelector('${route === 'la-carta' ? '.brand' : route === 'tartes-nupcials' ? `.home-choice[data-section="${route}"] img` : `.nav-tab[data-section="${route}"]`}').click()`);
@@ -178,6 +178,8 @@ try {
       assert.equal(await evaluate('document.querySelector("#navigation").checkVisibility()'), route !== 'la-carta');
       if (route !== 'la-carta') {
         assert.ok(await evaluate(`(() => {const tab = document.querySelector('.nav-tab.active'); const marker = getComputedStyle(tab.querySelector('.nav-label'), '::before'); return getComputedStyle(tab).backgroundColor === 'rgba(0, 0, 0, 0)' && marker.visibility === 'visible' && marker.backgroundColor === 'rgb(221, 193, 124)';})()`), 'Selected navigation shows a yellow underline without a box');
+      }
+      if (route !== 'la-carta' && route !== 'contacte') {
         assert.ok(await evaluate(`(() => {const lead=document.querySelector('#panel-${route} .section-lead');const image=lead.querySelector('.section-illustration');const picture=image.getBoundingClientRect();const title=lead.querySelector('h1').getBoundingClientRect();return image.complete && image.naturalWidth>0 && !image.src.endsWith('flower.svg') && picture.width>=200 && (picture.left>=title.right || picture.top>=title.bottom)})()`));
         const introMetrics = await evaluate(`(() => {
           const lead = document.querySelector('#panel-${route} .section-lead');
@@ -269,8 +271,10 @@ try {
         assert.ok(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item")[1].innerText.includes("Informació pendent")'));
       }
       if (route === 'contacte') {
+        assert.equal(await evaluate('document.querySelectorAll("#panel-contacte .section-lead img").length'), 0, 'Contact introduction has no illustration');
         assert.equal(await evaluate('document.querySelectorAll("#panel-contacte .contact-row").length'), 3);
         assert.ok(await evaluate('Array.from(document.querySelectorAll(".contact-illustration")).every(img => img.complete && img.naturalWidth > 0)'));
+        assert.deepEqual(await evaluate('Array.from(document.querySelectorAll(".contact-illustration"), image => image.getAttribute("src"))'), ['./assets/contact-whatsapp-painted.png', './assets/contacte-painted.png', './assets/contact-instagram-painted.png']);
         assert.ok(await evaluate(`Array.from(document.querySelectorAll('.contact-row')).every(row => {
           const link = row.querySelector('a');
           const image = row.querySelector('img');
