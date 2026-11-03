@@ -107,10 +107,10 @@ const transportAnswer = 'Pel moment no tenim un transport adaptat al transport d
 
 export const sections = [
   {
-    id: 'la-carta', label: 'La carta', title: 'LA FIGUERA EVENTS', number: '01', kind: 'home',
+    id: 'la-carta', label: 'La carta', title: 'LA FIGUERA EVENTS', pageTitle: 'La Figuera Events · Inici', number: '01', kind: 'home',
   },
   {
-    id: 'tartes-nupcials', label: 'Tartes nupcials', title: 'TARTES NUPCIALS:', number: '02',
+    id: 'tartes-nupcials', label: 'Tartes nupcials', title: 'TARTES NUPCIALS:', pageTitle: 'La Figuera Events · Nupcials', number: '02',
     intro: 'Totes les nostres tartes són 100% artesanals, (no usem cap crema ni preparació industrial) utilitzem productes de proximitat i de temporada i decorem amb tot l’amor mundial cada pastís utilitzant elements naturals, flors i fruita fresca coherent cromàticament amb la decoració de tot l’event, pel que la vostra tortada va a ser única i irrepetible. I, com que som un obrador familiar, NO AGAFEM MÉS D’UN EVENT PER DATA per poder dedicar tot el nostre temps al vostre dia.',
     source: ['C02'], tableIds: ['classics', 'premium', 'marquesa'],
     questions: [
@@ -125,7 +125,7 @@ export const sections = [
     ],
   },
   {
-    id: 'bufet-de-tortades', label: 'Bufet de tortades', title: 'BUFET DE TORTADES:', number: '03',
+    id: 'bufet-de-tortades', label: 'Bufet de tortades', title: 'BUFET DE TORTADES:', pageTitle: 'La Figuera Events · Bufet', number: '03',
     intro: 'Com ja sabeu, som un obrador especialitzat en tartes de formatge, pel que oferim l’opció de montar, en compte d’una taula dolça, una taula de tartes de formatge dels sabors que trieu i que vos adjuntem a continuació. Aquesta és una opció perfecta perquè la vostra gent puga triar i servir-se el que vulga quan vulga (com entra un tros de pastís de resopó…?)',
     source: ['C07', 'C08'], tableIds: ['buffet'],
     questions: [
@@ -137,7 +137,7 @@ export const sections = [
     ],
   },
   {
-    id: 'taules-dolces', label: 'Taules dolces', title: 'TAULES DOLCES:', number: '04',
+    id: 'taules-dolces', label: 'Taules dolces', title: 'TAULES DOLCES:', pageTitle: 'La Figuera Events · Taules', number: '04',
     intro: 'L’última opció que vos podem donar és la de la taula dolça completa, en la que podeu tenir tant tartes de distints sabors (que podeu triar de la taula de dalt), com micotetes (mini cookies de 30gr casolanes) de sabors variats embossades de manera individual perquè les vostres personetes preferides se les puguen endur o menjar fresques al moment.',
     source: ['C11'], tableIds: ['cookies'],
     questions: [
@@ -147,7 +147,7 @@ export const sections = [
     ],
   },
   {
-    id: 'contacte', label: 'Contacte', title: 'CONTACTE:', number: '05', kind: 'contact',
+    id: 'contacte', label: 'Contacte', title: 'CONTACTE:', pageTitle: 'La Figuera Events · Contacte', number: '05', kind: 'contact',
     intro: 'Moltes gràcies per pensar amb nosaltres! Si teniu qualsevol dubte, contacteu-nos per qualsevol d’aquests mitjans:',
     source: ['C13'],
   },

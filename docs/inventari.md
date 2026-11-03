@@ -12,7 +12,7 @@ Aquest apartat descriu les captures originals. Les correccions aportades despré
 
 | Captura | Informació recuperada | Limitacions |
 | --- | --- | --- |
-| C01 | LA FIGUERA EVENTS, LA CARTA, felicitació i presentació | El final de contacte continua en C02. El logotip original no s’ha recuperat; la marca utilitza una figa oberta en SVG per indicació de l’usuari. |
+| C01 | LA FIGUERA EVENTS, LA CARTA, felicitació i presentació | El final de contacte continua en C02. La marca utilitza la figa oberta `figa-256.png`, aportada posteriorment per l’usuari. |
 | C02 | Final de presentació, contacte, introducció nupcial, clàssiques, Carrot cake 165€, inici de Pastís de | Columnes de la dreta retallades; segona fila tallada per baix. |
 | C03 | Fragment de crema de formatge/xoco blanc/coulis, fragment «e lotus» 165€/390€, avís de transport, inici premium 185€/435€ | No es pot confirmar a quina fila correspon el fragment de coulis. Noms de productes i parts de descripcions fora de la imatge. |
 | C04 | Fragment «crunch avellana.», premium de llima 185€/435€, avís, marquesa Carabassa i pistatxo 200€ | Noms premium fora de la imatge; falta el preu de marquesa de tres pisos. El fragment superior no s’ha unit a una altra descripció. |
@@ -44,10 +44,10 @@ Les tartes nupcials utilitzen la llista corregida per l’usuari, amb les descri
 
 «Preguntes freqüents», les indicacions de desplaçament, els títols de contacte i els avisos de dades pendents són etiquetes de la nova interfície. No són informació comercial recuperada. Les condicions no s’han resumit ni substituït per aquestes etiquetes.
 
-Per indicació de l’usuari, s’han retirat «Parlem?», la pestanya «La carta» i els números dels accessos i de la navegació. La figa i el nom de la marca són un únic enllaç a l’inici. Els tres accessos de la portada tenen il·lustracions de tortada nupcial, bufet i taula dolça.
+Per indicació de l’usuari, s’han retirat «Parlem?», la pestanya «La carta», els números dels accessos i de la navegació i, posteriorment, els tres botons de secció de la portada. La figa i el nom de la marca són un únic enllaç a l’inici; les seccions s’obrin des de la capçalera.
 
 La web omet el final de la presentació des de «Al final d’aquest document» fins al telèfon, també per indicació de l’usuari. `transcripcio.md` conserva aquest text com a registre del contingut de les captures.
 
 Contacte mostra únicament WhatsApp, correu i Instagram, en files amb il·lustracions pròpies al costat del contacte. Els altres mitjans de la captura es conserven en la transcripció arxivada. Les FAQ mostren només «Preguntes freqüents», sense el text introductori «PER RESOLDRE ELS DUBTES».
 
-Els accessos de portada mostren el nom de la secció i una fletxa al costat, sense «Veure la carta». Les capçaleres de les seccions utilitzen la il·lustració corresponent en lloc de la flor.
+Les capçaleres de les seccions utilitzen la il·lustració corresponent en lloc de la flor. Els títols del navegador segueixen el format «La Figuera Events · Inici/Nupcials/Bufet/Taules/Contacte», amb un únic nom segons la secció oberta.

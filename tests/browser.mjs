@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 const base = (process.env.PREVIEW_URL || 'http://127.0.0.1:4173').replace(/\/+$/, '');
 const basePath = new URL(`${base}/`).pathname;
 const slugs = { 'la-carta': '', 'tartes-nupcials': 'nupcials', 'bufet-de-tortades': 'bufet', 'taules-dolces': 'taules', contacte: 'contacte' };
+const titleNames = { 'la-carta': 'Inici', 'tartes-nupcials': 'Nupcials', 'bufet-de-tortades': 'Bufet', 'taules-dolces': 'Taules', contacte: 'Contacte' };
 const pathFor = id => slugs[id] ? `${basePath}${slugs[id]}` : basePath.replace(/\/$/, '') || '/';
 assert.equal((await fetch(base)).status, 200, 'Start npm run dev first');
 const chromeBin = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -88,6 +89,14 @@ try {
     await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false });
     await navigate(`${base}/`);
     await evaluate('document.fonts.ready.then(() => true)');
+    assert.ok(await evaluate(`document.fonts.check('500 26px "EB Garamond"') && document.fonts.check('700 10px Futura')`));
+    assert.ok(await evaluate(`(() => {
+      const name = getComputedStyle(document.querySelector('.brand-name'));
+      const events = getComputedStyle(document.querySelector('.brand-name > span'));
+      return name.fontFamily.includes('EB Garamond') && name.fontWeight === '500'
+        && events.fontFamily.includes('Futura') && events.fontWeight === '700'
+        && getComputedStyle(document.querySelector('.home-hero h1')).fontFamily.includes('Titan');
+    })()`));
     assert.equal(await evaluate('location.pathname'), pathFor('la-carta'));
     assert.equal(await evaluate('location.hash'), '');
     assert.equal(await evaluate('document.querySelectorAll(".nav-tab").length'), 4);
@@ -96,14 +105,14 @@ try {
     assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Al final d’aquest document")'));
     assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Si teniu qualsevol dubte")'));
     assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Veure la carta")'));
-    assert.equal(await evaluate('document.querySelectorAll(".choice-label .choice-arrow").length'), 3);
-    assert.ok(await evaluate('Array.from(document.querySelectorAll(".choice-card")).every(card => {const title=card.querySelector("h2");const range=document.createRange();range.selectNodeContents(title);return range.getClientRects().length === 1 && card.querySelector(".choice-arrow").getBoundingClientRect().right <= card.getBoundingClientRect().right-parseFloat(getComputedStyle(card).paddingRight)+1})'));
-    assert.ok(await evaluate('document.querySelector("link[rel=icon]").href.endsWith("/fig.svg")'));
-    assert.ok(await evaluate('Array.from(document.querySelectorAll(".choice-illustration")).length === 3 && Array.from(document.querySelectorAll(".choice-illustration")).every(img => img.complete && img.naturalWidth > 0 && !img.src.endsWith("flower.svg"))'));
+    assert.equal(await evaluate('document.querySelectorAll(".home-content a[data-section], .choice-grid, .choice-card").length'), 0);
+    assert.ok(await evaluate('document.querySelector("link[rel=icon]").href.endsWith("/figa-256.png")'));
+    assert.ok(await evaluate('document.querySelector(".brand-logo").src.endsWith("/figa-256.png") && document.querySelector(".brand-logo").complete && document.querySelector(".brand-logo").naturalWidth === 256'));
     for (const route of routes) {
       await evaluate(`document.querySelector('${route === 'la-carta' ? '.brand' : `.nav-tab[data-section="${route}"]`}').click()`);
       await until(`document.querySelector('#panel-${route}').hidden === false`);
       assert.equal(await evaluate('location.pathname'), pathFor(route));
+      assert.equal(await evaluate('document.title'), `La Figuera Events · ${titleNames[route]}`);
       assert.equal(await evaluate('location.hash'), '');
       assert.equal(await evaluate('document.querySelectorAll(".panel:not([hidden])").length'), 1);
       assert.equal(await evaluate('document.querySelectorAll(".panel details[open]").length'), 0, 'Changing section collapses FAQ');
@@ -192,12 +201,6 @@ try {
         await evaluate('window.scrollTo(0,0)');
         const { data } = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
         await writeFile(`artifacts/${route}-${width}.png`, Buffer.from(data, 'base64'));
-        if (route === 'la-carta') {
-          await evaluate('document.querySelector(".choice-grid").scrollIntoView({block:"start"})');
-          const choices = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
-          await writeFile(`artifacts/home-choices-${width}.png`, Buffer.from(choices.data, 'base64'));
-          await evaluate('window.scrollTo(0,0)');
-        }
       }
       if (['tartes-nupcials', 'bufet-de-tortades', 'taules-dolces'].includes(route)) {
         await evaluate(`document.querySelector('#panel-${route} .faq-item summary').click()`);
@@ -209,7 +212,7 @@ try {
     await evaluate('document.querySelector(".brand-logo").click()');
     await until('document.querySelector("#panel-la-carta").hidden === false');
     for (const route of routes.slice(1, 4)) {
-      await evaluate(`document.querySelector('.choice-card[data-section="${route}"]').click()`);
+      await evaluate(`document.querySelector('.nav-tab[data-section="${route}"]').click()`);
       await until(`document.querySelector('#panel-${route}').hidden === false`);
       await evaluate('document.querySelector(".brand-name").click()');
       await until('document.querySelector("#panel-la-carta").hidden === false');
@@ -232,10 +235,12 @@ try {
     await navigate(entry);
     await until(`document.querySelector('#panel-${route}').hidden === false`);
     assert.equal(await evaluate('location.pathname'), pathFor(route));
+    assert.equal(await evaluate('document.title'), `La Figuera Events · ${titleNames[route]}`);
     assert.equal(await evaluate('location.hash'), '');
     await reload();
     assert.equal(await evaluate('location.pathname'), pathFor(route));
     assert.equal(await evaluate(`document.querySelector('#panel-${route}').hidden`), false);
+    assert.equal(await evaluate('document.title'), `La Figuera Events · ${titleNames[route]}`);
     if (slugs[route]) {
       for (const ending of ['/', '/index.html']) {
         await navigate(entry + ending);

@@ -1,6 +1,6 @@
 # La Figuera Events
 
-Web estàtica en valencià, reconstruïda a partir de les captures aportades. No necessita instal·lar dependències ni compilar. La icona de marca és una figa oberta en SVG amb el mateix estil i paleta que la flor.
+Web estàtica en valencià, reconstruïda a partir de les captures aportades. No necessita instal·lar dependències ni compilar. La icona de marca és la figa oberta de `assets/figa-256.png`, aportada per l’usuari.
 
 ## Previsualització
 
@@ -38,7 +38,9 @@ Les carpetes `nupcials/`, `bufet/`, `taules/` i `contacte/` contenen una entrada
 
 ## Canviar la icona de marca
 
-La icona de figa oberta està en `assets/fig.svg`. Pots editar-la o canviar el `src` de l’element `<img class="brand-logo">` en `index.html`. La mida és de 45 px en PC i 36 px en mòbil, definida en `styles.css`.
+La tipografia de la marca en la capçalera és EB Garamond Medium (pes 500) per a «LA FIGUERA» i Futura Bold (pes 700) per a «EVENTS». Les fonts se serveixen localment en WOFF2: `assets/eb-garamond-medium.woff2` i `assets/futura-bold.woff2`. S’han convertit a partir dels arxius aportats per l’usuari; el TTC conté Futura Bold, no Futura ND Bold. Aquest canvi afecta només la capçalera; el títol gran de l’inici conserva Titan One.
+
+La icona de figa oberta està en `assets/figa-256.png` i s’utilitza tant en la capçalera com en la pestanya del navegador. Per substituir-la, actualitza el `src` de `<img class="brand-logo">` i l’`href` i el tipus de `<link rel="icon">` en les cinc entrades HTML. La mida del logotip és de 45 px en PC i 36 px en mòbil, definida en `styles.css`.
 
 ## Verificació
 
@@ -59,4 +61,4 @@ Configura manualment **Settings → Pages → Source → Deploy from a branch**,
 
 Tots els recursos compartits es resolen respecte de l’arrel de l’aplicació, també quan l’adreça visible no acaba en barra. Cada secció té una entrada estàtica que permet obrir-la directament i recarregar-la dins del subdirectori del repositori.
 
-Les tipografies Titan One, DM Sans i Caveat se serveixen localment. Les llicències OFL estan en `assets/`. Les il·lustracions SVG són elements decoratius originals; no representen productes ni fotografies del negoci.
+Les tipografies Titan One, DM Sans, Caveat, EB Garamond i Futura se serveixen localment. Les llicències OFL de Titan One, DM Sans, Caveat i EB Garamond estan en `assets/`; Futura prové del fitxer TTC aportat per l’usuari. Les il·lustracions SVG són elements decoratius originals; no representen productes ni fotografies del negoci.

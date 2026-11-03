@@ -190,22 +190,7 @@ function home(section) {
   picture.append(illustration, greeting);
   hero.append(copy, picture);
   const opening = paragraph(introduction.text, 'home-opening');
-  const choices = el('div', 'choice-grid');
-  sections.slice(1, 4).forEach((item, index) => {
-    const card = el('a', `choice-card choice-${index}`);
-    card.href = routePath(item.id); card.dataset.section = item.id;
-    const picture = el('div', 'choice-picture');
-    const illustration = el('img', 'choice-illustration');
-    illustration.src = `./assets/${sectionImages[item.id]}`;
-    illustration.alt = ''; illustration.width = 240; illustration.height = 180;
-    const label = el('div', 'choice-label');
-    const arrow = arrowImage('diagonal', 'choice-arrow');
-    label.append(el('h2', '', item.label), arrow);
-    picture.append(illustration);
-    card.append(picture, label);
-    choices.append(card);
-  });
-  container.append(hero, opening, choices);
+  container.append(hero, opening);
   return container;
 }
 
@@ -279,7 +264,7 @@ function selectSection({ scroll = true } = {}) {
     link.classList.toggle('active', active);
     if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
   });
-  document.title = `${section.label} · La Figuera Events`;
+  document.title = section.pageTitle;
   selected = section.id;
   if (scroll && changed) window.scrollTo({ top: 0, behavior: 'instant' });
 }
