@@ -54,7 +54,7 @@ La icona de figa oberta està en `assets/figa-256.png` i s’utilitza tant en la
 
 ## Verificació
 
-La paleta actual pren com a referència «Estil artistic.jpg», aportada per l’usuari: fons lila blavós `#d8dbfa`, gris `#676767` als títols, mostassa `#dccd9e` a la pestanya seleccionada i malva `#b38db4` als accents. Els textos menuts utilitzen grisos més foscos per mantindre la llegibilitat; les targetes tenen un fons lila molt clar. Els colors es defineixen en les variables de `:root` de `styles.css`. Les imatges, la distribució i la tipografia es mantenen.
+La paleta actual pren com a referència «Estil artistic.jpg», aportada per l’usuari: fons lila blavós `#d8dbfa`, gris `#676767` als títols, mostassa `#ddc17c` a la pestanya seleccionada i malva `#cca8c5` als accents. Els textos menuts utilitzen grisos més foscos per mantindre la llegibilitat; les targetes tenen un fons lila molt clar. Els colors es defineixen en les variables de `:root` de `styles.css`. Les imatges, la distribució i la tipografia es mantenen.
 
 ```sh
 npm run check
