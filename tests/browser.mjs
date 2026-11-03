@@ -136,7 +136,7 @@ try {
     assert.deepEqual(homeLinks.map(link => link.section), routes.slice(1));
     assert.deepEqual(homeLinks.map(link => link.path), routes.slice(1).map(pathFor));
     assert.deepEqual(homeLinks.map(link => link.title), ['Tartes nupcials', 'Bufet de tortades', 'Taules dolces', 'Contacte']);
-    assert.deepEqual(homeLinks.map(link => link.image), ['./assets/nupcial-painted.png', './assets/torta-painted.png', './assets/galetes-painted.png', './assets/contact.svg']);
+    assert.deepEqual(homeLinks.map(link => link.image), ['./assets/nupcial-painted.png', './assets/torta-painted.png', './assets/galetes-painted.png', './assets/contacte-painted.png']);
     assert.ok(homeLinks.every(link => link.imageAboveTitle));
     assert.deepEqual(homeLinks.map(link => link.markerColor), ['rgb(204, 168, 197)', 'rgb(204, 168, 197)', 'rgb(204, 168, 197)', 'rgb(221, 193, 124)']);
     assert.ok(await evaluate(`(() => {
@@ -241,7 +241,7 @@ try {
           const options = item.querySelector('.product-options').getBoundingClientRect();
           return item.scrollWidth <= item.clientWidth + 1
             && description.top >= name.bottom && options.top >= description.bottom
-            && getComputedStyle(item).backgroundColor === 'rgb(238, 238, 251)';
+            && getComputedStyle(item).backgroundColor === 'rgb(249, 249, 243)';
         })`));
         assert.ok(await evaluate('document.documentElement.scrollWidth <= innerWidth'));
         if (width === 390 || width === 1440) {

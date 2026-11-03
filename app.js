@@ -14,7 +14,7 @@ const sectionImages = {
   'tartes-nupcials': 'nupcial-painted.png',
   'bufet-de-tortades': 'torta-painted.png',
   'taules-dolces': 'galetes-painted.png',
-  contacte: 'contact.svg',
+  contacte: 'contacte-painted.png',
 };
 const el = (tag, className = '', text) => {
   const node = document.createElement(tag);

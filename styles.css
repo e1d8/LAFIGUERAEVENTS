@@ -6,7 +6,7 @@
 @font-face{font-family:'Futura Text';src:url('./assets/futura-book.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:'Futura Text';src:url('./assets/futura-nd-demibold.woff2') format('woff2');font-style:normal;font-weight:600;font-display:swap}
 
-:root{--paper:#d8dbfa;--ink:#57575a;--heading:#676767;--muted:#615f6a;--line:#b5b7d4;--purple:#cca8c5;--purple-light:#e5cee4;--mustard:#ddc17c;--white:#eeeefb;--badge-background:#e5cee4;--badge-border:#cca8c5;--badge-ink:#694768;--note-ink:#705a32;--body:'Futura Text',Arial,sans-serif;--display:Titan,'Arial Black',Impact,sans-serif}
+:root{--paper:#e4e6fb;--ink:#57575a;--heading:#676767;--muted:#615f6a;--line:#b5b7d4;--purple:#cca8c5;--closing-background:#f5f5eb;--mustard:#ddc17c;--white:#f9f9f3;--badge-background:#e5cee4;--badge-border:#cca8c5;--badge-ink:#694768;--note-ink:#705a32;--body:'Futura Text',Arial,sans-serif;--display:Titan,'Arial Black',Impact,sans-serif}
 *{box-sizing:border-box}
 html{scroll-padding-top:165px}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;font-weight:400;font-synthesis:none;-webkit-font-smoothing:antialiased}
@@ -63,7 +63,7 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 .inline-section-link .arrow-image{width:22px;height:22px}
 .catalogue-block{margin-top:45px}
 .catalogue-heading{margin-bottom:16px;font-size:27px;letter-spacing:-.8px;font-weight:600}
-.product-list{border:1px solid var(--line);border-radius:5px;background:var(--white)}
+.product-list{border:1px solid var(--line);border-radius:5px;background:var(--white);overflow:hidden}
 .product-item{--name-highlight:var(--mustard);min-width:0;padding:24px;background:var(--white);border-bottom:1px solid var(--line)}
 .product-item-rose{--name-highlight:var(--purple)}
 .product-item:last-child{border-bottom:0}
@@ -108,7 +108,7 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 .faq-toggle{font-size:25px;font-weight:400;line-height:1;flex-shrink:0}
 .faq-item[open] .faq-toggle{transform:rotate(45deg)}
 .faq-answer{padding:0 35px 23px 0;font-size:15px;line-height:1.9}
-.closing-link{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:29px 30px;margin-top:65px;background:var(--purple-light);text-decoration:none;border-radius:4px}
+.closing-link{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:29px 30px;margin-top:65px;background:var(--closing-background);text-decoration:none;border-radius:4px}
 .closing-link span:first-child{font-size:22px;letter-spacing:-.5px}
 .closing-link span:last-child{font-size:14px}
 .closing-label{display:inline-flex;align-items:center;gap:10px}

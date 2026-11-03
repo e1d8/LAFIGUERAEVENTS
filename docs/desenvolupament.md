@@ -50,7 +50,7 @@ La portada mostra la marca ampliada amb la figa, la felicitació en Futura Book 
 
 Les quatre introduccions comparteixen el component `sectionLead`, les mateixes columnes, una àrea reservada per als títols i un marc d’imatge de proporció 4:3. Les descripcions tenen sempre la mateixa tipografia, mida i interlineat per amplària de pantalla, també en Contacte; la seua altura varia segons la llargària del text. En mòbil es mostra títol, imatge i descripció en el mateix ordre i amb el mateix espaiat.
 
-Tartes nupcials utilitza `assets/nupcial-painted.png`, Bufet de tortades `assets/torta-painted.png` i Taules dolces `assets/galetes-painted.png`, les il·lustracions aportades per l’usuari. Es mostren completes, sense retallar-les, dins del mateix marc que les altres seccions. La correspondència d’imatges es defineix en `sectionImages`, dins d’`app.js`.
+Tartes nupcials utilitza `assets/nupcial-painted.png`, Bufet de tortades `assets/torta-painted.png`, Taules dolces `assets/galetes-painted.png` i Contacte `assets/contacte-painted.png`, les il·lustracions aportades per l’usuari. Es mostren completes, sense retallar-les, tant en la portada com dins de les seccions. La correspondència d’imatges es defineix en `sectionImages`, dins d’`app.js`.
 
 La icona de figa oberta està en `assets/figa-256.png` i s’utilitza tant en la capçalera com en la pestanya del navegador. Per substituir-la, actualitza el `src` de `<img class="brand-logo">` i l’`href` i el tipus de `<link rel="icon">` en les cinc entrades HTML. La mida del logotip dins de les seccions és de 45 px en PC i 36 px en mòbil; en la portada augmenta a 136 px i 88 px respectivament, definida en `styles.css`.
 
@@ -60,7 +60,7 @@ Els noms dels productes utilitzen quatre subratllats fixos: l’original i tres 
 
 Les quatre pestanyes comparteixen estos traços, amb una forma diferent assignada a cadascuna. El subratllat és rosenc en passar el cursor i groc en la pestanya seleccionada; substitueix el fons de caixa tant en PC com en mòbil.
 
-La paleta actual pren com a referència «Estil artistic.jpg», aportada per l’usuari: fons lila blavós `#d8dbfa`, gris `#676767` als títols, mostassa `#ddc17c` a la pestanya seleccionada i malva `#cca8c5` als accents. Els textos menuts utilitzen grisos més foscos per mantindre la llegibilitat; les targetes tenen un fons lila molt clar. Els colors es defineixen en les variables de `:root` de `styles.css`. Les imatges, la distribució i la tipografia es mantenen.
+La paleta actual pren com a referència «Estil artistic.jpg», aportada per l’usuari: fons lila blavós `#e4e6fb`, gris `#676767` als títols, mostassa `#ddc17c` a la pestanya seleccionada i malva `#cca8c5` als accents. Els textos menuts utilitzen grisos més foscos per mantindre la llegibilitat; els contenidors d’ítems tenen un fons crema `#f9f9f3` i el bloc «Teniu qualsevol dubte?» un fons crema `#f5f5eb`. Els colors es defineixen en les variables de `:root` de `styles.css`. Les imatges, la distribució i la tipografia es mantenen.
 
 ```sh
 npm run check
