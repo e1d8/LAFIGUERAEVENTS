@@ -35,17 +35,8 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 .section-lead .panel-heading{grid-column:1/-1}
 .section-lead h1{font-family:'EB Garamond',Georgia,serif;font-weight:500;font-size:clamp(46px,5.2vw,75px);line-height:1.1}
 .section-illustration{width:100%;max-width:380px;aspect-ratio:4/3;height:auto;object-fit:contain;justify-self:center;align-self:start}
-.home-hero{display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:55px;padding-top:4px;padding-bottom:34px}
-.home-hero .panel-heading{display:block}
-.home-hero h1{font-size:clamp(56px,6.1vw,88px);line-height:1.1;letter-spacing:-1.5px}
-.home-hero h1>span{display:block;white-space:nowrap}
-.home-hero h1>.hero-title-highlight{display:inline-block;position:relative}
-.hero-title-highlight:after{content:'';position:absolute;bottom:-13px;left:0;width:100%;height:10px;background:var(--purple);border-radius:65% 26% 57% 20%;transform:rotate(-3deg)}
-.hero-picture{position:relative;align-self:center;max-width:430px;width:100%;justify-self:center}
-.hero-picture:before{content:'';position:absolute;width:85%;aspect-ratio:1;top:3%;left:10%;border-radius:50%;background:#e9ebda;z-index:-1}
-.hero-picture img{width:100%}
-.handwritten{display:block;width:max-content;margin:12px 28px 0 auto;font-family:Caveat,cursive;font-size:29px;line-height:1.1;text-align:center;transform:rotate(-6deg);white-space:nowrap}
-.home-opening{max-width:960px;font-size:23px;line-height:1.65;margin-top:13px;letter-spacing:-.4px}
+.handwritten{margin:0 0 26px;font-family:Caveat,cursive;font-size:clamp(28px,3.5vw,40px);font-weight:400;line-height:1.15;letter-spacing:0;text-wrap:initial}
+.home-opening{max-width:960px;font-size:23px;line-height:1.65;margin:0;letter-spacing:-.4px}
 .arrow-image{display:inline-block;width:28px;height:28px;object-fit:contain;flex-shrink:0;vertical-align:middle}
 .home-note{display:grid;grid-template-columns:50px 1fr;gap:30px;border-top:1px solid var(--line);padding-top:37px;margin-top:58px}
 .note-star{font-size:42px;line-height:1.1;color:#9c81b8}
@@ -107,13 +98,10 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .no-script{max-width:650px;padding:30px;margin:30px auto;border:1px solid var(--line)}
 
-@media(min-width:1500px){.home-hero h1{font-size:88px}}
 @media(max-width:1100px){
   .page-width{width:calc(100% - 64px)}
   .header-inner{gap:24px}
   .nav-tab{font-size:13px;padding:12px 10px}
-  .home-hero{gap:20px}
-  .home-hero h1{font-size:clamp(43px,6vw,66px)}
   .section-lead{grid-template-columns:minmax(0,1.4fr) minmax(240px,1fr);gap:18px 32px}
   .faq-block{gap:35px}
 }
@@ -137,13 +125,6 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
   .section-illustration{order:1;width:min(270px,80%);align-self:center}
   .section-lead .section-intro{order:2}
   h1{font-size:clamp(32px,8.5vw,62px);line-height:1.12;letter-spacing:-1px}
-  .home-hero{grid-template-columns:1fr 1fr;gap:0;align-items:center;padding-top:4px;padding-bottom:28px}
-  .hero-copy{display:contents}
-  .home-hero .panel-heading{grid-column:1/-1}
-  .home-hero h1{font-size:clamp(36px,10.7vw,68px);letter-spacing:-.8px;line-height:1.1}
-  .hero-title-highlight:after{height:6px;bottom:-9px}
-  .hero-picture{grid-column:1/-1;margin-top:21px;width:100%;max-width:205px;justify-self:center}
-  .handwritten{font-size:17px;margin-right:1px}
   .home-opening{font-size:18px;line-height:1.75;letter-spacing:-.3px;margin-top:0}
   .home-note{grid-template-columns:23px 1fr;gap:16px;margin-top:34px;padding-top:27px}
   .note-star{font-size:27px}
@@ -179,8 +160,5 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 @media(max-width:375px){
   .page-width{width:calc(100% - 32px)}
   .nav-tab{padding-inline:6px}
-  .home-hero h1{font-size:38px}
-  .hero-picture{margin-top:21px}
-  .handwritten{font-size:15px}
   .contact-value{font-size:16px}
 }

@@ -115,8 +115,15 @@ try {
       const name = getComputedStyle(document.querySelector('.brand-name'));
       const events = getComputedStyle(document.querySelector('.brand-name > span'));
       return name.fontFamily.includes('EB Garamond') && name.fontWeight === '500'
-        && events.fontFamily.includes('Futura') && events.fontWeight === '700'
-        && getComputedStyle(document.querySelector('.home-hero h1')).fontFamily.includes('Titan');
+        && events.fontFamily.includes('Futura') && events.fontWeight === '700';
+    })()`));
+    assert.equal(await evaluate('document.querySelectorAll(".home-content img, .home-content .panel-heading").length'), 0);
+    assert.ok(await evaluate(`(() => {
+      const home = document.querySelector('.home-content');
+      return home.querySelector('h1').textContent === 'Primer que res…ENHORABONA!'
+        && getComputedStyle(home.querySelector('h1')).fontFamily.includes('Caveat')
+        && !home.textContent.includes('LA FIGUERA EVENTS')
+        && home.querySelector('.home-opening').textContent.length > 0;
     })()`));
     assert.equal(await evaluate('location.pathname'), pathFor('la-carta'));
     assert.equal(await evaluate('location.hash'), '');
@@ -335,7 +342,7 @@ try {
   })()`);
     assert.deepEqual(extended, { options: 4, pending: 'Informació pendent', label: 'Nova columna', visible: true, known: '99€ (sense IVA)', overflow: false });
   }
-  assert.ok(await evaluate(`document.fonts.check('20px Titan') && document.fonts.check('400 20px "Futura Text"') && document.fonts.check('600 20px "Futura Text"')`));
+  assert.ok(await evaluate(`document.fonts.check('500 20px "EB Garamond"') && document.fonts.check('400 20px "Futura Text"') && document.fonts.check('600 20px "Futura Text"')`));
   assert.deepEqual(browserErrors, [], 'Browser runtime errors');
   assert.deepEqual(failedRequests, [], 'Failed assets');
   console.log('✓ Rutes sense #, càrrega directa, recàrrega, enllaços antics, arrere/avant i columna addicional');

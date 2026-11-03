@@ -155,9 +155,6 @@ function questionsBlock(section) {
 function heading(section) {
   const header = el('div', 'panel-heading');
   const title = el('h1', '', section.title);
-  if (section.kind === 'home') {
-    title.replaceChildren(el('span', '', 'LA FIGUERA'), document.createTextNode(' '), el('span', 'hero-title-highlight', 'EVENTS'));
-  }
   header.append(title);
   return header;
 }
@@ -176,21 +173,12 @@ function sectionLead(section) {
   return lead;
 }
 
-function home(section) {
+function home() {
   const container = el('div', 'home-content');
-  const hero = el('div', 'home-hero');
-  const copy = el('div', 'hero-copy');
-  copy.append(heading(section));
-  const picture = el('div', 'hero-picture');
-  const illustration = el('img');
-  illustration.src = './assets/cake.svg'; illustration.alt = 'Il·lustració d’una tortada de tres pisos amb flors i fruita';
-  illustration.width = 540; illustration.height = 490;
-  const greeting = el('span', 'handwritten');
+  const greeting = el('h1', 'handwritten');
   greeting.append(document.createTextNode('Primer que res…'), el('br'), el('strong', '', 'ENHORABONA!'));
-  picture.append(illustration, greeting);
-  hero.append(copy, picture);
   const opening = paragraph(introduction.text, 'home-opening');
-  container.append(hero, opening);
+  container.append(greeting, opening);
   return container;
 }
 
@@ -246,7 +234,7 @@ sections.forEach(section => {
     navigation.append(link);
   }
   const panel = el('section', 'panel'); panel.id = `panel-${section.id}`; panel.hidden = true;
-  panel.append(section.kind === 'home' ? home(section) : section.kind === 'contact' ? contactContent(section) : catalogue(section));
+  panel.append(section.kind === 'home' ? home() : section.kind === 'contact' ? contactContent(section) : catalogue(section));
   main.append(panel);
 });
 
