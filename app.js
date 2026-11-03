@@ -68,13 +68,13 @@ function renderCell(parent, value) {
 }
 
 // New columns default to visible options; missing values remain explicitly pending.
-export function renderCatalogue(data) {
+export function renderCatalogue(data, firstIndex = 0) {
   const list = el('div', 'product-list');
   const nameColumns = data.columns.filter(column => column.role === 'name');
   const detailColumns = data.columns.filter(column => column.role === 'detail');
   const optionColumns = data.columns.filter(column => !['name', 'detail'].includes(column.role));
-  data.rows.forEach(row => {
-    const item = el('article', 'product-item');
+  data.rows.forEach((row, index) => {
+    const item = el('article', `product-item${(firstIndex + index) % 2 ? ' product-item-rose' : ''}`);
     item.dataset.rowId = row.id;
     const name = el('h3', 'product-name');
     nameColumns.forEach(column => {
@@ -82,10 +82,16 @@ export function renderCatalogue(data) {
       renderCell(label, column.label);
       const value = el('span', 'product-name-value');
       value.dataset.columnKey = column.key;
-      renderCell(value, row.cells[column.key]);
+      const cell = row.cells[column.key];
+      if (cell?.text) {
+        const text = el('span', 'product-name-text');
+        richText(text, cell.text);
+        value.append(text);
+      }
+      if (!cell || cell.pending) value.append(pendingBadge());
       name.append(label, value);
     });
-    if (!nameColumns.length) name.textContent = data.title;
+    if (!nameColumns.length) name.append(el('span', 'product-name-text', data.title));
     const options = el('div', 'product-options');
     optionColumns.forEach(column => {
       const option = el('span', 'product-option');
@@ -111,11 +117,11 @@ export function renderCatalogue(data) {
   return list;
 }
 
-function catalogueBlock(id) {
+function catalogueBlock(id, firstIndex) {
   const data = tables[id];
   const block = el('section', 'catalogue-block');
   block.dataset.catalogueId = id;
-  block.append(el('h2', 'catalogue-heading', data.title), renderCatalogue(data));
+  block.append(el('h2', 'catalogue-heading', data.title), renderCatalogue(data, firstIndex));
   if (data.fragments?.length) {
     const fragments = el('details', 'source-fragments');
     fragments.append(el('summary', '', 'Fragments de taula pendents d’ubicar'));
@@ -217,7 +223,11 @@ function catalogue(section) {
     link.href = routePath('bufet-de-tortades'); link.dataset.section = 'bufet-de-tortades';
     container.append(link);
   }
-  section.tableIds.forEach(id => container.append(catalogueBlock(id)));
+  let productIndex = 0;
+  section.tableIds.forEach(id => {
+    container.append(catalogueBlock(id, productIndex));
+    productIndex += tables[id].rows.length;
+  });
   container.append(questionsBlock(section));
   const closing = el('a', 'closing-link'); closing.href = routePath('contacte'); closing.dataset.section = 'contacte';
   const closingLabel = el('span', 'closing-label', 'Contacteu-nos');

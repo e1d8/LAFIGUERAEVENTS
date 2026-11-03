@@ -48,10 +48,15 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 .catalogue-block{margin-top:45px}
 .catalogue-heading{margin-bottom:16px;font-size:27px;letter-spacing:-.8px;font-weight:600}
 .product-list{border:1px solid var(--line);border-radius:5px;background:var(--white)}
-.product-item{min-width:0;padding:24px;background:var(--white);border-bottom:1px solid var(--line)}
+.product-item{--name-highlight:var(--mustard);min-width:0;padding:24px;background:var(--white);border-bottom:1px solid var(--line)}
+.product-item-rose{--name-highlight:var(--purple)}
 .product-item:last-child{border-bottom:0}
 .product-name{min-width:0;margin:0;font-size:19px;font-weight:600;letter-spacing:-.4px;overflow-wrap:anywhere}
 .product-name-value{display:block}
+.product-name-text{position:relative;isolation:isolate;display:inline-block;max-width:100%;color:var(--ink)}
+.product-name-text:before,.product-name-text:after{content:'';position:absolute;z-index:-1;pointer-events:none;background:var(--name-highlight)}
+.product-name-text:before{left:-.16em;right:-.22em;bottom:-.04em;height:.65em;opacity:.8;transform:rotate(-1.2deg);border-radius:15% 9% 17% 7%;clip-path:polygon(0 16%,13% 6%,31% 13%,52% 0,73% 10%,96% 3%,100% 76%,87% 93%,65% 86%,43% 100%,21% 89%,2% 97%)}
+.product-name-text:after{left:5%;right:7%;bottom:-.11em;height:.22em;opacity:.35;transform:rotate(1deg);border-radius:45% 20% 55% 30%}
 .product-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:14px 24px;min-width:0;max-width:760px;margin-top:20px}
 .product-option{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0;overflow-wrap:anywhere;line-height:1.5}
 .product-option-label{font-size:12px;color:var(--muted)}
