@@ -36,6 +36,10 @@ test('Direct entry pages share the root HTML and load assets from the parent dir
 });
 
 test('Every static entry provides the requested link-sharing title and description without JavaScript', async () => {
+  const imageURL = 'https://e1d8.github.io/LAFIGUERAEVENTS/assets/figa-256.png';
+  const image = await readFile(new URL('../assets/figa-256.png', import.meta.url));
+  assert.equal(image.readUInt32BE(16), 256);
+  assert.equal(image.readUInt32BE(20), 256);
   for (const slug of Object.values(sectionSlugs)) {
     const html = await readFile(new URL(`../${slug ? `${slug}/` : ''}index.html`, import.meta.url), 'utf8');
     for (const attribute of ['name="description"', 'property="og:description"', 'name="twitter:description"']) {
@@ -44,5 +48,13 @@ test('Every static entry provides the requested link-sharing title and descripti
     for (const attribute of ['property="og:title"', 'name="twitter:title"']) {
       assert.ok(html.includes(`<meta ${attribute} content="La Figuera Events">`));
     }
+    for (const attribute of ['property="og:image"', 'name="twitter:image"']) {
+      assert.ok(html.includes(`<meta ${attribute} content="${imageURL}">`));
+    }
+    for (const attribute of ['property="og:image:alt"', 'name="twitter:image:alt"']) {
+      assert.ok(html.includes(`<meta ${attribute} content="Figa oberta de La Figuera Events">`));
+    }
+    assert.ok(html.includes('<meta property="og:image:width" content="256">'));
+    assert.ok(html.includes('<meta property="og:image:height" content="256">'));
   }
 });
