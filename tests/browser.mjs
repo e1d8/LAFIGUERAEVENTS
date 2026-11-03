@@ -134,6 +134,9 @@ try {
     assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Si teniu qualsevol dubte")'));
     assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Veure la carta")'));
     assert.equal(await evaluate('document.querySelectorAll(".home-content a[data-section], .choice-grid, .choice-card").length'), 0);
+    const underlineVariants = await evaluate('Array.from(document.querySelectorAll(".product-name-text")).map(name => name.dataset.underline)');
+    assert.equal(new Set(underlineVariants.slice(0, 4)).size, 4, 'Use all four fixed strokes before reshuffling');
+    assert.ok(underlineVariants.every((variant, index) => /^[0-3]$/.test(variant) && (!index || variant !== underlineVariants[index - 1])));
     assert.ok(await evaluate('document.querySelector("link[rel=icon]").href.endsWith("/figa-256.png")'));
     assert.ok(await evaluate('document.querySelector(".brand-logo").src.endsWith("/figa-256.png") && document.querySelector(".brand-logo").complete && document.querySelector(".brand-logo").naturalWidth === 256'));
     for (const route of routes) {
@@ -171,6 +174,11 @@ try {
       if (['tartes-nupcials', 'bufet-de-tortades', 'taules-dolces'].includes(route)) {
         const panel = `#panel-${route}`;
         assert.equal(await evaluate(`document.querySelectorAll('${panel} details.product-item, ${panel} .product-summary, ${panel} .product-toggle').length`), 0);
+        assert.ok(await evaluate(`(() => {
+          const names = Array.from(document.querySelectorAll('${panel} .product-name-text'));
+          return names.every(name => /^[0-3]$/.test(name.dataset.underline)
+            && getComputedStyle(name, '::before').clipPath !== 'none');
+        })()`));
         assert.ok(await evaluate(`(async () => {
           const {tables, sections, pickup} = await import('./content.js');
           const section = sections.find(section => section.id === '${route}');
@@ -338,9 +346,13 @@ try {
     const wrap=renderCatalogue(data); document.querySelector('#panel-la-carta').append(wrap);
     const extra=wrap.querySelector('[data-column-key="extra"]');
     const result={options:wrap.querySelectorAll('.product-option').length,pending:extra.querySelector('.product-option-value').textContent,label:extra.querySelector('.product-option-label').textContent,visible:extra.checkVisibility(),known:wrap.querySelector('[data-column-key="known"] .product-option-value').textContent,overflow:document.documentElement.scrollWidth>innerWidth};
+    data.rows = Array.from({length:20}, (_, index) => ({...data.rows[0], id:'stroke-' + index}));
+    const variants = Array.from(renderCatalogue(data).querySelectorAll('.product-name-text')).map(name => name.dataset.underline);
+    result.allStrokes = new Set(variants).size === 4;
+    result.noRepeats = variants.every((variant, index) => /^[0-3]$/.test(variant) && (!index || variant !== variants[index - 1]));
     wrap.remove();return result;
   })()`);
-    assert.deepEqual(extended, { options: 4, pending: 'Informació pendent', label: 'Nova columna', visible: true, known: '99€ (sense IVA)', overflow: false });
+    assert.deepEqual(extended, { options: 4, pending: 'Informació pendent', label: 'Nova columna', visible: true, known: '99€ (sense IVA)', overflow: false, allStrokes: true, noRepeats: true });
   }
   assert.ok(await evaluate(`document.fonts.check('500 20px "EB Garamond"') && document.fonts.check('400 20px "Futura Text"') && document.fonts.check('600 20px "Futura Text"')`));
   assert.deepEqual(browserErrors, [], 'Browser runtime errors');

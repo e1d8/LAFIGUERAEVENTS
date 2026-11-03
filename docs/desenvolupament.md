@@ -54,6 +54,8 @@ La icona de figa oberta està en `assets/figa-256.png` i s’utilitza tant en la
 
 ## Verificació
 
+Els noms dels productes utilitzen quatre subratllats fixos: l’original i tres variants de retolador definides en `styles.css`. `productNameText`, en `app.js`, reparteix els quatre traços en ordre aleatori, utilitzant-los tots abans de tornar-los a barrejar i evitant dues formes iguals consecutives. La selecció es fa una vegada en carregar la pàgina: es manté en canviar de pestanya o redimensionar i pot variar en recarregar. Els colors continuen alternant entre groc i rosenc al llarg de cada secció.
+
 La paleta actual pren com a referència «Estil artistic.jpg», aportada per l’usuari: fons lila blavós `#d8dbfa`, gris `#676767` als títols, mostassa `#ddc17c` a la pestanya seleccionada i malva `#cca8c5` als accents. Els textos menuts utilitzen grisos més foscos per mantindre la llegibilitat; les targetes tenen un fons lila molt clar. Els colors es defineixen en les variables de `:root` de `styles.css`. Les imatges, la distribució i la tipografia es mantenen.
 
 ```sh

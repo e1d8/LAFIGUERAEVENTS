@@ -67,6 +67,25 @@ function renderCell(parent, value) {
   if (!value || value.pending) parent.append(pendingBadge());
 }
 
+let underlineBag = [];
+let lastUnderline;
+function productNameText(text) {
+  if (!underlineBag.length) {
+    underlineBag = [0, 1, 2, 3];
+    for (let i = underlineBag.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [underlineBag[i], underlineBag[j]] = [underlineBag[j], underlineBag[i]];
+    }
+    // Use every stroke before reshuffling, without repeating at a bag boundary.
+    if (underlineBag[3] === lastUnderline) [underlineBag[0], underlineBag[3]] = [underlineBag[3], underlineBag[0]];
+  }
+  const name = el('span', 'product-name-text');
+  lastUnderline = underlineBag.pop();
+  name.dataset.underline = lastUnderline;
+  richText(name, text);
+  return name;
+}
+
 // New columns default to visible options; missing values remain explicitly pending.
 export function renderCatalogue(data, firstIndex = 0) {
   const list = el('div', 'product-list');
@@ -84,14 +103,12 @@ export function renderCatalogue(data, firstIndex = 0) {
       value.dataset.columnKey = column.key;
       const cell = row.cells[column.key];
       if (cell?.text) {
-        const text = el('span', 'product-name-text');
-        richText(text, cell.text);
-        value.append(text);
+        value.append(productNameText(cell.text));
       }
       if (!cell || cell.pending) value.append(pendingBadge());
       name.append(label, value);
     });
-    if (!nameColumns.length) name.append(el('span', 'product-name-text', data.title));
+    if (!nameColumns.length) name.append(productNameText(data.title));
     const options = el('div', 'product-options');
     optionColumns.forEach(column => {
       const option = el('span', 'product-option');
