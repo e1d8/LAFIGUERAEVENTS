@@ -107,7 +107,7 @@ const transportAnswer = 'Pel moment no tenim un transport adaptat al transport d
 
 export const sections = [
   {
-    id: 'la-carta', label: 'La carta', title: 'LA FIGUERA EVENTS', pageTitle: 'La Figuera Events · Inici', number: '01', kind: 'home',
+    id: 'la-carta', label: 'La carta', title: 'LA FIGUERA EVENTS', pageTitle: 'La Figuera Events', number: '01', kind: 'home',
   },
   {
     id: 'tartes-nupcials', label: 'Tartes nupcials', title: 'Tartes nupcials:', pageTitle: 'La Figuera Events · Nupcials', number: '02',

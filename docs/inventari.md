@@ -50,4 +50,4 @@ La web omet el final de la presentació des de «Al final d’aquest document» 
 
 Contacte mostra únicament WhatsApp, correu i Instagram, en files amb il·lustracions pròpies al costat del contacte. Els altres mitjans de la captura es conserven en la transcripció arxivada. Les FAQ mostren només «Preguntes freqüents», sense el text introductori «PER RESOLDRE ELS DUBTES».
 
-Les capçaleres de les seccions utilitzen la il·lustració corresponent en lloc de la flor. Els títols del navegador segueixen el format «La Figuera Events · Inici/Nupcials/Bufet/Taules/Contacte», amb un únic nom segons la secció oberta.
+Les capçaleres de les seccions utilitzen la il·lustració corresponent en lloc de la flor. El títol del navegador és «La Figuera Events» en la portada i «La Figuera Events · Nupcials/Bufet/Taules/Contacte» en les seccions, amb un únic nom segons la secció oberta. Totes les entrades HTML inclouen les metadades per compartir: títol «La Figuera Events» i descripció «Tartes nupcials, bufet de tortades i taules dolces», tant en Open Graph com en Twitter Cards.

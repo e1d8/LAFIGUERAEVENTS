@@ -9,6 +9,7 @@ const base = (process.env.PREVIEW_URL || 'http://127.0.0.1:4173').replace(/\/+$/
 const basePath = new URL(`${base}/`).pathname;
 const slugs = { 'la-carta': '', 'tartes-nupcials': 'nupcials', 'bufet-de-tortades': 'bufet', 'taules-dolces': 'taules', contacte: 'contacte' };
 const titleNames = { 'la-carta': 'Inici', 'tartes-nupcials': 'Nupcials', 'bufet-de-tortades': 'Bufet', 'taules-dolces': 'Taules', contacte: 'Contacte' };
+const titleFor = id => id === 'la-carta' ? 'La Figuera Events' : `La Figuera Events · ${titleNames[id]}`;
 const pathFor = id => slugs[id] ? `${basePath}${slugs[id]}` : basePath.replace(/\/$/, '') || '/';
 assert.equal((await fetch(base)).status, 200, 'Start npm run dev first');
 if (['127.0.0.1', 'localhost'].includes(new URL(base).hostname)) {
@@ -169,7 +170,7 @@ try {
       await until(`document.querySelector('#panel-${route}').hidden === false`);
       await until('Array.from(document.querySelectorAll(".panel:not([hidden]) img")).every(image => image.complete && image.naturalWidth > 0)');
       assert.equal(await evaluate('location.pathname'), pathFor(route));
-      assert.equal(await evaluate('document.title'), `La Figuera Events · ${titleNames[route]}`);
+      assert.equal(await evaluate('document.title'), titleFor(route));
       assert.equal(await evaluate('location.hash'), '');
       assert.equal(await evaluate('document.querySelectorAll(".panel:not([hidden])").length'), 1);
       assert.equal(await evaluate('document.querySelectorAll(".panel details[open]").length'), 0, 'Changing section collapses FAQ');
@@ -340,12 +341,12 @@ try {
     await navigate(entry);
     await until(`document.querySelector('#panel-${route}').hidden === false`);
     assert.equal(await evaluate('location.pathname'), pathFor(route));
-    assert.equal(await evaluate('document.title'), `La Figuera Events · ${titleNames[route]}`);
+    assert.equal(await evaluate('document.title'), titleFor(route));
     assert.equal(await evaluate('location.hash'), '');
     await reload();
     assert.equal(await evaluate('location.pathname'), pathFor(route));
     assert.equal(await evaluate(`document.querySelector('#panel-${route}').hidden`), false);
-    assert.equal(await evaluate('document.title'), `La Figuera Events · ${titleNames[route]}`);
+    assert.equal(await evaluate('document.title'), titleFor(route));
     if (slugs[route]) {
       for (const ending of ['/', '/index.html']) {
         await navigate(entry + ending);

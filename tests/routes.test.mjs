@@ -25,12 +25,24 @@ for (const basePath of ['/', '/LAFIGUERAEVENTS/']) {
 
 test('Direct entry pages share the root HTML and load assets from the parent directory', async () => {
   const root = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  assert.match(root, /<title>La Figuera Events · Inici<\/title>/);
+  assert.match(root, /<title>La Figuera Events<\/title>/);
   const normalize = html => html.replace(/<base href="[^"]+">/, '<base>').replace(/<title>[^<]+<\/title>/, '<title>');
   for (const slug of Object.values(sectionSlugs).filter(Boolean)) {
     const html = await readFile(new URL(`../${slug}/index.html`, import.meta.url), 'utf8');
     assert.match(html, /<base href="\.\.\/">/);
     assert.ok(html.includes(`<title>La Figuera Events · ${slug[0].toUpperCase() + slug.slice(1)}</title>`));
     assert.equal(normalize(html), normalize(root));
+  }
+});
+
+test('Every static entry provides the requested link-sharing title and description without JavaScript', async () => {
+  for (const slug of Object.values(sectionSlugs)) {
+    const html = await readFile(new URL(`../${slug ? `${slug}/` : ''}index.html`, import.meta.url), 'utf8');
+    for (const attribute of ['name="description"', 'property="og:description"', 'name="twitter:description"']) {
+      assert.ok(html.includes(`<meta ${attribute} content="Tartes nupcials, bufet de tortades i taules dolces">`));
+    }
+    for (const attribute of ['property="og:title"', 'name="twitter:title"']) {
+      assert.ok(html.includes(`<meta ${attribute} content="La Figuera Events">`));
+    }
   }
 });
