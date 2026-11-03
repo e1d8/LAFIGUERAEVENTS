@@ -79,7 +79,7 @@ function productNameText(text) {
     // Use every stroke before reshuffling, without repeating at a bag boundary.
     if (underlineBag[3] === lastUnderline) [underlineBag[0], underlineBag[3]] = [underlineBag[3], underlineBag[0]];
   }
-  const name = el('span', 'product-name-text');
+  const name = el('span', 'product-name-text marker-text');
   lastUnderline = underlineBag.pop();
   name.dataset.underline = lastUnderline;
   richText(name, text);
@@ -198,10 +198,24 @@ function sectionLead(section) {
 
 function home() {
   const container = el('div', 'home-content');
-  const greeting = el('h1', 'handwritten');
+  const greeting = el('h1', 'home-greeting');
   greeting.append(document.createTextNode('Primer que res…'), el('br'), el('strong', '', 'ENHORABONA!'));
   const opening = paragraph(introduction.text, 'home-opening');
-  container.append(greeting, opening);
+  const choices = el('nav', 'home-choices');
+  choices.setAttribute('aria-label', 'Seccions de La Figuera Events');
+  sections.filter(section => section.kind !== 'home').forEach((section, index) => {
+    const link = el('a', 'home-choice');
+    link.href = routePath(section.id);
+    link.dataset.section = section.id;
+    const image = el('img', 'home-choice-image');
+    image.src = `./assets/${sectionImages[section.id]}`;
+    image.alt = ''; image.width = 240; image.height = 180;
+    const title = el('span', 'home-choice-title marker-text', section.label);
+    title.dataset.underline = index;
+    link.append(image, title);
+    choices.append(link);
+  });
+  container.append(greeting, opening, choices);
   return container;
 }
 
@@ -256,7 +270,10 @@ function catalogue(section) {
 
 sections.forEach(section => {
   if (section.kind !== 'home') {
-    const link = el('a', 'nav-tab', section.label);
+    const link = el('a', 'nav-tab');
+    const label = el('span', 'nav-label marker-text', section.label);
+    label.dataset.underline = navigation.children.length;
+    link.append(label);
     link.href = routePath(section.id); link.dataset.section = section.id;
     navigation.append(link);
   }
@@ -273,6 +290,9 @@ function selectSection({ scroll = true } = {}) {
   if (changed) main.querySelectorAll('details[open]').forEach(details => { details.open = false; });
   const canonicalURL = routePath(section.id) + location.search;
   if (location.pathname + location.search + location.hash !== canonicalURL) history.replaceState(null, '', canonicalURL);
+  const isHome = section.kind === 'home';
+  document.body.classList.toggle('is-home', isHome);
+  navigation.hidden = isHome;
   document.querySelectorAll('.panel').forEach(panel => { panel.hidden = panel.id !== `panel-${section.id}`; });
   document.querySelectorAll('.site-header a[data-section]').forEach(link => {
     const active = link.dataset.section === section.id;

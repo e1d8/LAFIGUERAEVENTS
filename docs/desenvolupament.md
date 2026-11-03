@@ -46,15 +46,19 @@ El text normal utilitza Futura Book (pes CSS 400) i els destacats Futura ND Demi
 
 Els títols principals de Nupcials, Bufet, Taules i Contacte utilitzen EB Garamond Medium (pes 500), amb mides adaptades a PC i mòbil.
 
+La portada mostra la marca ampliada amb la figa, la felicitació en Futura Book amb «ENHORABONA!» en Futura ND DemiBold, la descripció i quatre accessos amb la il·lustració de cada secció damunt del títol. Es distribueixen en quatre columnes en PC i dues en pantalles menudes. La barra de pestanyes s’oculta en la portada i reapareix dins de les seccions, també en navegar arrere i avant.
+
 Les quatre introduccions comparteixen el component `sectionLead`, les mateixes columnes, una àrea reservada per als títols i un marc d’imatge de proporció 4:3. Les descripcions tenen sempre la mateixa tipografia, mida i interlineat per amplària de pantalla, també en Contacte; la seua altura varia segons la llargària del text. En mòbil es mostra títol, imatge i descripció en el mateix ordre i amb el mateix espaiat.
 
 Tartes nupcials utilitza `assets/nupcial-painted.png`, Bufet de tortades `assets/torta-painted.png` i Taules dolces `assets/galetes-painted.png`, les il·lustracions aportades per l’usuari. Es mostren completes, sense retallar-les, dins del mateix marc que les altres seccions. La correspondència d’imatges es defineix en `sectionImages`, dins d’`app.js`.
 
-La icona de figa oberta està en `assets/figa-256.png` i s’utilitza tant en la capçalera com en la pestanya del navegador. Per substituir-la, actualitza el `src` de `<img class="brand-logo">` i l’`href` i el tipus de `<link rel="icon">` en les cinc entrades HTML. La mida del logotip és de 45 px en PC i 36 px en mòbil, definida en `styles.css`.
+La icona de figa oberta està en `assets/figa-256.png` i s’utilitza tant en la capçalera com en la pestanya del navegador. Per substituir-la, actualitza el `src` de `<img class="brand-logo">` i l’`href` i el tipus de `<link rel="icon">` en les cinc entrades HTML. La mida del logotip dins de les seccions és de 45 px en PC i 36 px en mòbil; en la portada augmenta a 136 px i 88 px respectivament, definida en `styles.css`.
 
 ## Verificació
 
 Els noms dels productes utilitzen quatre subratllats fixos: l’original i tres variants de retolador definides en `styles.css`. `productNameText`, en `app.js`, reparteix els quatre traços en ordre aleatori, utilitzant-los tots abans de tornar-los a barrejar i evitant dues formes iguals consecutives. La selecció es fa una vegada en carregar la pàgina: es manté en canviar de pestanya o redimensionar i pot variar en recarregar. Els colors continuen alternant entre groc i rosenc al llarg de cada secció.
+
+Les quatre pestanyes comparteixen estos traços, amb una forma diferent assignada a cadascuna. El subratllat és rosenc en passar el cursor i groc en la pestanya seleccionada; substitueix el fons de caixa tant en PC com en mòbil.
 
 La paleta actual pren com a referència «Estil artistic.jpg», aportada per l’usuari: fons lila blavós `#d8dbfa`, gris `#676767` als títols, mostassa `#ddc17c` a la pestanya seleccionada i malva `#cca8c5` als accents. Els textos menuts utilitzen grisos més foscos per mantindre la llegibilitat; les targetes tenen un fons lila molt clar. Els colors es defineixen en les variables de `:root` de `styles.css`. Les imatges, la distribució i la tipografia es mantenen.
 

@@ -117,30 +117,55 @@ try {
       return name.fontFamily.includes('EB Garamond') && name.fontWeight === '500'
         && events.fontFamily.includes('Futura') && events.fontWeight === '700';
     })()`));
-    assert.equal(await evaluate('document.querySelectorAll(".home-content img, .home-content .panel-heading").length'), 0);
+    assert.equal(await evaluate('document.querySelectorAll(".home-content img").length'), 4);
+    assert.equal(await evaluate('document.querySelectorAll(".home-content .panel-heading").length'), 0);
+    assert.ok(await evaluate('document.querySelector("#navigation").hidden && !document.querySelector("#navigation").checkVisibility()'));
+    assert.ok(await evaluate(`(() => {
+      const brand = document.querySelector('.brand').getBoundingClientRect();
+      const greeting = document.querySelector('.home-content h1').getBoundingClientRect();
+      const description = document.querySelector('.home-opening').getBoundingClientRect();
+      const choices = document.querySelector('.home-choices').getBoundingClientRect();
+      return brand.bottom <= greeting.top && greeting.bottom <= description.top && description.bottom <= choices.top;
+    })()`));
+    const homeLinks = await evaluate(`Array.from(document.querySelectorAll('.home-choice'), link => ({
+      section: link.dataset.section, path: new URL(link.href).pathname,
+      image: link.querySelector('img').getAttribute('src'), title: link.querySelector('.home-choice-title').textContent,
+      markerColor: getComputedStyle(link.querySelector('.home-choice-title'), '::before').backgroundColor,
+      imageAboveTitle: link.querySelector('img').getBoundingClientRect().bottom <= link.querySelector('.home-choice-title').getBoundingClientRect().top,
+    }))`);
+    assert.deepEqual(homeLinks.map(link => link.section), routes.slice(1));
+    assert.deepEqual(homeLinks.map(link => link.path), routes.slice(1).map(pathFor));
+    assert.deepEqual(homeLinks.map(link => link.title), ['Tartes nupcials', 'Bufet de tortades', 'Taules dolces', 'Contacte']);
+    assert.deepEqual(homeLinks.map(link => link.image), ['./assets/nupcial-painted.png', './assets/torta-painted.png', './assets/galetes-painted.png', './assets/contact.svg']);
+    assert.ok(homeLinks.every(link => link.imageAboveTitle));
+    assert.deepEqual(homeLinks.map(link => link.markerColor), ['rgb(204, 168, 197)', 'rgb(204, 168, 197)', 'rgb(204, 168, 197)', 'rgb(221, 193, 124)']);
     assert.ok(await evaluate(`(() => {
       const home = document.querySelector('.home-content');
       return home.querySelector('h1').textContent === 'Primer que res…ENHORABONA!'
-        && getComputedStyle(home.querySelector('h1')).fontFamily.includes('Caveat')
+        && getComputedStyle(home.querySelector('h1')).fontFamily.includes('Futura Text')
+        && getComputedStyle(home.querySelector('h1')).fontWeight === '400'
+        && getComputedStyle(home.querySelector('h1 strong')).fontWeight === '600'
         && !home.textContent.includes('LA FIGUERA EVENTS')
         && home.querySelector('.home-opening').textContent.length > 0;
     })()`));
     assert.equal(await evaluate('location.pathname'), pathFor('la-carta'));
     assert.equal(await evaluate('location.hash'), '');
     assert.equal(await evaluate('document.querySelectorAll(".nav-tab").length'), 4);
+    assert.equal(await evaluate('new Set(Array.from(document.querySelectorAll(".nav-label"), label => getComputedStyle(label, "::before").clipPath)).size'), 4, 'Each navigation tab has a different marker stroke');
+    assert.ok(await evaluate('Array.from(document.querySelectorAll(".nav-tab")).every(tab => getComputedStyle(tab).backgroundColor === "rgba(0, 0, 0, 0)" && getComputedStyle(tab.querySelector(".nav-label"), "::before").visibility === "hidden")'));
     assert.equal(await evaluate(`document.querySelectorAll('.nav-tab[data-section="la-carta"], .header-contact, .tab-number, .choice-top').length`), 0);
     assert.equal(await evaluate('document.querySelector(".brand").getAttribute("aria-current")'), 'page');
     assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Al final d’aquest document")'));
     assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Si teniu qualsevol dubte")'));
     assert.ok(await evaluate('!document.querySelector(".home-content").textContent.includes("Veure la carta")'));
-    assert.equal(await evaluate('document.querySelectorAll(".home-content a[data-section], .choice-grid, .choice-card").length'), 0);
+    assert.equal(await evaluate('document.querySelectorAll(".home-content a[data-section]").length'), 4);
     const underlineVariants = await evaluate('Array.from(document.querySelectorAll(".product-name-text")).map(name => name.dataset.underline)');
     assert.equal(new Set(underlineVariants.slice(0, 4)).size, 4, 'Use all four fixed strokes before reshuffling');
     assert.ok(underlineVariants.every((variant, index) => /^[0-3]$/.test(variant) && (!index || variant !== underlineVariants[index - 1])));
     assert.ok(await evaluate('document.querySelector("link[rel=icon]").href.endsWith("/figa-256.png")'));
     assert.ok(await evaluate('document.querySelector(".brand-logo").src.endsWith("/figa-256.png") && document.querySelector(".brand-logo").complete && document.querySelector(".brand-logo").naturalWidth === 256'));
     for (const route of routes) {
-      await evaluate(`document.querySelector('${route === 'la-carta' ? '.brand' : `.nav-tab[data-section="${route}"]`}').click()`);
+      await evaluate(`document.querySelector('${route === 'la-carta' ? '.brand' : route === 'tartes-nupcials' ? `.home-choice[data-section="${route}"] img` : `.nav-tab[data-section="${route}"]`}').click()`);
       await until(`document.querySelector('#panel-${route}').hidden === false`);
       await until('Array.from(document.querySelectorAll(".panel:not([hidden]) img")).every(image => image.complete && image.naturalWidth > 0)');
       assert.equal(await evaluate('location.pathname'), pathFor(route));
@@ -150,7 +175,9 @@ try {
       assert.equal(await evaluate('document.querySelectorAll(".panel details[open]").length'), 0, 'Changing section collapses FAQ');
       assert.ok(await evaluate('document.documentElement.scrollWidth <= innerWidth'), `Page overflow: ${width}/${route}`);
       assert.equal(await evaluate('scrollY'), 0, 'Changing sections returns to the top');
+      assert.equal(await evaluate('document.querySelector("#navigation").checkVisibility()'), route !== 'la-carta');
       if (route !== 'la-carta') {
+        assert.ok(await evaluate(`(() => {const tab = document.querySelector('.nav-tab.active'); const marker = getComputedStyle(tab.querySelector('.nav-label'), '::before'); return getComputedStyle(tab).backgroundColor === 'rgba(0, 0, 0, 0)' && marker.visibility === 'visible' && marker.backgroundColor === 'rgb(221, 193, 124)';})()`), 'Selected navigation shows a yellow underline without a box');
         assert.ok(await evaluate(`(() => {const lead=document.querySelector('#panel-${route} .section-lead');const image=lead.querySelector('.section-illustration');const picture=image.getBoundingClientRect();const title=lead.querySelector('h1').getBoundingClientRect();return image.complete && image.naturalWidth>0 && !image.src.endsWith('flower.svg') && picture.width>=200 && (picture.left>=title.right || picture.top>=title.bottom)})()`));
         const introMetrics = await evaluate(`(() => {
           const lead = document.querySelector('#panel-${route} .section-lead');
@@ -270,15 +297,30 @@ try {
     }
     await evaluate('document.querySelector(".brand-logo").click()');
     await until('document.querySelector("#panel-la-carta").hidden === false');
-    for (const route of routes.slice(1, 4)) {
-      await evaluate(`document.querySelector('.nav-tab[data-section="${route}"]').click()`);
+    for (const route of routes.slice(1)) {
+      assert.ok(await evaluate('!document.querySelector("#navigation").checkVisibility()'));
+      await evaluate(`document.querySelector('.home-choice[data-section="${route}"] .home-choice-title').click()`);
       await until(`document.querySelector('#panel-${route}').hidden === false`);
+      assert.ok(await evaluate('document.querySelector("#navigation").checkVisibility()'));
       await evaluate('document.querySelector(".brand-name").click()');
       await until('document.querySelector("#panel-la-carta").hidden === false');
     }
-    console.log(`✓ ${width}px: fitxes blanques amb nom, descripció i preus visibles, sense desbordament`);
+    console.log(`✓ ${width}px: portada amb quatre accessos il·lustrats, navegació contextual i catàlegs sense desbordament`);
   }
-  await evaluate(`document.querySelector('.nav-tab[data-section="tartes-nupcials"]').click()`);
+  await evaluate(`document.querySelector('.home-choice[data-section="tartes-nupcials"]').click()`);
+  for (let index = 0; index < 4; index++) {
+    const point = await evaluate(`(() => { const rect = document.querySelectorAll('.nav-tab')[${index}].getBoundingClientRect(); return {x: rect.x + rect.width / 2, y: rect.y + rect.height / 2}; })()`);
+    await send('Input.dispatchMouseEvent', {type: 'mouseMoved', ...point});
+    const expectedColor = index === 0 ? 'rgb(221, 193, 124)' : 'rgb(204, 168, 197)';
+    assert.ok(await evaluate(`(() => { const marker = getComputedStyle(document.querySelectorAll('.nav-label')[${index}], '::before'); return marker.visibility === 'visible' && marker.backgroundColor === '${expectedColor}'; })()`), 'Hover shows a pink underline and the selected tab stays yellow');
+  }
+  await send('Input.dispatchMouseEvent', {type: 'mouseMoved', x: 0, y: 0});
+  await evaluate('history.back()');
+  await until('document.querySelector("#panel-la-carta").hidden === false');
+  assert.ok(await evaluate('!document.querySelector("#navigation").checkVisibility()'));
+  await evaluate('history.forward()');
+  await until('document.querySelector("#panel-tartes-nupcials").hidden === false');
+  assert.ok(await evaluate('document.querySelector("#navigation").checkVisibility()'));
   for (const width of [768, 930, 768, 1440]) {
     await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false });
     assert.ok(await evaluate('document.documentElement.scrollWidth <= innerWidth'));
