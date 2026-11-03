@@ -206,7 +206,7 @@ try {
           const options = item.querySelector('.product-options').getBoundingClientRect();
           return item.scrollWidth <= item.clientWidth + 1
             && description.top >= name.bottom && options.top >= description.bottom
-            && getComputedStyle(item).backgroundColor === 'rgb(253, 253, 247)';
+            && getComputedStyle(item).backgroundColor === 'rgb(238, 238, 251)';
         })`));
         assert.ok(await evaluate('document.documentElement.scrollWidth <= innerWidth'));
         if (width === 390 || width === 1440) {

@@ -6,7 +6,7 @@
 @font-face{font-family:'Futura Text';src:url('./assets/futura-book.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:'Futura Text';src:url('./assets/futura-nd-demibold.woff2') format('woff2');font-style:normal;font-weight:600;font-display:swap}
 
-:root{--paper:#f5f5eb;--ink:#45513f;--muted:#737a69;--line:#d6d9ca;--purple:#c7b1df;--purple-light:#e8ddef;--lime:#e5e8c8;--white:#fdfdf7;--body:'Futura Text',Arial,sans-serif;--display:Titan,'Arial Black',Impact,sans-serif}
+:root{--paper:#d8dbfa;--ink:#57575a;--heading:#676767;--muted:#615f6a;--line:#b5b7d4;--purple:#b38db4;--purple-light:#e5cee4;--mustard:#dccd9e;--white:#eeeefb;--badge-background:#e5cee4;--badge-border:#b38db4;--badge-ink:#694768;--note-ink:#705a32;--body:'Futura Text',Arial,sans-serif;--display:Titan,'Arial Black',Impact,sans-serif}
 *{box-sizing:border-box}
 html{scroll-padding-top:165px}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;font-weight:400;font-synthesis:none;-webkit-font-smoothing:antialiased}
@@ -24,11 +24,12 @@ img{display:block;max-width:100%;height:auto}
 .brand-name>span{display:block;font-family:Futura,'DM Sans',sans-serif;font-size:10px;letter-spacing:5px;margin-top:5px;font-weight:700}
 .section-nav{display:flex;gap:8px;flex:1;max-width:800px}
 .nav-tab{flex:1;display:flex;align-items:center;justify-content:center;padding:12px 16px;border:1px solid transparent;border-radius:5px;text-decoration:none;font-size:14px;font-weight:600;line-height:1.4;white-space:nowrap}
-.nav-tab:hover{background:#e9ecde}
-.nav-tab.active{background:var(--ink);color:var(--paper)}
+.nav-tab:hover{background:var(--purple-light)}
+.nav-tab.active{background:var(--mustard);color:var(--ink)}
 .panel{padding-top:49px;padding-bottom:60px}
 .panel-heading{display:block}
 h1,h2,p{margin:0}
+h1,h2,h3{color:var(--heading)}
 h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;font-weight:400;letter-spacing:-2px;text-wrap:balance;overflow-wrap:break-word}
 .section-lead{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,1fr);align-items:start;gap:18px 48px}
 .section-lead-copy{display:contents}
@@ -39,7 +40,7 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 .home-opening{max-width:960px;font-size:23px;line-height:1.65;margin:0;letter-spacing:-.4px}
 .arrow-image{display:inline-block;width:28px;height:28px;object-fit:contain;flex-shrink:0;vertical-align:middle}
 .home-note{display:grid;grid-template-columns:50px 1fr;gap:30px;border-top:1px solid var(--line);padding-top:37px;margin-top:58px}
-.note-star{font-size:42px;line-height:1.1;color:#9c81b8}
+.note-star{font-size:42px;line-height:1.1;color:var(--purple)}
 .home-note p{font-size:16px;line-height:1.85;max-width:900px}
 .section-intro{font-size:19px;line-height:1.85;margin:0;letter-spacing:0}
 .inline-section-link{display:inline-flex;align-items:center;gap:8px;font-size:14px;margin-top:15px}
@@ -62,9 +63,9 @@ h1{font-family:var(--display);font-size:clamp(50px,6.5vw,87px);line-height:1.06;
 .product-note{display:block;margin-top:14px;font-size:11px;line-height:1.5}
 .product-item .pending-badge{margin-top:5px;font-size:10px;font-weight:400;letter-spacing:0}
 .product-item .pending-badge:only-child{margin-top:0}
-.pending-badge{display:block;width:fit-content;max-width:100%;margin-top:11px;padding:3px 8px;border:1px solid #d8c7e5;background:#f1eaf5;color:#75598b;border-radius:4px;font-size:10px;line-height:1.55;font-weight:400;letter-spacing:0;white-space:normal}
+.pending-badge{display:block;width:fit-content;max-width:100%;margin-top:11px;padding:3px 8px;border:1px solid var(--badge-border);background:var(--badge-background);color:var(--badge-ink);border-radius:4px;font-size:10px;line-height:1.55;font-weight:400;letter-spacing:0;white-space:normal}
 .pending-badge:only-child{margin-top:0}
-.pickup-note{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#796546;line-height:1.65;margin-top:14px}
+.pickup-note{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--note-ink);line-height:1.65;margin-top:14px}
 .pickup-note:before{content:'';width:20px;height:20px;flex-shrink:0;background:url('./assets/arrow-turn.svg') center/contain no-repeat}
 .source-fragments{border:1px dashed var(--line);padding:14px 18px;margin-top:14px;border-radius:4px;font-size:13px}
 .source-fragments summary{cursor:pointer;font-weight:600}
