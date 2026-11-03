@@ -11,9 +11,9 @@ document.querySelector('.brand').href = routePath('la-carta');
 const main = document.querySelector('#main');
 const navigation = document.querySelector('#navigation');
 const sectionImages = {
-  'tartes-nupcials': 'wedding-cake.svg',
-  'bufet-de-tortades': 'buffet.svg',
-  'taules-dolces': 'sweet-table.svg',
+  'tartes-nupcials': 'nupcial-painted.png',
+  'bufet-de-tortades': 'torta-painted.png',
+  'taules-dolces': 'galetes-painted.png',
   contacte: 'contact.svg',
 };
 const el = (tag, className = '', text) => {
@@ -162,10 +162,10 @@ function heading(section) {
   return header;
 }
 
-function sectionLead(section, introClass) {
+function sectionLead(section) {
   const lead = el('div', 'section-lead');
   const copy = el('div', 'section-lead-copy');
-  copy.append(heading(section), paragraph(section.intro, introClass));
+  copy.append(heading(section), paragraph(section.intro, 'section-intro'));
   lead.append(copy);
   if (sectionImages[section.id]) {
     const illustration = el('img', 'section-illustration');
@@ -196,7 +196,7 @@ function home(section) {
 
 function contactContent(section) {
   const container = el('div', 'contact-content');
-  container.append(sectionLead(section, 'contact-intro'));
+  container.append(sectionLead(section));
   const list = el('ul', 'contact-list');
   const links = [
     ['WhatsApp', contact.phone, `https://wa.me/34${contact.phone}`, 'contact-whatsapp.svg'],
@@ -222,7 +222,7 @@ function contactContent(section) {
 
 function catalogue(section) {
   const container = el('div', 'catalogue-content');
-  container.append(sectionLead(section, 'section-intro'));
+  container.append(sectionLead(section));
   if (section.id === 'taules-dolces') {
     const link = el('a', 'inline-section-link', 'Consultar les tartes del bufet');
     link.append(arrowImage());

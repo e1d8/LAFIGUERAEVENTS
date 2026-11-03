@@ -12,6 +12,8 @@ npm run dev
 
 Obri **http://127.0.0.1:4173**. Cal servir-la per HTTP perquè utilitza mòduls JavaScript; no s’ha d’obrir `index.html` amb `file://`.
 
+El servidor local `dev_server.py` serveix sempre l’arrel d’aquest repositori i desactiva la memòria cau de l’HTML, CSS, JavaScript, imatges i fonts. Després de guardar un fitxer, recarrega la pàgina per vore el canvi; no hi ha recàrrega automàtica. Mantín `npm run dev` en execució. Açò afecta només la previsualització local; GitHub Pages continua publicant els fitxers estàtics de l’arrel.
+
 ## Editar els continguts
 
 El contingut està en `content.js`; `app.js` el presenta i `styles.css` en defineix l’aspecte. Les referències C01–C13 corresponen a les captures de la web, sense comptar la primera imatge d’estil. Consulta `docs/inventari.md` i `docs/transcripcio.md`.
@@ -38,7 +40,15 @@ Les carpetes `nupcials/`, `bufet/`, `taules/` i `contacte/` contenen una entrada
 
 ## Canviar la icona de marca
 
-La tipografia de la marca en la capçalera és EB Garamond Medium (pes 500) per a «LA FIGUERA» i Futura Bold (pes 700) per a «EVENTS». Les fonts se serveixen localment en WOFF2: `assets/eb-garamond-medium.woff2` i `assets/futura-bold.woff2`. S’han convertit a partir dels arxius aportats per l’usuari; el TTC conté Futura Bold, no Futura ND Bold. Aquest canvi afecta només la capçalera; el títol gran de l’inici conserva Titan One.
+La tipografia de la marca en la capçalera és EB Garamond Medium (pes 500) per a «La figuera» i Futura Bold (pes 700) per a «EVENTS». Les fonts se serveixen localment en WOFF2: `assets/eb-garamond-medium.woff2` i `assets/futura-bold.woff2`. S’han convertit a partir dels arxius aportats per l’usuari; el TTC conté Futura Bold, no Futura ND Bold. El títol gran de l’inici conserva Titan One.
+
+El text normal utilitza Futura Book (pes CSS 400) i els destacats Futura ND DemiBold (pes CSS 600), agrupades en la família CSS «Futura Text». Els fitxers `assets/futura-book.woff2` i `assets/futura-nd-demibold.woff2` s’han convertit a partir de l’OTF i el TTF facilitats per l’usuari. La font Book aportada és Futura Book, no Futura ND Book. Les negretes utilitzen la variant real, sense engreixat artificial; el text manuscrit manté Caveat.
+
+Els títols principals de Nupcials, Bufet, Taules i Contacte utilitzen EB Garamond Medium (pes 500), amb mides adaptades a PC i mòbil.
+
+Les quatre introduccions comparteixen el component `sectionLead`, les mateixes columnes, una àrea reservada per als títols i un marc d’imatge de proporció 4:3. Les descripcions tenen sempre la mateixa tipografia, mida i interlineat per amplària de pantalla, també en Contacte; la seua altura varia segons la llargària del text. En mòbil es mostra títol, imatge i descripció en el mateix ordre i amb el mateix espaiat.
+
+Tartes nupcials utilitza `assets/nupcial-painted.png`, Bufet de tortades `assets/torta-painted.png` i Taules dolces `assets/galetes-painted.png`, les il·lustracions aportades per l’usuari. Es mostren completes, sense retallar-les, dins del mateix marc que les altres seccions. La correspondència d’imatges es defineix en `sectionImages`, dins d’`app.js`.
 
 La icona de figa oberta està en `assets/figa-256.png` i s’utilitza tant en la capçalera com en la pestanya del navegador. Per substituir-la, actualitza el `src` de `<img class="brand-logo">` i l’`href` i el tipus de `<link rel="icon">` en les cinc entrades HTML. La mida del logotip és de 45 px en PC i 36 px en mòbil, definida en `styles.css`.
 
@@ -61,4 +71,4 @@ Configura manualment **Settings → Pages → Source → Deploy from a branch**,
 
 Tots els recursos compartits es resolen respecte de l’arrel de l’aplicació, també quan l’adreça visible no acaba en barra. Cada secció té una entrada estàtica que permet obrir-la directament i recarregar-la dins del subdirectori del repositori.
 
-Les tipografies Titan One, DM Sans, Caveat, EB Garamond i Futura se serveixen localment. Les llicències OFL de Titan One, DM Sans, Caveat i EB Garamond estan en `assets/`; Futura prové del fitxer TTC aportat per l’usuari. Les il·lustracions SVG són elements decoratius originals; no representen productes ni fotografies del negoci.
+Les tipografies actives Titan One, Caveat, EB Garamond i les variants Futura se serveixen localment. Les llicències OFL de Titan One, Caveat i EB Garamond estan en `assets/`, juntament amb l’anterior font DM Sans i la seua llicència. Les variants Futura provenen dels arxius TTC, OTF i TTF aportats per l’usuari. Les il·lustracions SVG són elements decoratius originals; no representen productes ni fotografies del negoci.

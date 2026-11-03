@@ -11,6 +11,17 @@ const slugs = { 'la-carta': '', 'tartes-nupcials': 'nupcials', 'bufet-de-tortade
 const titleNames = { 'la-carta': 'Inici', 'tartes-nupcials': 'Nupcials', 'bufet-de-tortades': 'Bufet', 'taules-dolces': 'Taules', contacte: 'Contacte' };
 const pathFor = id => slugs[id] ? `${basePath}${slugs[id]}` : basePath.replace(/\/$/, '') || '/';
 assert.equal((await fetch(base)).status, 200, 'Start npm run dev first');
+if (['127.0.0.1', 'localhost'].includes(new URL(base).hostname)) {
+  for (const file of ['index.html', 'nupcials/index.html', 'styles.css', 'app.js', 'content.js']) {
+    const response = await fetch(`${base}/${file}`, {
+      headers: { 'If-Modified-Since': 'Wed, 01 Jan 2098 00:00:00 GMT', 'If-None-Match': '"old-preview"' },
+    });
+    assert.equal(response.status, 200, `Preview must serve the current ${file}, rather than a cached response`);
+    assert.match(response.headers.get('cache-control') || '', /no-store/);
+    assert.equal(await response.text(), await readFile(new URL(`../${file}`, import.meta.url), 'utf8'));
+  }
+  console.log('✓ Previsualització sense memòria cau: HTML, estils i mòduls coincideixen amb els fitxers del disc');
+}
 const chromeBin = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const profile = await mkdtemp(join(tmpdir(), 'figuera-browser-'));
 const chrome = spawn(chromeBin, ['--headless=new', '--no-first-run', '--no-default-browser-check', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank'], { stdio: 'ignore' });
@@ -20,6 +31,7 @@ let nextId = 0;
 const pending = new Map();
 const browserErrors = [];
 const failedRequests = [];
+const requestURLs = new Map();
 const loadedDocuments = new Set();
 
 try {
@@ -42,6 +54,10 @@ try {
     }
     if (message.method === 'Runtime.exceptionThrown') browserErrors.push(message.params.exceptionDetails);
     if (message.method === 'Network.responseReceived' && message.params.response.status >= 400) failedRequests.push(message.params.response.url);
+    if (message.method === 'Network.requestWillBeSent') requestURLs.set(message.params.requestId, message.params.request.url);
+    if (message.method === 'Network.loadingFailed' && !message.params.canceled) {
+      failedRequests.push(`${requestURLs.get(message.params.requestId)} (${message.params.errorText})`);
+    }
     if (message.method === 'Page.lifecycleEvent' && message.params.name === 'load') loadedDocuments.add(message.params.loaderId);
   };
   const send = (method, params = {}) => new Promise((resolve, reject) => {
@@ -57,7 +73,8 @@ try {
   };
   const until = async expression => {
     for (let i = 0; i < 80; i++) { if (await evaluate(expression)) return; await sleep(50); }
-    throw new Error(`Condition failed: ${expression}`);
+    const images = await evaluate('Array.from(document.images).filter(image => !image.complete || !image.naturalWidth).map(image => ({src:image.src,complete:image.complete,visible:image.checkVisibility()}))');
+    throw new Error(`Condition failed: ${expression}; pending images: ${JSON.stringify(images)}; failed requests: ${JSON.stringify(failedRequests)}`);
   };
   await send('Runtime.enable');
   await send('Network.enable');
@@ -72,6 +89,7 @@ try {
     assert.ok(!result.errorText, result.errorText);
     if (result.loaderId) await waitForDocument(result.loaderId);
     await until('document.querySelectorAll(".panel").length === 5 && document.readyState === "complete"');
+    await until('Array.from(document.querySelectorAll(".panel:not([hidden]) img, .site-header img")).every(image => image.complete && image.naturalWidth > 0)');
   };
   const reload = async () => {
     const previous = (await send('Page.getFrameTree')).frameTree.frame.loaderId;
@@ -86,9 +104,12 @@ try {
   await mkdir('artifacts', { recursive: true });
   const routes = ['la-carta', 'tartes-nupcials', 'bufet-de-tortades', 'taules-dolces', 'contacte'];
   for (const width of [320, 360, 390, 768, 1024, 1440]) {
+    let introReference;
     await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false });
     await navigate(`${base}/`);
     await evaluate('document.fonts.ready.then(() => true)');
+    assert.ok(await evaluate(`document.fonts.check('400 16px "Futura Text"') && document.fonts.check('600 16px "Futura Text"')`));
+    assert.ok(await evaluate(`getComputedStyle(document.body).fontFamily.includes('Futura Text') && getComputedStyle(document.body).fontWeight === '400'`));
     assert.ok(await evaluate(`document.fonts.check('500 26px "EB Garamond"') && document.fonts.check('700 10px Futura')`));
     assert.ok(await evaluate(`(() => {
       const name = getComputedStyle(document.querySelector('.brand-name'));
@@ -111,6 +132,7 @@ try {
     for (const route of routes) {
       await evaluate(`document.querySelector('${route === 'la-carta' ? '.brand' : `.nav-tab[data-section="${route}"]`}').click()`);
       await until(`document.querySelector('#panel-${route}').hidden === false`);
+      await until('Array.from(document.querySelectorAll(".panel:not([hidden]) img")).every(image => image.complete && image.naturalWidth > 0)');
       assert.equal(await evaluate('location.pathname'), pathFor(route));
       assert.equal(await evaluate('document.title'), `La Figuera Events · ${titleNames[route]}`);
       assert.equal(await evaluate('location.hash'), '');
@@ -120,6 +142,22 @@ try {
       assert.equal(await evaluate('scrollY'), 0, 'Changing sections returns to the top');
       if (route !== 'la-carta') {
         assert.ok(await evaluate(`(() => {const lead=document.querySelector('#panel-${route} .section-lead');const image=lead.querySelector('.section-illustration');const picture=image.getBoundingClientRect();const title=lead.querySelector('h1').getBoundingClientRect();return image.complete && image.naturalWidth>0 && !image.src.endsWith('flower.svg') && picture.width>=200 && (picture.left>=title.right || picture.top>=title.bottom)})()`));
+        const introMetrics = await evaluate(`(() => {
+          const lead = document.querySelector('#panel-${route} .section-lead');
+          const metrics = (selector, includeHeight) => {
+            const node = lead.querySelector(selector);
+            const rect = node.getBoundingClientRect();
+            const style = getComputedStyle(node);
+            return {
+              left: rect.left, top: rect.top, width: rect.width,
+              ...(includeHeight ? {height: rect.height} : {}),
+              font: style.fontFamily, size: style.fontSize, weight: style.fontWeight, lineHeight: style.lineHeight,
+            };
+          };
+          return { title: metrics('h1', true), text: metrics('.section-intro', false), image: metrics('.section-illustration', true) };
+        })()`);
+        introReference ||= introMetrics;
+        assert.deepEqual(introMetrics, introReference, `Intro layout and typography must match across sections: ${width}/${route}`);
       }
       assert.ok(await evaluate('Array.from(document.querySelectorAll(".nav-tab")).every(x => {const r=x.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth})'));
       assert.equal(await evaluate('document.querySelectorAll("table, .table-scroll, .scroll-hint").length'), 0);
@@ -172,6 +210,12 @@ try {
         await evaluate('window.scrollTo(0,0)');
       }
       if (route === 'tartes-nupcials') {
+        assert.ok(await evaluate(`(() => {
+          const normal = getComputedStyle(document.querySelector('#panel-tartes-nupcials .section-intro'));
+          const bold = getComputedStyle(document.querySelector('#panel-tartes-nupcials .section-intro strong'));
+          return normal.fontFamily.includes('Futura Text') && normal.fontWeight === '400'
+            && bold.fontFamily.includes('Futura Text') && bold.fontWeight === '600';
+        })()`));
         assert.ok(await evaluate('Array.from(document.querySelectorAll(".arrow-image")).every(img => img.complete && img.naturalWidth > 0)'));
         assert.equal(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item[open]").length'), 0);
         await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item summary")[0].click()');
@@ -197,7 +241,7 @@ try {
         })`));
       }
       assert.ok(await evaluate('Array.from(document.querySelectorAll(".faq-heading")).every(heading => heading.textContent === "Preguntes freqüents")'));
-      if ((width === 390 || width === 1440) && ['la-carta', 'tartes-nupcials', 'contacte'].includes(route)) {
+      if (width === 390 || width === 1440) {
         await evaluate('window.scrollTo(0,0)');
         const { data } = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
         await writeFile(`artifacts/${route}-${width}.png`, Buffer.from(data, 'base64'));
@@ -291,7 +335,7 @@ try {
   })()`);
     assert.deepEqual(extended, { options: 4, pending: 'Informació pendent', label: 'Nova columna', visible: true, known: '99€ (sense IVA)', overflow: false });
   }
-  assert.ok(await evaluate('document.fonts.check("20px Titan") && document.fonts.check("20px DM Sans")'));
+  assert.ok(await evaluate(`document.fonts.check('20px Titan') && document.fonts.check('400 20px "Futura Text"') && document.fonts.check('600 20px "Futura Text"')`));
   assert.deepEqual(browserErrors, [], 'Browser runtime errors');
   assert.deepEqual(failedRequests, [], 'Failed assets');
   console.log('✓ Rutes sense #, càrrega directa, recàrrega, enllaços antics, arrere/avant i columna addicional');

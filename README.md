@@ -28,6 +28,8 @@ npm run dev
 
 Obri **http://127.0.0.1:4173**. No cal executar `npm install` perquè el projecte no té dependències.
 
+Mantín el servidor en execució mentre edites. Després de guardar un canvi, recarrega la pàgina: la previsualització desactiva la memòria cau i serveix sempre els fitxers d’aquest repositori. Si tenies un servidor anterior obert, para’l amb `Ctrl+C` i torna a executar `npm run dev`.
+
 ```sh
 npm run check
 npm test
