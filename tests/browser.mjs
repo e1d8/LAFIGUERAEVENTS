@@ -142,7 +142,7 @@ try {
     assert.deepEqual(homeLinks.map(link => link.markerColor), ['rgb(204, 168, 197)', 'rgb(204, 168, 197)', 'rgb(204, 168, 197)', 'rgb(221, 193, 124)']);
     assert.ok(await evaluate(`(() => {
       const home = document.querySelector('.home-content');
-      return home.querySelector('h1').textContent === 'Primer que res…ENHORABONA!'
+      return home.querySelector('h1').textContent === 'Primer que res… ENHORABONA!'
         && getComputedStyle(home.querySelector('h1')).fontFamily.includes('Futura Text')
         && getComputedStyle(home.querySelector('h1')).fontWeight === '400'
         && getComputedStyle(home.querySelector('h1 strong')).fontWeight === '600'

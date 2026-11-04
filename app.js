@@ -199,7 +199,7 @@ function sectionLead(section, { illustrated = true } = {}) {
 function home() {
   const container = el('div', 'home-content');
   const greeting = el('h1', 'home-greeting');
-  greeting.append(document.createTextNode('Primer que res…'), el('br'), el('strong', '', 'ENHORABONA!'));
+  greeting.append(document.createTextNode('Primer que res… '), el('strong', '', 'ENHORABONA!'));
   const opening = paragraph(introduction.text, 'home-opening');
   const choices = el('nav', 'home-choices');
   choices.setAttribute('aria-label', 'Seccions de La Figuera Events');
