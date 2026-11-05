@@ -269,7 +269,8 @@ try {
         await sleep(100);
         assert.equal(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item[open]").length'), 1);
         assert.equal(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item")[0].open'), false);
-        assert.ok(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item")[1].innerText.includes("Informació pendent")'));
+        assert.ok(await evaluate('document.querySelectorAll("#panel-tartes-nupcials .faq-item")[1].innerText.includes("decorar el pastís).")'));
+        assert.ok(await evaluate('!document.querySelectorAll("#panel-tartes-nupcials .faq-item")[1].innerText.includes("Informació pendent")'));
       }
       if (route === 'contacte') {
         assert.equal(await evaluate('document.querySelectorAll("#panel-contacte .section-lead img").length'), 0, 'Contact introduction has no illustration');
@@ -399,7 +400,7 @@ try {
     result.noRepeats = variants.every((variant, index) => /^[0-3]$/.test(variant) && (!index || variant !== variants[index - 1]));
     wrap.remove();return result;
   })()`);
-    assert.deepEqual(extended, { options: 4, pending: 'Informació pendent', label: 'Nova columna', visible: true, known: '99€ (sense IVA)', overflow: false, allStrokes: true, noRepeats: true });
+    assert.deepEqual(extended, { options: 7, pending: 'Informació pendent', label: 'Nova columna', visible: true, known: '99€ (sense IVA)', overflow: false, allStrokes: true, noRepeats: true });
   }
   assert.ok(await evaluate(`document.fonts.check('500 20px "EB Garamond"') && document.fonts.check('400 20px "Futura Text"') && document.fonts.check('600 20px "Futura Text"')`));
   assert.deepEqual(browserErrors, [], 'Browser runtime errors');

@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { contact, sections, tables, pickup } from '../content.js';
 
-test('Every transcribed item has a screenshot reference and valid table links', () => {
-  const sourceValid = refs => assert.ok(refs?.length && refs.every(ref => /^C(0[1-9]|1[0-3])$/.test(ref)));
+test('Every transcribed item has a capture or recovered original reference and valid table links', () => {
+  const sourceValid = refs => assert.ok(refs?.length && refs.every(ref => /^(C(0[1-9]|1[0-3])|O01)$/.test(ref)));
   sections.filter(section => !section.kind).forEach(section => {
     sourceValid(section.source);
     section.tableIds.forEach(id => assert.ok(tables[id]));
@@ -26,11 +26,17 @@ test('Every transcribed item has a screenshot reference and valid table links', 
   });
 });
 
-test('Cropped fragments stay explicitly incomplete and unassociated', () => {
-  assert.equal(tables.marquesa.rows[0].cells.three.pending, true);
-  assert.ok(tables.premium.rows.every(row => row.cells.name.pending));
-  assert.equal(tables.buffet.columns[2].label.pending, true);
-  assert.equal(tables.buffet.columns[3].label.pending, true);
+test('Only prices absent from the recovered original remain pending', () => {
+  Object.values(tables).forEach(table => {
+    table.columns.forEach(column => assert.ok(!column.label.pending));
+    table.rows.forEach(row => Object.entries(row.cells).forEach(([key, value]) => {
+      if (row.id === 'personalitzada' && ['two', 'three'].includes(key)) {
+        assert.equal(value.pending, true);
+        assert.equal(value.text, '');
+      } else assert.equal(value.pending, false, `${row.id}/${key}`);
+    }));
+  });
+  sections.forEach(section => section.questions?.forEach(item => assert.ok(!item.pending)));
 });
 
 test('Catalogue roles keep names, ingredients and price options separate', () => {
@@ -46,14 +52,16 @@ test('Catalogue roles keep names, ingredients and price options separate', () =>
 });
 
 test('Corrected wedding prices use the shared tax note', () => {
-  assert.deepEqual(tables.classics.rows.map(row => [row.cells.name.text, row.cells.two.text, row.cells.three.text]), [
+  assert.deepEqual(tables.classics.rows.filter(row => ['carrot', 'lotus'].includes(row.id)).map(row => [row.cells.name.text, row.cells.two.text, row.cells.three.text]), [
     ['Carrot cake', '165€*', '390€*'], ['Pastís de lotus', '165€*', '390€*'],
   ]);
   assert.ok(tables.classics.rows.every(row => Object.values(row.cells).every(value => !value.pending)));
   assert.equal(tables.classics.fragments, undefined);
   assert.equal(tables.premium.fragments, undefined);
   assert.ok(tables.premium.rows.every(row => row.cells.two.text === '185€*' && row.cells.three.text === '435€*' && !row.cells.description.pending));
-  assert.match(tables.premium.rows[0].cells.description.text, /fruits secs i crunch d'avellana\.$/);
+  assert.equal(tables.classics.rows.find(row => row.id === 'carrot').cells.description.text, 'Biscuit de carlota espècies amb crema de tormatge fruits secs.');
+  assert.equal(tables.classics.rows.find(row => row.id === 'lotus').cells.description.text, 'Biscuit de xocolata banyat amb café buttercream de la famosa galeta lotus.');
+  assert.equal(tables.premium.rows[0].cells.description.text, "Tarta de biscuit de xoco banyat amb café, buttercream de dulce de leche, fruits secs i crunch d'avellana.");
   assert.equal(tables.marquesa.rows[0].cells.two.text, '200€*');
   for (const id of ['classics', 'premium', 'marquesa']) {
     assert.deepEqual(tables[id].columns.slice(2).map(column => column.label.text), ['2 pisos (35/37 porcions)', '3 pisos (85/87 porcions)']);

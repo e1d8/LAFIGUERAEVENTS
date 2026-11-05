@@ -1,0 +1,181 @@
+{
+  "source": {
+    "id": "O01",
+    "file": "/Users/Fenikkel/Downloads/web/lafigueraevents.my.canva.site/lafigueravlc.html",
+    "sha256": "84249298cff2c7dba59de88408bbc4412fc3dd5c0f20a9452e90f924c450eb16",
+    "location": "bootstrap.page.A.V[0].A.A",
+    "note": "Text extret del JSON incrustat, sense executar els scripts. Salts U+2028 normalitzats; línies buides de maquetació reduïdes. Les cel·les es mantenen per coordenada."
+  },
+  "tables": {
+    "classics": {
+      "element": 27,
+      "cells": {
+        "D1": "Tarta nupcial 3 pisos (85/87 porcions)",
+        "C1": "Tarta nupcial 2 pisos (35/37 porcions)",
+        "D2": "390€ (sense IVA)",
+        "B1": "Què du?",
+        "C2": "165€ (sense IVA)",
+        "D3": "390€ (sense IVA)",
+        "A1": "Tarta:",
+        "B2": "Biscuit de carlota i espècies amb crema de formatge i fruits secs.",
+        "C3": "165€ (sense IVA)",
+        "D4": "390€ (sense IVA)",
+        "A2": "Carrot cake",
+        "B3": "biscuit de vainilla mullat amb café, crema de xoco amb llet (o xoco pur, vosaltres trieu!)",
+        "C4": "165€ (sense IVA)",
+        "D5": "390€ (sense IVA)",
+        "A3": "Pastís de xocolate",
+        "B4": "biscuit de llima humit amb crema de formatge i xoco blanc i coulis de fruita (trieu la vostra preferida!)",
+        "C5": "165€ (sense IVA)",
+        "A4": "Pastís de llima",
+        "B5": "biscuit de xocolata banyat amb café i buttercream de la famosa galeta lotus.",
+        "A5": "Pastís de lotus"
+      },
+      "headerReferences": {
+        "A": "A1",
+        "B": "B1",
+        "C": "C1",
+        "D": "D1"
+      }
+    },
+    "premium": {
+      "element": 34,
+      "cells": {
+        "D1": "Tarta nupcial 3 pisos (85/87 porcions)",
+        "C1": "Tarta nupcial 2 pisos (35/37 porcions)",
+        "D2": "435€ (sense IVA)",
+        "B1": "Què du?",
+        "C2": "185€ (sense IVA)",
+        "D3": "435€ (sense IVA)",
+        "A1": "Tarta:",
+        "B2": "Tarta de biscuit de xoco banyat amb café, buttercream de dulce de leche, fruits secs caramelitzats.",
+        "C3": "185€ (sense IVA)",
+        "D4": "435€ (sense IVA)",
+        "A2": "Fruits secs i dulce de leche",
+        "B3": "Biscuit de vainilla, crema de xocolate amb llet, praliné d’avellanes casolà, crunch avellana.",
+        "C4": "185€ (sense IVA)",
+        "A3": "Praliné d’avellanes",
+        "B4": "Biscuit llima humit, crema de formatge i xoco blanc, anous de macadàmia caramelitzades.",
+        "A4": "Macadàmia"
+      },
+      "headerReferences": {
+        "A": "A1",
+        "B": "B1",
+        "C": "C1",
+        "D": "D1"
+      }
+    },
+    "marquesa": {
+      "element": 42,
+      "cells": {
+        "D1": "Tarta nupcial 3 pisos (85/87 porcions)",
+        "C1": "Tarta nupcial 2 pisos (35/37 porcions)",
+        "D2": "475€ (sense IVA)",
+        "B1": "Què du?",
+        "C2": "200€ (sense IVA)",
+        "D3": "475€ (sense IVA)",
+        "A1": "Tarta:",
+        "B2": "biscuit de carabassa, buttercream de pistatxo, crunch de pistatxo caramelitzat.",
+        "C3": "200€ (sense IVA)",
+        "D4": "-",
+        "A2": "Carabassa i pistatxo",
+        "B3": "Biscuit de vainilla, buttecream de formatge i xoco blanc, coulis casolà de frambueses, crunch de pistatxo caramelitzat.",
+        "C4": "-",
+        "A3": "Gerds, formatge i pistatxo",
+        "B4": "Acorda una cita amb nosaltres i dissenyem la teua tarta ideal basada en les teues postres preferides!",
+        "A4": "Personalitzada"
+      },
+      "headerReferences": {
+        "A": "A1",
+        "B": "B1",
+        "C": "C1",
+        "D": "D1"
+      }
+    },
+    "buffet": {
+      "element": 102,
+      "cells": {
+        "C1": "Tamany (12/15 racions)",
+        "C2": "Amb decoració normal:\n\n45€",
+        "A1": "Tarta:",
+        "C3": "Amb decoració normal:\n\n45€",
+        "A2": "LA FAVORITA",
+        "C4": "Amb decoració normal:\n\n45€",
+        "A3": "PARMIGIANA",
+        "C5": "Amb decoració normal:\n\n45€",
+        "A4": "MATÓ I MEL",
+        "C6": "Amb decoració normal:\n\n45€",
+        "A5": "LA VALENCIANA",
+        "C7": "Amb decoració normal:\n\n45€",
+        "A6": "XOCO BLANC",
+        "C8": "Amb decoració normal:\n\n45€",
+        "A7": "XOCO AMB LLET:",
+        "C9": "Amb decoració normal:\n\n50€",
+        "A8": "XOCO PUR:",
+        "A9": "PISTATXO:",
+        "D2": "Amb flors de la boda:\n\n50€",
+        "B1": "Què du?",
+        "D3": "Amb flors de la boda:\n\n50€",
+        "B2": "SAP A FORMATGE:\n\nAmb un toc de formatge blau d’Auvergne DOP, base de galeta lotus, figues i mel, pistatxos (adaptable a la fruita de temporada).",
+        "D4": "Amb flors de la boda:\n\n50€",
+        "B3": "SAP A FORMATGE:\n\nDe parmesà, base de galeta maria i fruits secs caramelitzats, raïm fresc (adaptable a la fruita de temporada).",
+        "D5": "Amb flors de la boda:\n\n50€",
+        "B4": "SUAU I CREMOSA:\n\nDe mató, llima, base de galeta maria, fruita de temporada fresca, mel.",
+        "D6": "Amb flors de la boda:\n\n50€",
+        "B5": "SUAU I CREMOSA:\nBase de galeta maria amb llima, crema casolana de llima de la terreta, merenga suuuperlleugera i cremosa.",
+        "D7": "Amb flors de la boda:\n\n50€",
+        "B6": "LES DE XOCO:\n\nBase de galeta maria, alfàbega, ratlladura de llima, xocolate blanc belga, gerds i pistatxos (adaptable a la fruita de temporada).",
+        "D8": "Amb flors de la boda:\n\n50€",
+        "B7": "LES DE XOCO:\nBase de galeta maria, praliné d’avellana i xocolate belga amb llet, decorada amb fruita de temporada.",
+        "D9": "Amb flors de la boda:\n\n55€",
+        "B8": "LES DE XOCO:\nBase de galeta maria mullada amb café d’especialitat, xocolate 85%, fruita de temporada.",
+        "B9": "PREMIUM:\nBase de galeta maria i pistatxos, amb crema de pistatxo casolana, decorada amb més pistatxo i fruita de temporada."
+      },
+      "headerReferences": {
+        "A": "A1",
+        "B": "B1",
+        "C": "C1",
+        "D": "C1"
+      }
+    },
+    "cookies": {
+      "element": 135,
+      "cells": {
+        "A1": "De què son?",
+        "B2": "45€\n(sense IVA)",
+        "A2": "Sabors variats (xoco negre i sal, cacahuet fregit amb mel, 3 xocolates…)",
+        "F1": "+100",
+        "E1": "100 micotetes\n1,2€ ud)",
+        "F2": "Contacta’ns i et fem preu!",
+        "D1": "75 micotetes\n(1,4€ud)",
+        "E2": "120€\n(sense IVA)",
+        "C1": "50 micotetes\n(1,6€ ud)",
+        "D2": "105€\n(sense IVA)",
+        "B1": "25 micotetes\n(1,8€ ud)",
+        "C2": "80€\n(sense IVA)"
+      },
+      "headerReferences": {
+        "A": "A1",
+        "B": "B1",
+        "C": "C1",
+        "D": "D1",
+        "E": "E1",
+        "F": "F1"
+      }
+    }
+  },
+  "questions": {
+    "wedding-decoration": {
+      "element": 62,
+      "text": "Totes les tartes es poden decorar amb fruita, flors, o una combinació de les dues. Podem posar-nos en contacte amb la persona encarregada de les flors per tal que el pastís tinga la mateixa decoració que la resta de la celebració. Ens podem reunir i veure diferents dissenys per trobar la vostra tortada ideal. Contacta’ns i ho organitzem! (Hi haurà un recàrrec si hem de fer-nos càrrec de comprar flors a conjunt amb l’event, tot i que moltes vegades es pot demanar de manera gratuïta que la persona encarregada deixe una bossa amb flors per tal de decorar el pastís)."
+    },
+    "wedding-flavours": {
+      "element": 82,
+      "text": "No cal. Les tortades nupcials es poden fer combinant sabors (que cada pis de la tarta tinga un sabor destint) per un suplement de 20€. No es podran fer combinacions de sabors de tartes de diferent preu (per exemple, es pot fer una tarat de tres pisos amb carrot cake, tarta de xoco i tarta de llima, però no es podría incloure a aquest pastís una de pistatxo i carabassa)."
+    },
+    "buffet-setup": {
+      "element": 127,
+      "text": "Pel moment no tenim un transport adaptat al transport dels nostres productes, pel que caldria arreplegar-los a l’obrador. Sí podem posar-nos en contacte amb la sala per veure si podem buscar una solució i oferim el servei de muntatge tant de taula com de decoració dels pastissos in situ per un suplement. Pregunteu-nos i ho aclarim!"
+    }
+  }
+}

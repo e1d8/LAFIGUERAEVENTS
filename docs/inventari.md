@@ -2,9 +2,9 @@
 
 ## Font i criteri
 
-Les tretze captures de la web s’identifiquen com C01–C13 segons l’ordre aportat, després de la imatge d’estil. Els adjunts originals no estan disponibles com a fitxers al repositori: la transcripció s’ha fet a partir de les imatges visibles a la conversa. No s’han consultat dades comercials externes per completar fragments ni actualitzar preus.
+Les tretze captures de la web s’identifiquen com C01–C13 segons l’ordre aportat, després de la imatge d’estil. Els adjunts originals no estan disponibles com a fitxers al repositori: la transcripció s’ha fet a partir de les imatges visibles a la conversa. La recuperació inicial es va fer només amb estes captures. Posteriorment s’ha incorporat O01, la còpia local de la web antiga aportada per l’usuari, per completar les dades absents sense actualitzar els preus amb fonts externes.
 
-S’han conservat formes originals com «figtàstiques», «montar», «destint», «embossades», els imports sense IVA i el text que menciona el 21% d’IVA. La tipografia i els salts de línia de maquetació canvien; el contingut es conserva. No es pot certificar la part oculta per les barres del navegador o fora de les captures.
+S’han conservat formes originals com «figtàstiques», «montar», «destint», «embossades», els imports sense IVA i el text que menciona el 21% d’IVA. La tipografia i els salts de línia de maquetació canvien; el contingut es conserva. Les limitacions de les captures es documenten davall com a registre històric; les dades completades amb O01 s’identifiquen en l’apartat de recuperació.
 
 ## Correspondència de captures
 
@@ -26,27 +26,34 @@ Aquest apartat descriu les captures originals. Les correccions aportades despré
 | C12 | Sabors, combinació de tartes i cookies, muntatge de taula dolça, inici de comiat | Comiat complet en C13. |
 | C13 | Final del muntatge, comiat, marca, Whatsapp, Instagram, TikTok, web i correu | El logotip original no s’ha recuperat; la nova icona de marca és una figa oberta. |
 
-## Dades que falten
+## Recuperació de la web original (O01)
 
-- **Clàssiques:** sense dades pendents en la llista corregida per l’usuari: Carrot cake i Pastís de lotus, cadascuna amb preus de 165€/390€. La fila parcial «Pastís de» i el fragment de coulis queden només en l’arxiu original, fora del catàleg vigent.
-- **Premium:** noms de les dues tartes. L’usuari ha confirmat les descripcions completes i els preus de 185€/435€; el crunch d’avellana forma part de la primera descripció.
-- **Marquesa:** preu de tres pisos de Carabassa i pistatxo.
-- **Bufet:** final de «Tamany (12/» i títol de la quarta columna; preus de la columna dreta de LA FAVORITA i PARMIGIANA; noms de les dues files de C09; fragments inicials de la descripció i de l’opció de decoració del café. «Amb flors de la boda» només es dona per confirmat en la cel·la on es llig.
-- **Respostes nupcials:** final de «Com es decoren?» i de «Els 3 pisos de la tortada han de ser iguals?».
-- **Resposta de bufet:** final de «Monteu vosaltres la taula amb el bufet?».
-- **Fora de les captures:** es desconeix si hi ha altres productes, files o columnes. No s’han inventat placeholders per a un nombre arbitrari de productes absents. La infraestructura permet afegir-los.
+Font: `/Users/Fenikkel/Downloads/web/lafigueraevents.my.canva.site/lafigueravlc.html`. El contingut està en el JSON incrustat en l’HTML, incloses les coordenades de les cel·les i les capçaleres fusionades. No s’han executat els scripts de la còpia antiga ni consultat serveis externs.
 
-Els camps afectats mostren «Informació pendent» a la web. `content.js` guarda l’estat i les referències per fila, fragment i pregunta; `transcripcio.md` en presenta una còpia llegible.
+Vegeu [el detall de la recuperació](recuperacio-original.md) i [l’extracció de les cel·les i respostes originals](original-canva.json), amb la petjada SHA-256 de l’HTML. `source: ['O01']` identifica la informació recuperada en `content.js`; les referències C01–C13 es conserven on ja existien.
+
+- **Clàssiques:** afegits Pastís de xocolate i Pastís de llima entre Carrot cake i Pastís de lotus, amb 165€/390€ i els ingredients originals.
+- **Premium:** recuperats els noms Fruits secs i dulce de leche i Macadàmia. Afegit Praliné d’avellanes en la seua posició original, amb 185€/435€.
+- **Marquesa:** recuperat el preu de tres pisos de Carabassa i pistatxo, 475€. Afegides Gerds, formatge i pistatxo (200€/475€) i Personalitzada.
+- **Bufet:** recuperades les 12/15 racions per a les dues decoracions, els imports de les flors i els noms XOCO PUR: i PISTATXO:. Afegides MATÓ I MEL, LA VALENCIANA, XOCO BLANC i XOCO AMB LLET:, amb les seues descripcions i imports.
+- **Micotetes:** afegits els formats de 75 (105€ sense IVA), 100 (120€ sense IVA) i +100 («Contacta’ns i et fem preu!»), inclosos els preus per unitat presents en les capçaleres originals.
+- **FAQ:** completades les respostes de decoració nupcial, combinació de sabors per pisos i muntatge del bufet.
+
+## Dades que continuen pendents
+
+Només els preus de 2 i 3 pisos de **Personalitzada**. Les cel·les C4 i D4 de la taula original de marquesa contenen «-», sense cap import. La web manté «Informació pendent» en les dues opcions; no s’interpreta com zero ni com falta de disponibilitat.
+
+Les descripcions nupcials corregides expressament per l’usuari es mantenen, inclosa la de Fruits secs i dulce de leche, que difereix de l’HTML antic. Els detalls es documenten en `recuperacio-original.md`. `transcripcio.md` continua sent l’arxiu de les captures i no es reescriu amb la informació recuperada després.
 
 ## Interfície nova
 
-Les tartes nupcials utilitzen la llista corregida per l’usuari, amb les descripcions literals aportades. Les opcions s’etiqueten «2 pisos (35/37 porcions)» i «3 pisos (85/87 porcions)». Els preus nupcials coneguts porten un asterisc i l’avís compartit és «Preu sense IVA. No incloem transport. Els productes s’han d’arreplegar a l’obrador.».
+Les tartes nupcials mantenen les descripcions corregides per l’usuari i incorporen els productes i camps que s’han pogut recuperar d’O01. Les opcions s’etiqueten «2 pisos (35/37 porcions)» i «3 pisos (85/87 porcions)». Els preus nupcials coneguts porten un asterisc i l’avís compartit és «Preu sense IVA. No incloem transport. Els productes s’han d’arreplegar a l’obrador.».
 
 «Preguntes freqüents», les indicacions de desplaçament, els títols de contacte i els avisos de dades pendents són etiquetes de la nova interfície. No són informació comercial recuperada. Les condicions no s’han resumit ni substituït per aquestes etiquetes.
 
-Per indicació de l’usuari, s’han retirat «Parlem?», la pestanya «La carta», els números dels accessos i de la navegació i, posteriorment, els tres botons de secció de la portada. La figa i el nom de la marca són un únic enllaç a l’inici; les seccions s’obrin des de la capçalera.
+Per indicació de l’usuari, s’han retirat «Parlem?», la pestanya «La carta» i els números dels accessos i de la navegació. La figa i el nom de la marca són un únic enllaç a l’inici. La portada actual té quatre accessos il·lustrats i amaga la barra de navegació; dins de les seccions reapareixen les pestanyes.
 
-La web omet el final de la presentació des de «Al final d’aquest document» fins al telèfon, també per indicació de l’usuari. `transcripcio.md` conserva aquest text com a registre del contingut de les captures.
+La web manté la presentació acurtada: omet el paràgraf que comença «Com que organitzar una celebració» i el text des de «Al final d’aquest document» fins al telèfon, per indicació de l’usuari. `transcripcio.md` conserva aquest text com a registre del contingut de les captures.
 
 Contacte mostra únicament WhatsApp, correu i Instagram, en files amb il·lustracions pròpies al costat del contacte. Els altres mitjans de la captura es conserven en la transcripció arxivada. Les FAQ mostren només «Preguntes freqüents», sense el text introductori «PER RESOLDRE ELS DUBTES».
 

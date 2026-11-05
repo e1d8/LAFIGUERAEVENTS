@@ -16,7 +16,7 @@ El servidor local `dev_server.py` serveix sempre l’arrel d’aquest repositori
 
 ## Editar els continguts
 
-El contingut està en `content.js`; `app.js` el presenta i `styles.css` en defineix l’aspecte. Les referències C01–C13 corresponen a les captures de la web, sense comptar la primera imatge d’estil. Consulta `docs/inventari.md` i `docs/transcripcio.md`.
+El contingut està en `content.js`; `app.js` el presenta i `styles.css` en defineix l’aspecte. Les referències C01–C13 corresponen a les captures de la web, sense comptar la primera imatge d’estil. O01 identifica la còpia local de la web antiga aportada després per l’usuari, amb la qual s’han completat els catàlegs i les FAQ retallades. Consulta `docs/inventari.md`, `docs/transcripcio.md` (arxiu de captures) i `docs/recuperacio-original.md`. `docs/original-canva.json` conserva les cel·les i respostes recuperades per contrastar-les amb el catàleg; no es carrega en la web.
 
 Cada cel·la és `cell('Text literal', false)`. Si falta tot el contingut, utilitza `cell('', true)`; si només es conserva un fragment, `cell('fragment visible', true)`. Quan completes una dada confirmada, elimina el seu indicador de pendent. No tractes el fragment com una descripció completa.
 
