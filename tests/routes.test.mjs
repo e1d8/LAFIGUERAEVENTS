@@ -26,7 +26,9 @@ for (const basePath of ['/', '/LAFIGUERAEVENTS/']) {
 test('Direct entry pages share the root HTML and load assets from the parent directory', async () => {
   const root = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   assert.match(root, /<title>La Figuera Events<\/title>/);
-  const normalize = html => html.replace(/<base href="[^"]+">/, '<base>').replace(/<title>[^<]+<\/title>/, '<title>');
+  const normalize = html => html.replace(/<base href="[^"]+">/, '<base>')
+    .replace(/<title>[^<]+<\/title>/, '<title>')
+    .replace(/<meta property="og:url" content="[^"]+">/, '<meta property="og:url">');
   for (const slug of Object.values(sectionSlugs).filter(Boolean)) {
     const html = await readFile(new URL(`../${slug}/index.html`, import.meta.url), 'utf8');
     assert.match(html, /<base href="\.\.\/">/);
@@ -36,12 +38,16 @@ test('Direct entry pages share the root HTML and load assets from the parent dir
 });
 
 test('Every static entry provides the requested link-sharing title and description without JavaScript', async () => {
-  const imageURL = 'https://e1d8.github.io/LAFIGUERAEVENTS/assets/share-banner.png';
+  const imageURL = 'https://e1d8.github.io/LAFIGUERAEVENTS/assets/share-banner.png?v=2';
   const image = await readFile(new URL('../assets/share-banner.png', import.meta.url));
+  assert.ok(image.length < 600_000, 'The preview image must stay below WhatsApp’s 600 KB limit');
   assert.equal(image.readUInt32BE(16), 1200);
   assert.equal(image.readUInt32BE(20), 630);
-  for (const slug of Object.values(sectionSlugs)) {
+  for (const [id, slug] of Object.entries(sectionSlugs)) {
     const html = await readFile(new URL(`../${slug ? `${slug}/` : ''}index.html`, import.meta.url), 'utf8');
+    const pageURL = `https://e1d8.github.io${sectionPath(id, '/LAFIGUERAEVENTS/')}`;
+    assert.equal((html.match(/property="og:url"/g) || []).length, 1);
+    assert.ok(html.includes(`<meta property="og:url" content="${pageURL}">`));
     for (const attribute of ['name="description"', 'property="og:description"', 'name="twitter:description"']) {
       assert.ok(html.includes(`<meta ${attribute} content="Tartes nupcials, bufet de tortades i taules dolces">`));
     }
