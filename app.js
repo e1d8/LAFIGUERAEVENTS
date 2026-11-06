@@ -1,20 +1,19 @@
-import { sections, tables, pickup, introduction, contact } from './content.js';
+import { loadContent } from './content.js';
+import { COLORS, formatAmount, textOf } from './content-model.js';
+import { appendRich } from './rich-text.js';
 import { sectionPath, sectionFromLocation } from './routes.js';
 
-// Anchor resources to app.js, even when the visible URL has no trailing slash.
 const appRoot = new URL('./', import.meta.url);
 const resourceBase = document.querySelector('base') || document.head.insertBefore(document.createElement('base'), document.head.firstChild);
 resourceBase.href = appRoot.href;
-const routePath = sectionId => sectionPath(sectionId, appRoot.pathname);
+const routePath = id => sectionPath(id, appRoot.pathname);
 document.querySelector('.brand').href = routePath('la-carta');
-
-const main = document.querySelector('#main');
-const navigation = document.querySelector('#navigation');
-const sectionImages = {
-  'tartes-nupcials': 'nupcial-painted.png',
-  'bufet-de-tortades': 'torta-painted.png',
-  'taules-dolces': 'galetes-painted.png',
-  contacte: 'contacte-painted.png',
+const main = document.querySelector('#main'), navigation = document.querySelector('#navigation');
+const sectionImages = { 'tartes-nupcials': 'nupcial-painted.png', 'bufet-de-tortades': 'torta-painted.png', 'taules-dolces': 'galetes-painted.png', contacte: 'contacte-painted.png' };
+const contactInfo = {
+  whatsapp: { label: 'WhatsApp', image: 'contact-whatsapp-painted.png' },
+  email: { label: 'Correu', image: 'contacte-painted.png' },
+  instagram: { label: 'Instagram', image: 'contact-instagram-painted.png' },
 };
 const el = (tag, className = '', text) => {
   const node = document.createElement(tag);
@@ -22,285 +21,157 @@ const el = (tag, className = '', text) => {
   if (text !== undefined) node.textContent = text;
   return node;
 };
-
-const emphasis = [
-  '100% artesanals', 'proximitat i de temporada', 'flors i fruita fresca',
-  'NO AGAFEM MÉS D’UN EVENT PER DATA', 'formatge blau', 'parmesà', 'raïm',
-  'café d’especialitat', 'xocolate 85%', 'crema de pistatxo casolana',
-];
-const escapeRegex = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const richPattern = new RegExp(`(${[contact.email, contact.handle, contact.phone, ...emphasis].map(escapeRegex).join('|')}|\\d+(?:[,.]\\d+)?€)`, 'g');
-
-function richText(parent, text) {
-  text.split(richPattern).forEach(part => {
-    if (part === contact.email || part === contact.handle || part === contact.phone) {
-      const link = el('a', '', part);
-      link.href = part === contact.email ? `mailto:${part}` : part === contact.phone ? `tel:+34${part}` : 'https://www.instagram.com/lafigueravlc/';
-      parent.append(link);
-    } else if (emphasis.includes(part) || /^\d+(?:[,.]\d+)?€$/.test(part)) {
-      parent.append(el('strong', part.endsWith('€') ? 'amount' : '', part));
-    } else {
-      parent.append(document.createTextNode(part));
-    }
-  });
+const paragraph = (runs, className = '') => appendRich(el('p', className), runs);
+const pendingBadge = () => el('span', 'pending-badge', 'Informació pendent');
+const hasText = runs => Boolean(textOf(runs).trim());
+function externalLink(href, className = '') {
+  const node = el('a', className); node.href = href;
+  if (href.startsWith('https:')) { node.target = '_blank'; node.rel = 'noopener noreferrer'; }
+  return node;
+}
+function image(file, className, width, height) {
+  const node = el('img', className); node.src = `./assets/${file}`; node.alt = ''; node.width = width; node.height = height; return node;
 }
 
-function paragraph(text, className = '') {
-  const p = el('p', className);
-  richText(p, text);
-  return p;
-}
-
-function pendingBadge() { return el('span', 'pending-badge', 'Informació pendent'); }
-
-function renderCell(parent, value) {
-  if (value?.text) richText(parent, value.text);
-  if (!value || value.pending) parent.append(pendingBadge());
-}
-
-let underlineBag = [];
-let lastUnderline;
-function productNameText(text) {
-  if (!underlineBag.length) {
-    underlineBag = [0, 1, 2, 3];
-    for (let i = underlineBag.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [underlineBag[i], underlineBag[j]] = [underlineBag[j], underlineBag[i]];
-    }
-    // Use every stroke before reshuffling, without repeating at a bag boundary.
-    if (underlineBag[3] === lastUnderline) [underlineBag[0], underlineBag[3]] = [underlineBag[3], underlineBag[0]];
-  }
-  const name = el('span', 'product-name-text marker-text');
-  lastUnderline = underlineBag.pop();
-  name.dataset.underline = lastUnderline;
-  richText(name, text);
-  return name;
-}
-
-// New columns default to visible options; missing values remain explicitly pending.
-export function renderCatalogue(data, firstIndex = 0) {
+export function renderCatalogue(table) {
   const list = el('div', 'product-list');
-  const nameColumns = data.columns.filter(column => column.role === 'name');
-  const detailColumns = data.columns.filter(column => column.role === 'detail');
-  const optionColumns = data.columns.filter(column => !['name', 'detail'].includes(column.role));
-  data.rows.forEach((row, index) => {
-    const colorClass = ['', ' product-item-rose', ' product-item-green'][(firstIndex + index) % 3];
-    const item = el('article', `product-item${colorClass}`);
-    item.dataset.rowId = row.id;
+  table.items.forEach((data, index) => {
+    const item = el('article', 'product-item'); item.style.setProperty('--name-highlight', COLORS[data.color]);
+    const heading = el('div', 'product-heading');
     const name = el('h3', 'product-name');
-    nameColumns.forEach(column => {
-      const label = el('span', 'visually-hidden');
-      renderCell(label, column.label);
-      const value = el('span', 'product-name-value');
-      value.dataset.columnKey = column.key;
-      const cell = row.cells[column.key];
-      if (cell?.text) {
-        value.append(productNameText(cell.text));
-      }
-      if (!cell || cell.pending) value.append(pendingBadge());
-      name.append(label, value);
-    });
-    if (!nameColumns.length) name.append(productNameText(data.title));
-    const options = el('div', 'product-options');
-    optionColumns.forEach(column => {
-      const option = el('span', 'product-option');
-      option.dataset.columnKey = column.key;
-      const label = el('span', 'product-option-label');
-      const value = el('span', 'product-option-value');
-      renderCell(label, column.label);
-      renderCell(value, row.cells[column.key]);
-      option.append(label, value);
-      options.append(option);
-    });
-    const description = el('div', 'product-details');
-    detailColumns.forEach(column => {
-      const field = el('div', 'product-detail');
-      field.dataset.columnKey = column.key;
-      renderCell(field, row.cells[column.key]);
-      description.append(field);
-    });
-    const header = el('div', 'product-heading');
-    header.append(name);
-    if (row.note) {
-      const note = el('small', 'product-note');
-      const icon = el('img', 'product-note-icon');
-      icon.src = './assets/alerta.png';
-      icon.alt = ''; icon.width = 64; icon.height = 64;
-      note.append(icon, document.createTextNode(row.note));
-      header.append(note);
+    const marker = el('span', 'product-name-text marker-text', data.name); marker.dataset.underline = index % 4;
+    name.append(marker); if (data.pending) name.append(pendingBadge()); heading.append(name);
+    if (hasText(data.alert)) {
+      const note = el('small', 'product-note'); note.append(image('alerta.png', 'product-note-icon', 64, 64)); appendRich(note, data.alert); heading.append(note);
     }
-    item.append(header, description, options);
-    list.append(item);
+    item.append(heading);
+    if (hasText(data.description)) {
+      const details = el('div', 'product-details'); details.append(appendRich(el('div', 'product-detail'), data.description)); item.append(details);
+    }
+    const options = el('div', 'product-options');
+    data.prices.forEach(price => {
+      const option = el('span', 'product-option');
+      if (hasText(price.description)) option.append(appendRich(el('span', 'product-option-label'), price.description));
+      const value = el('span', 'product-option-value');
+      const amount = el('span', price.kind === 'amount' ? 'amount' : '');
+      appendRich(amount, [{ text: (price.kind === 'amount' ? `${formatAmount(price.amount)}€` : price.text) + (price.star ? '*' : ''), bold: price.bold, italic: price.italic }]);
+      value.append(amount); if (price.pending) value.append(pendingBadge()); option.append(value); options.append(option);
+    });
+    item.append(options); list.append(item);
   });
   return list;
 }
 
-function catalogueBlock(id, firstIndex) {
-  const data = tables[id];
+function catalogueBlock(table) {
   const block = el('section', 'catalogue-block');
-  block.dataset.catalogueId = id;
-  block.append(el('h2', 'catalogue-heading', data.title), renderCatalogue(data, firstIndex));
-  if (data.fragments?.length) {
-    const fragments = el('details', 'source-fragments');
-    fragments.append(el('summary', '', 'Fragments de taula pendents d’ubicar'));
-    data.fragments.forEach(fragment => {
-      const part = el('div', 'source-fragment');
-      part.append(paragraph(fragment.text), pendingBadge(), el('p', 'fragment-note', fragment.note));
-      fragments.append(part);
-    });
-    block.append(fragments);
+  block.append(el('h2', 'catalogue-heading', table.title), renderCatalogue(table));
+  if (table.items.some(item => item.prices.some(price => price.star))) {
+    const note = el('p', 'pickup-note'); note.append(document.createTextNode('*')); appendRich(note, table.footnote); block.append(note);
   }
-  block.append(el('p', 'pickup-note', pickup));
   return block;
 }
-
-function questionsBlock(section) {
-  const block = el('section', 'faq-block');
-  const top = el('div', 'faq-heading');
-  top.append(el('h2', '', 'Preguntes freqüents'));
-  const list = el('div', 'faq-list');
-  section.questions.forEach(item => {
-    const details = el('details', 'faq-item');
-    const summary = el('summary');
-    summary.append(el('span', '', item.q), el('span', 'faq-toggle', '+'));
-    const answer = el('div', 'faq-answer');
-    answer.append(paragraph(item.a));
-    if (item.pending) answer.append(pendingBadge());
+function questionsBlock(questions) {
+  const block = el('section', 'faq-block'), heading = el('div', 'faq-heading'), list = el('div', 'faq-list');
+  heading.append(el('h2', '', 'Preguntes freqüents'));
+  questions.forEach(question => {
+    const details = el('details', 'faq-item'), summary = el('summary'), answer = el('div', 'faq-answer');
+    summary.append(appendRich(el('span'), question.question), el('span', 'faq-toggle', '+'));
+    answer.append(paragraph(question.answer)); if (question.pending) answer.append(pendingBadge());
     details.append(summary, answer);
-    details.addEventListener('toggle', () => {
-      if (details.open) list.querySelectorAll('details').forEach(other => { if (other !== details) other.open = false; });
-    });
+    details.addEventListener('toggle', () => { if (details.open) list.querySelectorAll('details').forEach(other => { if (other !== details) other.open = false; }); });
     list.append(details);
   });
-  block.append(top, list);
-  return block;
+  block.append(heading, list); return block;
 }
-
-function heading(section) {
-  const header = el('div', 'panel-heading');
-  const title = el('h1', '', section.title);
-  header.append(title);
-  return header;
-}
-
-function sectionLead(section, { illustrated = true } = {}) {
-  const lead = el('div', `section-lead${illustrated ? '' : ' section-lead-text'}`);
-  const copy = el('div', 'section-lead-copy');
-  copy.append(heading(section), paragraph(section.intro, 'section-intro'));
-  lead.append(copy);
-  if (illustrated && sectionImages[section.id]) {
-    const illustration = el('img', 'section-illustration');
-    illustration.src = `./assets/${sectionImages[section.id]}`;
-    illustration.alt = ''; illustration.width = 240; illustration.height = 180;
-    lead.append(illustration);
-  }
+function sectionLead(section, illustrated = true) {
+  const lead = el('div', `section-lead${illustrated ? '' : ' section-lead-text'}`), heading = el('div', 'panel-heading');
+  heading.append(el('h1', '', `${section.label}:`));
+  const copy = el('div', 'section-lead-copy'); copy.append(heading, paragraph(section.description, 'section-intro')); lead.append(copy);
+  if (illustrated) lead.append(image(sectionImages[section.id], 'section-illustration', 240, 180));
   return lead;
 }
-
-function home() {
-  const container = el('div', 'home-content');
-  const greeting = el('h1', 'home-greeting');
-  greeting.append(document.createTextNode('Primer que res… '), el('strong', '', 'ENHORABONA!'));
-  const opening = paragraph(introduction.text, 'home-opening');
-  const choices = el('nav', 'home-choices');
+function home(content, sections) {
+  const container = el('div', 'home-content'), choices = el('nav', 'home-choices');
+  container.append(el('h1', 'visually-hidden', 'La Figuera Events'), paragraph(content.home.description, 'home-opening'));
   choices.setAttribute('aria-label', 'Seccions de La Figuera Events');
-  sections.filter(section => section.kind !== 'home').forEach((section, index) => {
-    const link = el('a', 'home-choice');
-    link.href = routePath(section.id);
-    link.dataset.section = section.id;
-    const image = el('img', 'home-choice-image');
-    image.src = `./assets/${sectionImages[section.id]}`;
-    image.alt = ''; image.width = 240; image.height = 180;
-    const title = el('span', 'home-choice-title marker-text', section.label);
-    title.dataset.underline = index;
-    link.append(image, title);
-    choices.append(link);
+  sections.filter(section => section.id !== 'la-carta').forEach((section, index) => {
+    const link = el('a', 'home-choice'); link.href = routePath(section.id); link.dataset.section = section.id;
+    const title = el('span', 'home-choice-title marker-text', section.label); title.dataset.underline = index;
+    link.append(image(sectionImages[section.id], 'home-choice-image', 240, 180), title); choices.append(link);
   });
-  container.append(greeting, opening, choices);
-  return container;
+  container.append(choices); return container;
 }
-
-function contactContent(section) {
-  const container = el('div', 'contact-content');
-  container.append(sectionLead(section, { illustrated: false }));
-  const list = el('ul', 'contact-list');
-  const links = [
-    ['WhatsApp', contact.phone, `https://wa.me/34${contact.phone}`, 'contact-whatsapp-painted.png'],
-    ['Correu', contact.email, `mailto:${contact.email}`, 'contacte-painted.png'],
-    ['Instagram', contact.handle, 'https://www.instagram.com/lafigueravlc/', 'contact-instagram-painted.png'],
-  ];
-  links.forEach(([label, value, href, image]) => {
-    const row = el('li', 'contact-row');
-    const link = el('a', 'contact-link'); link.href = href;
-    if (href.startsWith('https:')) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
-    const illustration = el('img', 'contact-illustration');
-    illustration.src = `./assets/${image}`;
-    illustration.alt = ''; illustration.width = 100; illustration.height = 100;
-    const details = el('div', 'contact-details');
-    details.append(el('span', 'contact-label', label), el('span', 'contact-value', value));
-    link.append(illustration, details);
-    row.append(link);
-    list.append(row);
-  });
-  container.append(list);
-  return container;
-}
-
-function catalogue(section) {
-  const container = el('div', 'catalogue-content');
-  container.append(sectionLead(section));
-  let productIndex = 0;
-  section.tableIds.forEach(id => {
-    container.append(catalogueBlock(id, productIndex));
-    productIndex += tables[id].rows.length;
-  });
-  container.append(questionsBlock(section));
-  return container;
-}
-
-sections.forEach(section => {
-  if (section.kind !== 'home') {
-    const link = el('a', 'nav-tab');
-    const label = el('span', 'nav-label marker-text', section.label);
-    label.dataset.underline = navigation.children.length;
-    link.append(label);
-    link.href = routePath(section.id); link.dataset.section = section.id;
-    navigation.append(link);
+function contactContent(content, section) {
+  const container = el('div', 'contact-content'), list = el('ul', 'contact-list');
+  container.append(sectionLead(section, false));
+  for (const id of ['whatsapp', 'email', 'instagram']) {
+    const contact = content.contacts[id], info = contactInfo[id], row = el('li', 'contact-row'), link = externalLink(contact.href, 'contact-link'), details = el('div', 'contact-details');
+    details.append(el('span', 'contact-label', info.label), el('span', 'contact-value', contact.text));
+    link.append(image(info.image, 'contact-illustration', 100, 100), details); row.append(link); list.append(row);
   }
-  const panel = el('section', 'panel'); panel.id = `panel-${section.id}`; panel.hidden = true;
-  panel.append(section.kind === 'home' ? home() : section.kind === 'contact' ? contactContent(section) : catalogue(section));
-  main.append(panel);
-});
+  container.append(list); return container;
+}
+function catalogue(category) {
+  const container = el('div', 'catalogue-content'); container.append(sectionLead(category));
+  category.tables.forEach(table => container.append(catalogueBlock(table)));
+  if (category.questions.length) container.append(questionsBlock(category.questions));
+  return container;
+}
+function renderFooter(content) {
+  const container = el('span');
+  for (const [index, id] of ['instagram', 'whatsapp', 'email'].entries()) {
+    if (index) { const separator = el('span', 'footer-separator', '·'); separator.setAttribute('aria-hidden', 'true'); container.append(separator); }
+    const contact = content.contacts[id], link = externalLink(contact.href); link.textContent = contact.text; container.append(link);
+  }
+  document.querySelector('.site-footer').replaceChildren(container);
+}
 
-let selected;
+let sections = [], selected;
 function selectSection({ scroll = true } = {}) {
-  const requested = sectionFromLocation(location, appRoot.pathname);
-  const section = sections.find(item => item.id === requested) || sections[0];
+  if (!sections.length) return;
+  const requested = sectionFromLocation(location, appRoot.pathname), section = sections.find(item => item.id === requested) || sections[0];
   const changed = selected !== section.id;
   if (changed) main.querySelectorAll('details[open]').forEach(details => { details.open = false; });
   const canonicalURL = routePath(section.id) + location.search;
   if (location.pathname + location.search + location.hash !== canonicalURL) history.replaceState(null, '', canonicalURL);
-  const isHome = section.kind === 'home';
-  document.body.classList.toggle('is-home', isHome);
-  navigation.hidden = isHome;
+  const isHome = section.id === 'la-carta'; document.body.classList.toggle('is-home', isHome); navigation.hidden = isHome;
   document.querySelectorAll('.panel').forEach(panel => { panel.hidden = panel.id !== `panel-${section.id}`; });
   document.querySelectorAll('.site-header a[data-section]').forEach(link => {
-    const active = link.dataset.section === section.id;
-    link.classList.toggle('active', active);
+    const active = link.dataset.section === section.id; link.classList.toggle('active', active);
     if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
   });
-  document.title = section.pageTitle;
-  selected = section.id;
+  document.title = isHome ? 'La Figuera Events' : `La Figuera Events · ${section.label}`; selected = section.id;
   if (scroll && changed) window.scrollTo({ top: 0, behavior: 'instant' });
 }
 document.addEventListener('click', event => {
   const link = event.target.closest('a[data-section]');
-  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
-  event.preventDefault();
-  const target = routePath(link.dataset.section);
+  if (!link || !sections.length || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.hasAttribute('download') || link.target && link.target !== '_self') return;
+  event.preventDefault(); const target = routePath(link.dataset.section);
   if (location.pathname + location.search + location.hash !== target) history.pushState(null, '', target);
   selectSection();
 });
-window.addEventListener('popstate', () => selectSection());
-window.addEventListener('hashchange', () => selectSection());
-selectSection({ scroll: false });
+window.addEventListener('popstate', () => selectSection()); window.addEventListener('hashchange', () => selectSection());
+
+async function start() {
+  main.replaceChildren(el('p', 'loading-message', 'Carregant…'));
+  try {
+    const content = await loadContent();
+    sections = [{ id: 'la-carta', label: 'Inici' }, ...content.categories, { id: 'contacte', ...content.contact }];
+    main.replaceChildren(); navigation.replaceChildren(); renderFooter(content);
+    sections.forEach(section => {
+      if (section.id !== 'la-carta') {
+        const link = el('a', 'nav-tab'), label = el('span', 'nav-label marker-text', section.label); label.dataset.underline = navigation.children.length;
+        link.href = routePath(section.id); link.dataset.section = section.id; link.append(label); navigation.append(link);
+      }
+      const panel = el('section', 'panel'); panel.id = `panel-${section.id}`; panel.hidden = true;
+      panel.append(section.id === 'la-carta' ? home(content, sections) : section.id === 'contacte' ? contactContent(content, section) : catalogue(section)); main.append(panel);
+    });
+    selectSection({ scroll: false });
+  } catch {
+    sections = []; navigation.replaceChildren();
+    const block = el('div', 'load-error'); block.setAttribute('role', 'alert');
+    const retry = el('button', '', 'Reintentar'); retry.type = 'button'; retry.addEventListener('click', start);
+    block.append(el('p', '', 'No s’ha pogut carregar el contingut.'), retry); main.replaceChildren(block);
+  }
+}
+start();
