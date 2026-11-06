@@ -23,15 +23,6 @@ const el = (tag, className = '', text) => {
   return node;
 };
 
-function arrowImage() {
-  const image = el('img', 'arrow-image');
-  image.src = './assets/arrow-diagonal.svg';
-  image.alt = '';
-  image.setAttribute('aria-hidden', 'true');
-  image.width = 32; image.height = 32;
-  return image;
-}
-
 const emphasis = [
   '100% artesanals', 'proximitat i de temporada', 'flors i fruita fresca',
   'NO AGAFEM MÉS D’UN EVENT PER DATA', 'formatge blau', 'parmesà', 'raïm',
@@ -258,23 +249,12 @@ function contactContent(section) {
 function catalogue(section) {
   const container = el('div', 'catalogue-content');
   container.append(sectionLead(section));
-  if (section.id === 'taules-dolces') {
-    const link = el('a', 'inline-section-link', 'Consultar les tartes del bufet');
-    link.append(arrowImage());
-    link.href = routePath('bufet-de-tortades'); link.dataset.section = 'bufet-de-tortades';
-    container.append(link);
-  }
   let productIndex = 0;
   section.tableIds.forEach(id => {
     container.append(catalogueBlock(id, productIndex));
     productIndex += tables[id].rows.length;
   });
   container.append(questionsBlock(section));
-  const closing = el('a', 'closing-link'); closing.href = routePath('contacte'); closing.dataset.section = 'contacte';
-  const closingLabel = el('span', 'closing-label', 'Contacteu-nos');
-  closingLabel.append(arrowImage());
-  closing.append(el('span', '', 'Teniu qualsevol dubte?'), closingLabel);
-  container.append(closing);
   return container;
 }
 

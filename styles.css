@@ -3,7 +3,7 @@
 @font-face{font-family:'Futura Text';src:url('./assets/futura-book.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:'Futura Text';src:url('./assets/futura-nd-demibold.woff2') format('woff2');font-style:normal;font-weight:600;font-display:swap}
 
-:root{--paper:#e4e6fb;--ink:#57575a;--heading:#676767;--muted:#615f6a;--line:#b5b7d4;--purple:#cca8c5;--green:#a8ccc3;--closing-background:#f5f5eb;--mustard:#ddc17c;--white:#f9f9f3;--badge-background:#e5cee4;--badge-border:#cca8c5;--badge-ink:#694768;--note-ink:#705a32;--body:'Futura Text',Arial,sans-serif}
+:root{--paper:#e4e6fb;--ink:#57575a;--heading:#676767;--muted:#615f6a;--line:#b5b7d4;--purple:#cca8c5;--green:#a8ccc3;--mustard:#ddc17c;--white:#f9f9f3;--badge-background:#e5cee4;--badge-border:#cca8c5;--badge-ink:#694768;--note-ink:#705a32;--body:'Futura Text',Arial,sans-serif}
 *{box-sizing:border-box}
 html{scroll-padding-top:165px}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;font-weight:400;font-synthesis:none;-webkit-font-smoothing:antialiased}
@@ -55,13 +55,10 @@ h1{font-family:'EB Garamond',Georgia,serif;font-size:clamp(50px,6.5vw,87px);line
 .home-choice-title{font-size:18px;font-weight:600;line-height:1.5}
 .home-choice-title:before,.home-choice-title:after{--marker-opacity:0;visibility:hidden;transition:opacity 180ms ease,visibility 0s linear 180ms}
 .home-choice:is(:hover,:focus-visible) .home-choice-title:before,.home-choice:is(:hover,:focus-visible) .home-choice-title:after{--marker-opacity:1;visibility:visible;transition-delay:0s}
-.arrow-image{display:inline-block;width:28px;height:28px;object-fit:contain;flex-shrink:0;vertical-align:middle}
 .home-note{display:grid;grid-template-columns:50px 1fr;gap:30px;border-top:1px solid var(--line);padding-top:37px;margin-top:58px}
 .note-star{font-size:42px;line-height:1.1;color:var(--purple)}
 .home-note p{font-size:16px;line-height:1.85;max-width:900px}
 .section-intro{font-size:19px;line-height:1.85;margin:0;letter-spacing:0}
-.inline-section-link{display:inline-flex;align-items:center;gap:8px;font-size:14px;margin-top:15px}
-.inline-section-link .arrow-image{width:22px;height:22px}
 .catalogue-block{margin-top:45px}
 .catalogue-heading{margin-bottom:16px;font-size:27px;letter-spacing:-.8px;font-weight:600}
 .product-list{border:1px solid var(--line);border-radius:5px;background:var(--white);overflow:hidden}
@@ -112,10 +109,6 @@ h1{font-family:'EB Garamond',Georgia,serif;font-size:clamp(50px,6.5vw,87px);line
 .faq-toggle{font-size:25px;font-weight:400;line-height:1;flex-shrink:0}
 .faq-item[open] .faq-toggle{transform:rotate(45deg)}
 .faq-answer{padding:0 35px 23px 0;font-size:15px;line-height:1.9}
-.closing-link{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:29px 30px;margin-top:65px;background:var(--closing-background);text-decoration:none;border-radius:4px}
-.closing-link span:first-child{font-size:22px;letter-spacing:-.5px}
-.closing-link span:last-child{font-size:14px}
-.closing-label{display:inline-flex;align-items:center;gap:10px}
 .contact-list{list-style:none;padding:0;margin:40px 0 0;max-width:800px}
 .contact-row{border-bottom:1px solid var(--line)}
 .contact-row:last-child{border-bottom:0}
@@ -196,8 +189,6 @@ h1{font-family:'EB Garamond',Georgia,serif;font-size:clamp(50px,6.5vw,87px);line
   .faq-item summary{font-size:14px;gap:20px;padding:19px 0}
   .faq-answer{font-size:14px;padding-right:12px}
   .faq-toggle{font-size:23px}
-  .closing-link{padding:23px 20px;margin-top:38px;align-items:start;flex-direction:column;gap:13px}
-  .closing-link span:first-child{font-size:21px}
   .contact-list{margin-top:28px}
   .contact-link{gap:18px;padding:20px 0}
   .contact-illustration{width:68px;height:68px}
