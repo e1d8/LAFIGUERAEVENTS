@@ -1,5 +1,4 @@
-// Transcripció de les captures aportades. C01–C13 exclouen la imatge d'estil.
-// O01: HTML original recuperat; vegeu docs/recuperacio-original.md.
+// Contingut de les captures C01–C13 i de la còpia original de Canva O01.
 // Un camp `pending` indica text absent, retallat o una associació no confirmada.
 export const cell = (text = '', pending = false) => ({ text, pending });
 export const pickup = '*Preu sense IVA. No incloem transport. Els productes s’han d’arreplegar a l’obrador.';
