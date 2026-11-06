@@ -6,11 +6,11 @@
         "text": "Primer que res… "
       },
       {
-        "text": "ENHORABONA!",
+        "text": "ENHORABONA! ✨",
         "bold": true
       },
       {
-        "text": "\n\nAcí teniu una relació de possibilitats de tortades meravelloses per tal que el vostre dia siga el més dolç possible, així com opcions de bufets de tartes per quedar-vos amb tota la vostra gent o taules dolces figtàstiques."
+        "text": "\nAcí teniu una relació de possibilitats de tortades meravelloses per tal que el vostre dia siga el més dolç possible, així com opcions de bufets de tartes per quedar-vos amb tota la vostra gent o taules dolces figtàstiques."
       }
     ]
   },
@@ -120,7 +120,7 @@
             },
             {
               "name": "Pastís de xocolate",
-              "color": "purple",
+              "color": "mustard",
               "description": [
                 {
                   "text": "biscuit de vainilla mullat amb café, crema de xoco amb llet (o xoco pur, vosaltres trieu!)"
@@ -156,7 +156,7 @@
             },
             {
               "name": "Pastís de llima",
-              "color": "green",
+              "color": "mustard",
               "description": [
                 {
                   "text": "biscuit de llima humit amb crema de formatge i xoco blanc i coulis de fruita (trieu la vostra preferida!)"
@@ -238,7 +238,7 @@
           "items": [
             {
               "name": "Fruits secs i dulce de leche",
-              "color": "purple",
+              "color": "green",
               "description": [
                 {
                   "text": "Tarta de biscuit de xoco banyat amb café, buttercream de dulce de leche, fruits secs i crunch d'avellana."
@@ -310,7 +310,7 @@
             },
             {
               "name": "Macadàmia",
-              "color": "mustard",
+              "color": "green",
               "description": [
                 {
                   "text": "Biscuit llima humit, crema de formatge i xoco blanc, anous de macadàmia caramelitzades."
@@ -392,7 +392,7 @@
             },
             {
               "name": "Gerds, formatge i pistatxo",
-              "color": "green",
+              "color": "purple",
               "description": [
                 {
                   "text": "Biscuit de vainilla, buttecream de formatge i xoco blanc, coulis casolà de frambueses, crunch de pistatxo caramelitzat."
@@ -428,7 +428,7 @@
             },
             {
               "name": "Personalitzada",
-              "color": "mustard",
+              "color": "purple",
               "description": [
                 {
                   "text": "Acorda una cita amb nosaltres i dissenyem la teua tarta ideal basada en les teues postres preferides!"
