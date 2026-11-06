@@ -40,7 +40,7 @@ S’ha conservat «tarta», ja present en el text vigent, on l’original de la 
 - Descripcions de Carrot cake, Pastís de lotus, la primera premium i Carabassa i pistatxo tal com les va corregir l’usuari.
 - En particular, la primera premium conserva «fruits secs i crunch d'avellana». L’original de la fila 2 diu «fruits secs caramelitzats». El nom recuperat correspon al nucli de la descripció —xoco, café i dulce de leche—; no s’ha substituït la versió corregida pels ingredients antics. La fila de Praliné d’avellanes és un producte separat en l’original i s’ha afegit com a tal.
 - Etiquetes nupcials breus («2 pisos…», «3 pisos…»), preus amb asterisc i avís compartit «Preu sense IVA…».
-- «⚠️ SAP A FORMATGE» al final de les dues descripcions corresponents, sense recuperar el prefix antic.
+- «SAP A FORMATGE» en xicotet a la part superior dreta de les dues fitxes corresponents, sense recuperar el prefix antic.
 - Contacte limitat a WhatsApp, correu i Instagram; no es recuperen els altres mitjans del peu original.
 - Presentació actual de les seccions, navegació, il·lustracions, tipografies i animacions.
 
@@ -48,8 +48,10 @@ S’han conservat les formes literals dels productes nous, incloses «buttecream
 
 ## Únic import absent
 
-Les cel·les C4/D4 de Personalitzada contenen un guió. Les opcions de 2 i 3 pisos continuen amb «Informació pendent». No s’ha deduït cap import ni s’ha marcat el producte com a no disponible.
+Les cel·les C4/D4 de Personalitzada contenen un guió. Per indicació posterior de l’usuari, les opcions de 2 i 3 pisos mostren «Contacta’ns i et fem preu!». No s’ha deduït cap import ni s’ha marcat el producte com a no disponible.
 
 ## Verificació
 
 Les comprovacions de `tests/recovery.test.mjs` contrasten tots els noms, imports, ingredients recuperats, l’ordre de les files, les cinc opcions de Micotetes, la capçalera fusionada del bufet i les tres FAQ amb l’extracció guardada. Les descripcions corregides i la presentació acurtada tenen comprovacions separades perquè una futura recuperació no les sobreescriga.
+
+Després de la recuperació, l’usuari ha unificat també els imports del bufet i de Micotetes amb el format d’asterisc. Les quantitats i els imports són els recuperats; les etiquetes del bufet passen a «Decoració normal (12/15 racions)» i «Flors de boda (12/15 racions)». L’extracció `original-canva.json` es conserva intacta com a font històrica.

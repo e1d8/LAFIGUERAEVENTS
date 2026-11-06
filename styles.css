@@ -3,7 +3,7 @@
 @font-face{font-family:'Futura Text';src:url('./assets/futura-book.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:'Futura Text';src:url('./assets/futura-nd-demibold.woff2') format('woff2');font-style:normal;font-weight:600;font-display:swap}
 
-:root{--paper:#e4e6fb;--ink:#57575a;--heading:#676767;--muted:#615f6a;--line:#b5b7d4;--purple:#cca8c5;--closing-background:#f5f5eb;--mustard:#ddc17c;--white:#f9f9f3;--badge-background:#e5cee4;--badge-border:#cca8c5;--badge-ink:#694768;--note-ink:#705a32;--body:'Futura Text',Arial,sans-serif}
+:root{--paper:#e4e6fb;--ink:#57575a;--heading:#676767;--muted:#615f6a;--line:#b5b7d4;--purple:#cca8c5;--green:#a8ccc3;--closing-background:#f5f5eb;--mustard:#ddc17c;--white:#f9f9f3;--badge-background:#e5cee4;--badge-border:#cca8c5;--badge-ink:#694768;--note-ink:#705a32;--body:'Futura Text',Arial,sans-serif}
 *{box-sizing:border-box}
 html{scroll-padding-top:165px}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;font-weight:400;font-synthesis:none;-webkit-font-smoothing:antialiased}
@@ -21,9 +21,10 @@ img{display:block;max-width:100%;height:auto}
 .brand-name>span{display:block;color:var(--ink);font-family:Futura,Arial,sans-serif;font-size:10px;letter-spacing:5px;margin-top:5px;font-weight:700}
 .section-nav{display:flex;gap:8px;flex:1;max-width:800px}
 .nav-tab{--name-highlight:var(--purple);flex:1;display:flex;align-items:center;justify-content:center;padding:12px 16px;border:1px solid transparent;text-decoration:none;font-size:14px;font-weight:600;line-height:1.4;white-space:nowrap}
-.nav-tab.active{--name-highlight:var(--mustard);color:var(--ink)}
+.nav-tab.active{color:var(--ink)}
 .nav-label:before,.nav-label:after{--marker-opacity:0;visibility:hidden;transition:opacity 180ms ease,visibility 0s linear 180ms}
-.nav-tab:is(:hover,:focus-visible,.active) .nav-label:before,.nav-tab:is(:hover,:focus-visible,.active) .nav-label:after{--marker-opacity:1;visibility:visible;transition-delay:0s}
+.nav-tab:is(:hover,:focus-visible,.active) .nav-label:before,.nav-tab:is(:hover,:focus-visible,.active) .nav-label:after{--marker-opacity:.45;visibility:visible;transition-delay:0s}
+.nav-tab.active .nav-label:before,.nav-tab.active .nav-label:after{--marker-opacity:1}
 .panel{padding-top:49px;padding-bottom:60px}
 .panel-heading{display:block}
 h1,h2,p{margin:0}
@@ -54,7 +55,6 @@ h1{font-family:'EB Garamond',Georgia,serif;font-size:clamp(50px,6.5vw,87px);line
 .home-choice-title{font-size:18px;font-weight:600;line-height:1.5}
 .home-choice-title:before,.home-choice-title:after{--marker-opacity:0;visibility:hidden;transition:opacity 180ms ease,visibility 0s linear 180ms}
 .home-choice:is(:hover,:focus-visible) .home-choice-title:before,.home-choice:is(:hover,:focus-visible) .home-choice-title:after{--marker-opacity:1;visibility:visible;transition-delay:0s}
-.home-choice:last-child{--name-highlight:var(--mustard)}
 .arrow-image{display:inline-block;width:28px;height:28px;object-fit:contain;flex-shrink:0;vertical-align:middle}
 .home-note{display:grid;grid-template-columns:50px 1fr;gap:30px;border-top:1px solid var(--line);padding-top:37px;margin-top:58px}
 .note-star{font-size:42px;line-height:1.1;color:var(--purple)}
@@ -67,7 +67,9 @@ h1{font-family:'EB Garamond',Georgia,serif;font-size:clamp(50px,6.5vw,87px);line
 .product-list{border:1px solid var(--line);border-radius:5px;background:var(--white);overflow:hidden}
 .product-item{--name-highlight:var(--mustard);min-width:0;padding:24px;background:var(--white);border-bottom:1px solid var(--line)}
 .product-item-rose{--name-highlight:var(--purple)}
+.product-item-green{--name-highlight:var(--green)}
 .product-item:last-child{border-bottom:0}
+.product-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .product-name{min-width:0;margin:0;font-size:19px;font-weight:600;letter-spacing:-.4px;overflow-wrap:anywhere}
 .product-name-value{display:block}
 .marker-text{position:relative;isolation:isolate;display:inline-block;max-width:100%}
@@ -89,7 +91,8 @@ h1{font-family:'EB Garamond',Georgia,serif;font-size:clamp(50px,6.5vw,87px);line
 .product-details{margin-top:12px;color:var(--ink);font-size:15px;line-height:1.8}
 .product-detail{max-width:850px;overflow-wrap:anywhere;white-space:pre-line}
 .product-detail+.product-detail{margin-top:18px}
-.product-note{display:block;margin-top:14px;font-size:11px;line-height:1.5}
+.product-note{display:block;flex-shrink:0;margin:0 0 0 auto;font-size:11px;line-height:1.5;text-align:right;white-space:nowrap}
+.product-note-icon{display:inline-block;width:1lh;height:1lh;aspect-ratio:1;object-fit:contain;margin-right:4px;vertical-align:middle;vertical-align:calc((1cap - 1lh) / 2)}
 .product-item .pending-badge{margin-top:5px;font-size:10px;font-weight:400;letter-spacing:0}
 .product-item .pending-badge:only-child{margin-top:0}
 .pending-badge{display:block;width:fit-content;max-width:100%;margin-top:11px;padding:3px 8px;border:1px solid var(--badge-border);background:var(--badge-background);color:var(--badge-ink);border-radius:4px;font-size:10px;line-height:1.55;font-weight:400;letter-spacing:0;white-space:normal}
@@ -178,6 +181,7 @@ h1{font-family:'EB Garamond',Georgia,serif;font-size:clamp(50px,6.5vw,87px);line
   .catalogue-heading{margin-bottom:13px;font-size:24px;letter-spacing:-.6px}
   .product-item{padding:20px 16px}
   .product-name{font-size:18px}
+  .product-note{font-size:9px}
   .product-options{grid-template-columns:repeat(auto-fit,minmax(min(100%,110px),1fr));gap:14px;margin-top:18px}
   .product-option-label{font-size:11px}
   .product-option-value{font-size:12px}

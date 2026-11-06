@@ -139,7 +139,7 @@ try {
     assert.deepEqual(homeLinks.map(link => link.title), ['Tartes nupcials', 'Bufet de tortades', 'Taules dolces', 'Contacte']);
     assert.deepEqual(homeLinks.map(link => link.image), ['./assets/nupcial-painted.png', './assets/torta-painted.png', './assets/galetes-painted.png', './assets/contacte-painted.png']);
     assert.ok(homeLinks.every(link => link.imageAboveTitle));
-    assert.deepEqual(homeLinks.map(link => link.markerColor), ['rgb(204, 168, 197)', 'rgb(204, 168, 197)', 'rgb(204, 168, 197)', 'rgb(221, 193, 124)']);
+    assert.deepEqual(homeLinks.map(link => link.markerColor), Array(4).fill('rgb(204, 168, 197)'));
     assert.ok(await evaluate(`(() => {
       const home = document.querySelector('.home-content');
       return home.querySelector('h1').textContent === 'Primer que res… ENHORABONA!'
@@ -178,7 +178,7 @@ try {
       assert.equal(await evaluate('scrollY'), 0, 'Changing sections returns to the top');
       assert.equal(await evaluate('document.querySelector("#navigation").checkVisibility()'), route !== 'la-carta');
       if (route !== 'la-carta') {
-        assert.ok(await evaluate(`(() => {const tab = document.querySelector('.nav-tab.active'); const marker = getComputedStyle(tab.querySelector('.nav-label'), '::before'); return getComputedStyle(tab).backgroundColor === 'rgba(0, 0, 0, 0)' && marker.visibility === 'visible' && marker.backgroundColor === 'rgb(221, 193, 124)';})()`), 'Selected navigation shows a yellow underline without a box');
+        assert.ok(await evaluate(`(() => {const tab = document.querySelector('.nav-tab.active'); const marker = getComputedStyle(tab.querySelector('.nav-label'), '::before'); return getComputedStyle(tab).backgroundColor === 'rgba(0, 0, 0, 0)' && marker.visibility === 'visible' && marker.backgroundColor === 'rgb(204, 168, 197)';})()`), 'Selected navigation shows a pink underline without a box');
       }
       if (route !== 'la-carta' && route !== 'contacte') {
         assert.ok(await evaluate(`(() => {const lead=document.querySelector('#panel-${route} .section-lead');const image=lead.querySelector('.section-illustration');const picture=image.getBoundingClientRect();const title=lead.querySelector('h1').getBoundingClientRect();return image.complete && image.naturalWidth>0 && !image.src.endsWith('flower.svg') && picture.width>=200 && (picture.left>=title.right || picture.top>=title.bottom)})()`));
@@ -203,6 +203,9 @@ try {
       assert.equal(await evaluate('document.querySelectorAll("table, .table-scroll, .scroll-hint").length'), 0);
       if (['tartes-nupcials', 'bufet-de-tortades', 'taules-dolces'].includes(route)) {
         const panel = `#panel-${route}`;
+        const itemColors = await evaluate(`Array.from(document.querySelectorAll('${panel} .product-name-text'), name => getComputedStyle(name, '::before').backgroundColor)`);
+        const palette = ['rgb(221, 193, 124)', 'rgb(204, 168, 197)', 'rgb(168, 204, 195)'];
+        assert.deepEqual(itemColors, itemColors.map((_, index) => palette[index % 3]), 'Product colors alternate yellow, pink and green across category boundaries');
         assert.equal(await evaluate(`document.querySelectorAll('${panel} details.product-item, ${panel} .product-summary, ${panel} .product-toggle').length`), 0);
         assert.ok(await evaluate(`(() => {
           const names = Array.from(document.querySelectorAll('${panel} .product-name-text'));
@@ -222,7 +225,31 @@ try {
             return data.rows.every(row => {
               const item = block.querySelector('[data-row-id="' + row.id + '"]');
               if (!item.checkVisibility() || !item.querySelector('.product-details').checkVisibility()) return false;
-              if (row.note && item.querySelector('.product-note')?.textContent !== row.note) return false;
+              if (row.note) {
+                const note = item.querySelector('.product-heading .product-note');
+                if (note?.textContent !== row.note) return false;
+                const noteBox = note.getBoundingClientRect();
+                const icon = note.querySelector('.product-note-icon');
+                if (!icon?.complete || !icon.naturalWidth || !icon.src.endsWith('/alerta.png')) return false;
+                const iconBox = icon.getBoundingClientRect();
+                if (Math.abs(iconBox.width - iconBox.height) > 0.1
+                  || Math.abs(iconBox.height - parseFloat(getComputedStyle(note).lineHeight)) > 0.1) return false;
+                const baseline = document.createElement('span');
+                baseline.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+                note.append(baseline);
+                const baselineY = baseline.getBoundingClientRect().top;
+                baseline.remove();
+                const font = getComputedStyle(note);
+                const context = document.createElement('canvas').getContext('2d');
+                context.font = font.fontWeight + ' ' + font.fontSize + ' ' + font.fontFamily;
+                const ink = context.measureText(note.textContent);
+                const textCenter = baselineY + (ink.actualBoundingBoxDescent - ink.actualBoundingBoxAscent) / 2;
+                if (Math.abs(iconBox.top + iconBox.height / 2 - textCenter) > 1) return false;
+                const nameBox = item.querySelector('.product-name').getBoundingClientRect();
+                const detailBox = item.querySelector('.product-details').getBoundingClientRect();
+                if (Math.abs(noteBox.top - nameBox.top) > 1 || noteBox.left < nameBox.right
+                  || noteBox.bottom > detailBox.top || noteBox.right > item.getBoundingClientRect().right) return false;
+              }
               if (!data.columns.some(column => column.role === 'name')
                 && item.querySelector('.product-name').textContent !== data.title) return false;
               return data.columns.every(column => {
@@ -317,8 +344,9 @@ try {
   for (let index = 0; index < 4; index++) {
     const point = await evaluate(`(() => { const rect = document.querySelectorAll('.nav-tab')[${index}].getBoundingClientRect(); return {x: rect.x + rect.width / 2, y: rect.y + rect.height / 2}; })()`);
     await send('Input.dispatchMouseEvent', {type: 'mouseMoved', ...point});
-    const expectedColor = index === 0 ? 'rgb(221, 193, 124)' : 'rgb(204, 168, 197)';
-    assert.ok(await evaluate(`(() => { const marker = getComputedStyle(document.querySelectorAll('.nav-label')[${index}], '::before'); return marker.visibility === 'visible' && marker.backgroundColor === '${expectedColor}'; })()`), 'Hover shows a pink underline and the selected tab stays yellow');
+    const expectedOpacity = index === 0 ? 1 : 0.45;
+    await until(`Math.abs(Number(getComputedStyle(document.querySelectorAll('.nav-label')[${index}], '::before').opacity) - ${expectedOpacity}) < 0.01`);
+    assert.ok(await evaluate(`(() => { const marker = getComputedStyle(document.querySelectorAll('.nav-label')[${index}], '::before'); return marker.visibility === 'visible' && marker.backgroundColor === 'rgb(204, 168, 197)'; })()`), 'Selected and hovered tabs use pink, with lower opacity on hover');
   }
   await send('Input.dispatchMouseEvent', {type: 'mouseMoved', x: 0, y: 0});
   await evaluate('history.back()');

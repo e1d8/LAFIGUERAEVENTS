@@ -39,9 +39,9 @@ Vegeu [el detall de la recuperació](recuperacio-original.md) i [l’extracció 
 - **Micotetes:** afegits els formats de 75 (105€ sense IVA), 100 (120€ sense IVA) i +100 («Contacta’ns i et fem preu!»), inclosos els preus per unitat presents en les capçaleres originals.
 - **FAQ:** completades les respostes de decoració nupcial, combinació de sabors per pisos i muntatge del bufet.
 
-## Dades que continuen pendents
+## Dades sense import fix
 
-Només els preus de 2 i 3 pisos de **Personalitzada**. Les cel·les C4 i D4 de la taula original de marquesa contenen «-», sense cap import. La web manté «Informació pendent» en les dues opcions; no s’interpreta com zero ni com falta de disponibilitat.
+Només els preus de 2 i 3 pisos de **Personalitzada**. Les cel·les C4 i D4 de la taula original de marquesa contenen «-», sense cap import. Per indicació posterior de l’usuari, les dues opcions mostren «Contacta’ns i et fem preu!»; no s’interpreta com zero ni com falta de disponibilitat. No queden camps amb «Informació pendent» en el catàleg actual.
 
 Les descripcions nupcials corregides expressament per l’usuari es mantenen, inclosa la de Fruits secs i dulce de leche, que difereix de l’HTML antic. Els detalls es documenten en `recuperacio-original.md`. `transcripcio.md` continua sent l’arxiu de les captures i no es reescriu amb la informació recuperada després.
 
@@ -58,3 +58,5 @@ La web manté la presentació acurtada: omet el paràgraf que comença «Com que
 Contacte mostra únicament WhatsApp, correu i Instagram, en files amb il·lustracions pròpies al costat del contacte. Els altres mitjans de la captura es conserven en la transcripció arxivada. Les FAQ mostren només «Preguntes freqüents», sense el text introductori «PER RESOLDRE ELS DUBTES».
 
 Les capçaleres de les seccions utilitzen la il·lustració corresponent en lloc de la flor. El títol del navegador és «La Figuera Events» en la portada i «La Figuera Events · Nupcials/Bufet/Taules/Contacte» en les seccions, amb un únic nom segons la secció oberta. Totes les entrades HTML inclouen les metadades per compartir: títol «La Figuera Events» i descripció «Tartes nupcials, bufet de tortades i taules dolces», tant en Open Graph com en Twitter Cards.
+
+Per indicació posterior de l’usuari, el bufet mostra «Decoració normal (12/15 racions)» i «Flors de boda (12/15 racions)» com a etiquetes, amb imports sols i asterisc. Els imports de Micotetes també utilitzen asterisc en lloc de «(sense IVA)». L’avís «SAP A FORMATGE» se situa en xicotet a la part superior dreta de la fitxa.

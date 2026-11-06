@@ -26,13 +26,13 @@ test('Every transcribed item has a capture or recovered original reference and v
   });
 });
 
-test('Only prices absent from the recovered original remain pending', () => {
+test('Recovered fields are complete and personalized prices invite contact', () => {
   Object.values(tables).forEach(table => {
     table.columns.forEach(column => assert.ok(!column.label.pending));
     table.rows.forEach(row => Object.entries(row.cells).forEach(([key, value]) => {
       if (row.id === 'personalitzada' && ['two', 'three'].includes(key)) {
-        assert.equal(value.pending, true);
-        assert.equal(value.text, '');
+        assert.equal(value.pending, false);
+        assert.equal(value.text, 'Contacta’ns i et fem preu!');
       } else assert.equal(value.pending, false, `${row.id}/${key}`);
     }));
   });
@@ -69,9 +69,13 @@ test('Corrected wedding prices use the shared tax note', () => {
   assert.equal(pickup, '*Preu sense IVA. No incloem transport. Els productes s’han d’arreplegar a l’obrador.');
 });
 
-test('Other amounts retain their original tax wording', () => {
-  assert.equal(tables.cookies.rows[0].cells.twentyfive.text, '45€ (sense IVA)');
-  assert.equal(tables.cookies.rows[0].cells.fifty.text, '80€ (sense IVA)');
+test('Buffet and Micotetes prices share the asterisk tax note while FAQ amounts retain their wording', () => {
+  for (const row of tables.buffet.rows) {
+    assert.match(row.cells.normal.text, /^\d+€\*$/);
+    assert.match(row.cells.flowers.text, /^\d+€\*$/);
+  }
+  assert.deepEqual(['twentyfive', 'fifty', 'seventyfive', 'hundred'].map(key => tables.cookies.rows[0].cells[key].text), ['45€*', '80€*', '105€*', '120€*']);
+  assert.equal(tables.cookies.rows[0].cells.overhundred.text, 'Contacta’ns i et fem preu!');
   assert.match(sections[1].questions[0].a, /21% d’IVA/);
   assert.match(sections[1].questions[6].a, /50€/);
 });

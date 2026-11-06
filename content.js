@@ -81,7 +81,7 @@ export const tables = {
     { id: 'personalitzada', source: ['O01'], cells: {
       name: cell('Personalitzada'),
       description: cell('Acorda una cita amb nosaltres i dissenyem la teua tarta ideal basada en les teues postres preferides!'),
-      two: cell('', true), three: cell('', true),
+      two: cell('Contacta’ns i et fem preu!'), three: cell('Contacta’ns i et fem preu!'),
     } }],
   },
   buffet: {
@@ -89,49 +89,49 @@ export const tables = {
     columns: [
       { key: 'name', role: 'name', label: cell('Tarta:') },
       { key: 'description', role: 'detail', label: cell('Què du?') },
-      { key: 'normal', role: 'option', label: cell('Tamany (12/15 racions)') },
-      { key: 'flowers', role: 'option', label: cell('Tamany (12/15 racions)') },
+      { key: 'normal', role: 'option', label: cell('Decoració normal (12/15 racions)') },
+      { key: 'flowers', role: 'option', label: cell('Flors de boda (12/15 racions)') },
     ],
     rows: [
-      { id: 'favorita', source: ['C08', 'O01'], note: '⚠️ SAP A FORMATGE', cells: {
+      { id: 'favorita', source: ['C08', 'O01'], note: 'SAP A FORMATGE', cells: {
         name: cell('LA FAVORITA'),
         description: cell('Amb un toc de formatge blau d’Auvergne DOP, base de galeta lotus, figues i mel, pistatxos (adaptable a la fruita de temporada).'),
-        normal: cell('Amb decoració normal:\n\n45€'), flowers: cell('Amb flors de la boda:\n\n50€'),
+        normal: cell('45€*'), flowers: cell('50€*'),
       } },
-      { id: 'parmigiana', source: ['C08', 'O01'], note: '⚠️ SAP A FORMATGE', cells: {
+      { id: 'parmigiana', source: ['C08', 'O01'], note: 'SAP A FORMATGE', cells: {
         name: cell('PARMIGIANA'),
         description: cell('De parmesà, base de galeta maria i fruits secs caramelitzats, raïm fresc (adaptable a la fruita de temporada).'),
-        normal: cell('Amb decoració normal:\n\n45€'), flowers: cell('Amb flors de la boda:\n\n50€'),
+        normal: cell('45€*'), flowers: cell('50€*'),
       } },
       { id: 'mato-mel', source: ['O01'], cells: {
         name: cell('MATÓ I MEL'),
         description: cell('SUAU I CREMOSA:\n\nDe mató, llima, base de galeta maria, fruita de temporada fresca, mel.'),
-        normal: cell('Amb decoració normal:\n\n45€'), flowers: cell('Amb flors de la boda:\n\n50€'),
+        normal: cell('45€*'), flowers: cell('50€*'),
       } },
       { id: 'valenciana', source: ['O01'], cells: {
         name: cell('LA VALENCIANA'),
         description: cell('SUAU I CREMOSA:\nBase de galeta maria amb llima, crema casolana de llima de la terreta, merenga suuuperlleugera i cremosa.'),
-        normal: cell('Amb decoració normal:\n\n45€'), flowers: cell('Amb flors de la boda:\n\n50€'),
+        normal: cell('45€*'), flowers: cell('50€*'),
       } },
       { id: 'xoco-blanc', source: ['O01'], cells: {
         name: cell('XOCO BLANC'),
         description: cell('LES DE XOCO:\n\nBase de galeta maria, alfàbega, ratlladura de llima, xocolate blanc belga, gerds i pistatxos (adaptable a la fruita de temporada).'),
-        normal: cell('Amb decoració normal:\n\n45€'), flowers: cell('Amb flors de la boda:\n\n50€'),
+        normal: cell('45€*'), flowers: cell('50€*'),
       } },
       { id: 'xoco-llet', source: ['O01'], cells: {
         name: cell('XOCO AMB LLET:'),
         description: cell('LES DE XOCO:\nBase de galeta maria, praliné d’avellana i xocolate belga amb llet, decorada amb fruita de temporada.'),
-        normal: cell('Amb decoració normal:\n\n45€'), flowers: cell('Amb flors de la boda:\n\n50€'),
+        normal: cell('45€*'), flowers: cell('50€*'),
       } },
       { id: 'cafe-fragment', source: ['C09', 'O01'], cells: {
         name: cell('XOCO PUR:'),
         description: cell('LES DE XOCO:\nBase de galeta maria mullada amb café d’especialitat, xocolate 85%, fruita de temporada.'),
-        normal: cell('Amb decoració normal:\n\n45€'), flowers: cell('Amb flors de la boda:\n\n50€'),
+        normal: cell('45€*'), flowers: cell('50€*'),
       } },
       { id: 'pistatxo-fragment', source: ['C09', 'O01'], cells: {
         name: cell('PISTATXO:'),
         description: cell('PREMIUM:\n\nBase de galeta maria i pistatxos, amb crema de pistatxo casolana, decorada amb més pistatxo i fruita de temporada.'),
-        normal: cell('Amb decoració normal:\n\n50€'), flowers: cell('Amb flors de la boda:\n\n55€'),
+        normal: cell('50€*'), flowers: cell('55€*'),
       } },
     ],
   },
@@ -147,8 +147,8 @@ export const tables = {
     ],
     rows: [{ id: 'micotetes', source: ['C11', 'O01'], cells: {
       description: cell('Sabors variats (xoco negre i sal, cacahuet fregit amb mel, 3 xocolates…)'),
-      twentyfive: cell('45€ (sense IVA)'), fifty: cell('80€ (sense IVA)'),
-      seventyfive: cell('105€ (sense IVA)'), hundred: cell('120€ (sense IVA)'),
+      twentyfive: cell('45€*'), fifty: cell('80€*'),
+      seventyfive: cell('105€*'), hundred: cell('120€*'),
       overhundred: cell('Contacta’ns i et fem preu!'),
     } }],
   },

@@ -93,7 +93,8 @@ export function renderCatalogue(data, firstIndex = 0) {
   const detailColumns = data.columns.filter(column => column.role === 'detail');
   const optionColumns = data.columns.filter(column => !['name', 'detail'].includes(column.role));
   data.rows.forEach((row, index) => {
-    const item = el('article', `product-item${(firstIndex + index) % 2 ? ' product-item-rose' : ''}`);
+    const colorClass = ['', ' product-item-rose', ' product-item-green'][(firstIndex + index) % 3];
+    const item = el('article', `product-item${colorClass}`);
     item.dataset.rowId = row.id;
     const name = el('h3', 'product-name');
     nameColumns.forEach(column => {
@@ -127,8 +128,17 @@ export function renderCatalogue(data, firstIndex = 0) {
       renderCell(field, row.cells[column.key]);
       description.append(field);
     });
-    if (row.note) description.append(el('small', 'product-note', row.note));
-    item.append(name, description, options);
+    const header = el('div', 'product-heading');
+    header.append(name);
+    if (row.note) {
+      const note = el('small', 'product-note');
+      const icon = el('img', 'product-note-icon');
+      icon.src = './assets/alerta.png';
+      icon.alt = ''; icon.width = 64; icon.height = 64;
+      note.append(icon, document.createTextNode(row.note));
+      header.append(note);
+    }
+    item.append(header, description, options);
     list.append(item);
   });
   return list;

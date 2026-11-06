@@ -25,9 +25,9 @@ for (const id of ['classics', 'premium', 'marquesa', 'buffet']) {
       keys.forEach((key, option) => {
         const value = source[`${option === 0 ? 'C' : 'D'}${number}`];
         if (value === '-') {
-          assert.deepEqual(row.cells[key], { text: '', pending: true });
+          assert.deepEqual(row.cells[key], { text: 'Contacta’ns i et fem preu!', pending: false });
         } else {
-          const expected = id === 'buffet' ? value : value.replace(' (sense IVA)', '*');
+          const expected = id === 'buffet' ? `${value.match(/\d+€/)[0]}*` : value.replace(' (sense IVA)', '*');
           assert.equal(normalize(row.cells[key].text), normalize(expected));
           assert.equal(row.cells[key].pending, false);
         }
@@ -40,22 +40,23 @@ test('Buffet portion counts apply to both options through the original merged he
   const source = original.tables.buffet;
   assert.equal(source.headerReferences.D, 'C1');
   assert.equal(source.cells.C1, 'Tamany (12/15 racions)');
-  tables.buffet.columns.slice(2).forEach(column => assert.equal(column.label.text, source.cells.C1));
+  assert.deepEqual(tables.buffet.columns.slice(2).map(column => column.label.text), ['Decoració normal (12/15 racions)', 'Flors de boda (12/15 racions)']);
   const cheese = tables.buffet.rows.filter(row => row.note);
   assert.deepEqual(cheese.map(row => row.id), ['favorita', 'parmigiana']);
   cheese.forEach(row => {
-    assert.equal(row.note, '⚠️ SAP A FORMATGE');
+    assert.equal(row.note, 'SAP A FORMATGE');
     assert.ok(!row.cells.description.text.includes('SAP A FORMATGE:'));
   });
 });
 
-test('All five original Micotetes formats retain their quantities, amounts and tax wording', () => {
+test('All five original Micotetes formats retain their quantities and amounts with asterisk tax notes', () => {
   const source = original.tables.cookies.cells;
   assert.equal(tables.cookies.columns.length, 6);
   tables.cookies.columns.slice(1).forEach((column, index) => {
     const coordinate = String.fromCharCode(66 + index);
     assert.equal(normalize(column.label.text), normalize(source[`${coordinate}1`]));
-    assert.equal(normalize(tables.cookies.rows[0].cells[column.key].text), normalize(source[`${coordinate}2`]));
+    const expected = normalize(source[`${coordinate}2`]).replace(' (sense IVA)', '*');
+    assert.equal(normalize(tables.cookies.rows[0].cells[column.key].text), expected);
   });
 });
 
